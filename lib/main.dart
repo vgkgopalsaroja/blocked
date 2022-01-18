@@ -4,12 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slide/routes/level_route_parser.dart';
 import 'package:slide/routes/level_router_delegate.dart';
 import 'package:slide/level/bloc/level_bloc.dart';
-import 'package:url_strategy/url_strategy.dart';
 
 import 'keyboard/bloc/keyboard_bloc.dart';
 
 void main() {
-  setPathUrlStrategy();
   runApp(const MyApp());
 }
 
