@@ -10,7 +10,7 @@ class LevelExited extends LevelEvent {
 
 class LevelChosen extends LevelEvent {
   const LevelChosen(this.level);
-  final Level level;
+  final LevelData level;
 }
 
 class NextLevel extends LevelEvent {

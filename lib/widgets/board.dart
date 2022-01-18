@@ -37,7 +37,7 @@ class _BoardState extends State<Board> with SingleTickerProviderStateMixin {
           await controller.reverse();
         }
       },
-      child: Container(
+      child: Ink(
         decoration: BoxDecoration(
           color: Colors.grey[300],
           borderRadius: BorderRadius.circular(8.0),

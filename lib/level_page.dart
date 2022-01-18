@@ -46,22 +46,25 @@ class LevelPage extends StatelessWidget {
                   );
                 }
 
-                return Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(level.name,
-                          style: Theme.of(context).textTheme.headline6),
-                      if (levelHint != null)
-                        Text(levelHint,
-                            style: Theme.of(context).textTheme.subtitle1),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 16.0),
-                        child: Board(),
-                      ),
-                      const IntrinsicWidth(child: BoardControls()),
-                    ],
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(level.name,
+                            style: Theme.of(context).textTheme.headline6),
+                        if (levelHint != null)
+                          Text(levelHint,
+                              style: Theme.of(context).textTheme.subtitle1),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16.0),
+                          child: FittedBox(child: Board()),
+                        ),
+                        const IntrinsicWidth(child: BoardControls()),
+                      ],
+                    ),
                   ),
                 );
               },

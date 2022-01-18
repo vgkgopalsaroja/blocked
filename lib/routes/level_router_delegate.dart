@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:slide/level_page.dart';
-import 'package:slide/puzzle/level.dart';
 import 'package:slide/routes/level_route_path.dart';
 import 'package:slide/level/bloc/level_bloc.dart';
 import 'package:slide/widgets/level_selection_page.dart';
@@ -19,7 +18,9 @@ class LevelRouterDelegate extends RouterDelegate<LevelRoutePath>
 
   @override
   Widget build(BuildContext context) {
-    final level = levelBloc.state;
+    final levelData = levelBloc.state;
+
+    final level = levelData?.toLevel();
     return Navigator(
       key: _navigatorKey,
       pages: [
@@ -46,7 +47,7 @@ class LevelRouterDelegate extends RouterDelegate<LevelRoutePath>
   @override
   Future<void> setNewRoutePath(LevelRoutePath configuration) {
     final level = configuration.levelId != null
-        ? Levels.getLevelWithId(configuration.levelId!)
+        ? levelBloc.getLevelWithId(configuration.levelId!)
         : null;
     levelBloc.add(level != null ? LevelChosen(level) : const LevelExited());
     return SynchronousFuture(null);
