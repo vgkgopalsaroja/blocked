@@ -1,0 +1,107 @@
+- name: 1
+  hint: |-
+    Swipe or use the arrow keys to move.
+    Exit the room to win.
+  map: |-
+    ******e
+    *M....e
+    ******e
+
+- name: 2
+  hint: Move into blocks to transfer control.
+  map: |-
+    ******e
+    *M.xxxe
+    *..xxxe
+    *..xxx*
+    *.....*
+    *.....*
+    *******
+
+- name: 3
+  map: |-
+    ******e
+    *M.x.xe
+    *..x.xe
+    *..x.x*
+    *.....*
+    *.....*
+    *******
+
+- name: 4
+  hint: Only the main block (marked with a circle) can exit the room.
+  map: |-
+    ****e
+    *M.xe
+    *...e
+    *...*
+    *****
+
+- name: 5
+  hint: Control can only be transferred when there is exactly one target.
+  map: |-
+    *******
+    *M.x..*
+    *M....*
+    *M.x..*
+    *.....*
+    *x....*
+    ****eee
+
+- name: 6
+  map: |-
+    ********e
+    *MMM.x..e
+    *MMM....e
+    *MMM.x..e
+    *...*.*.e
+    *..x....*
+    *********
+
+- name: 7
+  map: |-
+    ********e
+    *M.....xe
+    *.*....xe
+    *..xxx.x*
+    *...*...*
+    *..xxx..*
+    *********
+
+- name: 8
+  hint: You may not always start with the main block.
+  map: |-
+    **********e
+    *..X......e
+    *.........e
+    *....xxx.x*
+    *.*.*.....*
+    *.*mmmmm..*
+    ***********
+
+- name: 9
+  hint: Sometimes all you need is a little teamwork.
+  map: |-
+    **********e
+    *MMM.....xe
+    *.*...***xe
+    *....xxx.x*
+    *.*...*...*
+    *.*..xxx..*
+    ***********
+
+  
+
+
+
+
+- name: 10
+  hint: hi
+  map: |-
+    ********e
+    *MMM.x..e
+    *..*..*.e
+    *xxx.xxx*
+    *..*....*
+    *..x.x..*
+    *********
