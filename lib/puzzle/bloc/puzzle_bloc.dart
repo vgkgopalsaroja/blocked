@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slide/puzzle/model/block.dart';
 import 'package:slide/puzzle/model/position.dart';
@@ -11,10 +12,12 @@ part 'puzzle_state.dart';
 
 class PuzzleBloc extends Bloc<PuzzleEvent, PuzzleState> {
   final PuzzleState initialState;
+  final VoidCallback? onExit;
 
-  PuzzleBloc(this.initialState) : super(initialState) {
+  PuzzleBloc(this.initialState, {this.onExit}) : super(initialState) {
     on<MoveAttempt>(_onMove);
     on<PuzzleReset>(_onReset);
+    on<PuzzleExited>(_onExit);
   }
 
   void _onMove(MoveAttempt event, Emitter<PuzzleState> emit) {
@@ -24,6 +27,10 @@ class PuzzleBloc extends Bloc<PuzzleEvent, PuzzleState> {
   void _onReset(PuzzleReset event, Emitter<PuzzleState> emit) {
     emit(initialState);
   }
+
+  void _onExit(PuzzleExited event, Emitter<PuzzleState> emit) {
+    onExit?.call();
+  }
 }
 
 abstract class PuzzleEvent {
@@ -32,6 +39,10 @@ abstract class PuzzleEvent {
 
 class PuzzleReset extends PuzzleEvent {
   const PuzzleReset();
+}
+
+class PuzzleExited extends PuzzleEvent {
+  const PuzzleExited();
 }
 
 class MoveAttempt extends PuzzleEvent with EquatableMixin {

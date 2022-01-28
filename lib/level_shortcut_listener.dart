@@ -8,12 +8,11 @@ class LevelShortcutListener extends StatelessWidget {
   const LevelShortcutListener({
     Key? key,
     required this.puzzleBloc,
-    required this.levelBloc,
     required this.child,
   }) : super(key: key);
 
   final PuzzleBloc puzzleBloc;
-  final LevelBloc levelBloc;
+  // final LevelBloc levelBloc;
   final Widget child;
 
   @override
@@ -40,7 +39,7 @@ class LevelShortcutListener extends StatelessWidget {
         shortcuts: const {
           SingleActivator(LogicalKeyboardKey.keyR): PuzzleIntent(PuzzleReset()),
           SingleActivator(LogicalKeyboardKey.escape):
-              LevelIntent(LevelExited()),
+              PuzzleIntent(PuzzleExited()),
           SingleActivator(LogicalKeyboardKey.arrowLeft):
               PuzzleIntent(MoveAttempt(MoveDirection.left)),
           SingleActivator(LogicalKeyboardKey.arrowRight):
@@ -53,9 +52,6 @@ class LevelShortcutListener extends StatelessWidget {
         actions: {
           PuzzleIntent: CallbackAction<PuzzleIntent>(onInvoke: (intent) {
             puzzleBloc.add(intent.puzzleEvent);
-          }),
-          LevelIntent: CallbackAction<LevelIntent>(onInvoke: (intent) {
-            levelBloc.add(intent.levelEvent);
           }),
         },
         child: child,

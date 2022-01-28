@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slide/puzzle/level_reader.dart';
-import 'package:slide/routes/level_route_parser.dart';
-import 'package:slide/routes/level_router_delegate.dart';
+import 'package:slide/routing/app_route_parser.dart';
+import 'package:slide/routing/app_router_delegate.dart';
 import 'package:slide/level/bloc/level_bloc.dart';
+import 'package:slide/routing/navigator_bloc.dart';
 
 import 'keyboard/bloc/keyboard_bloc.dart';
 
@@ -29,7 +30,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => LevelBloc(widget.levels, null),
+      create: (context) => NavigationCubit(),
       child: Builder(
         builder: (context) => MaterialApp.router(
           title: 'Flutter Demo',
@@ -41,12 +42,12 @@ class _MyAppState extends State<MyApp> {
               ),
             ),
           ),
-          routerDelegate: LevelRouterDelegate(
-            levelBloc: context.watch<LevelBloc>(),
+          routerDelegate: AppRouterDelegate(
+            navigationCubit: context.watch<NavigationCubit>(),
+            levelList: LevelList(widget.levels),
             navigatorKey: navigatorKey,
           ),
-          routeInformationParser: LevelRouteParser(),
-          // home: const MyHomePage(title: 'Flutter Demo Home Page'),
+          routeInformationParser: AppRouteParser(),
         ),
       ),
     );

@@ -15,7 +15,7 @@ class BoardControls extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_rounded),
           tooltip: 'Back to puzzle selection (Esc)',
           onPressed: () {
-            context.read<LevelBloc>().add(const LevelExited());
+            context.read<PuzzleBloc>().add(const PuzzleExited());
           },
         ),
         IconButton(

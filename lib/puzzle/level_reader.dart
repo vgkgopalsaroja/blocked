@@ -66,13 +66,13 @@ class LevelReader {
     final data = await rootBundle.loadString('assets/levels.yaml');
     final mapData = loadYaml(data);
     for (YamlMap levelData in mapData) {
-      var name = levelData['name'];
-      var hint = levelData['hint'];
-      var mapString = levelData['map'];
+      String name = levelData['name']!.toString();
+      String? hint = levelData['hint'];
+      String map = levelData['map']!.toString();
       levels.add(LevelData(
         name: name.toString(),
         hint: hint?.toString(),
-        map: mapString,
+        map: map,
       ));
     }
     return levels;

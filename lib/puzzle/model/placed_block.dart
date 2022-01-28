@@ -8,7 +8,7 @@ class PlacedBlock extends Block with EquatableMixin {
     required bool isMain,
     required bool canMoveHorizontally,
     required bool canMoveVertically,
-  }) : super._(
+  }) : super.manual(
           width,
           height,
           isMain: isMain,

@@ -26,7 +26,7 @@ class Block with EquatableMixin {
         canMoveHorizontally = true,
         canMoveVertically = false;
 
-  const Block._(
+  const Block.manual(
     this.width,
     this.height, {
     required this.isMain,
