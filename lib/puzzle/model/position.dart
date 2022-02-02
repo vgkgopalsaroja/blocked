@@ -7,4 +7,16 @@ class Position {
   String toString() {
     return 'Position{x: $x, y: $y}';
   }
+
+  Position operator +(Position other) {
+    return Position(x + other.x, y + other.y);
+  }
+
+  Position operator -(Position other) {
+    return Position(x - other.x, y - other.y);
+  }
+
+  Position copyWith({int? x, int? y}) {
+    return Position(x ?? this.x, y ?? this.y);
+  }
 }

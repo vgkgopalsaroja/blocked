@@ -19,7 +19,7 @@ class PuzzleBlock extends StatelessWidget {
     return Material(
       elevation: 8.0,
       color: Colors.transparent,
-      borderRadius: BorderRadius.circular(4.0),
+      borderRadius: BorderRadius.circular(2.0),
       child: AnimatedContainer(
         curve: const Interval(0.5, 1),
         decoration: BoxDecoration(

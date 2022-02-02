@@ -12,7 +12,6 @@ class LevelShortcutListener extends StatelessWidget {
   }) : super(key: key);
 
   final PuzzleBloc puzzleBloc;
-  // final LevelBloc levelBloc;
   final Widget child;
 
   @override

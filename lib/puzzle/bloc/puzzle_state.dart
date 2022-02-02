@@ -1,7 +1,7 @@
 part of 'puzzle_bloc.dart';
 
 class PuzzleState {
-  const PuzzleState._(
+  const PuzzleState(
     this.width,
     this.height, {
     required this.blocks,
@@ -92,7 +92,7 @@ class PuzzleState {
 
   PuzzleState withControlledBlock(PlacedBlock newControlledBlock, Move move) {
     assert(blocks.contains(newControlledBlock));
-    return PuzzleState._(
+    return PuzzleState(
       width,
       height,
       blocks: blocks,
@@ -134,7 +134,7 @@ class PuzzleState {
         return withControlledBlock(
             newControlledBlock, move.blocked(movedBlock));
       } else {
-        return PuzzleState._(
+        return PuzzleState(
           width,
           height,
           exit: exit,
@@ -148,7 +148,7 @@ class PuzzleState {
     }
 
     if (canFit(newBlock) || (hasExit(newBlock) && newBlock.isMain)) {
-      return PuzzleState._(
+      return PuzzleState(
         width,
         height,
         exit: exit,
@@ -162,7 +162,7 @@ class PuzzleState {
         latestMove: move.moved(movedBlock),
       );
     } else {
-      return PuzzleState._(
+      return PuzzleState(
         width,
         height,
         exit: exit,

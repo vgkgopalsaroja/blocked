@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slide/puzzle/bloc/puzzle_bloc.dart';
 import 'package:slide/puzzle/model/block.dart';
+import 'package:slide/puzzle/model/position.dart';
 import 'package:slide/puzzle/model/segment.dart';
 import 'package:slide/widgets/puzzle/board_constants.dart';
 import 'package:collection/collection.dart';
@@ -11,14 +12,15 @@ class LevelEditorBloc extends Bloc<LevelEditorEvent, LevelEditorState> {
   LevelEditorBloc() : super(LevelEditorState.initial([EditorFloor.initial()])) {
     on<EditorObjectMoved>(_onEditorObjectMoved);
     on<EditorObjectSelected>(_onEditorObjectSelected);
+    on<SelectedEditorObjectDeleted>(_onSelectedEditorObjectDeleted);
     on<BlockAdded>(_onBlockAdded);
     on<SegmentAdded>(_onSegmentAdded);
     on<TestMapPressed>(_onTestMapPressed);
     on<MainEditorBlockSet>(_onMainEditorBlockSet);
     on<ControlledEditorBlockSet>(_onControlledEditorBlockSet);
     on<TestMapExited>(_onTestMapExited);
-    on<WallBuilderOpened>(_onWallBuilderOpened);
-    on<WallBuilderClosed>(_onWallBuilderClosed);
+    on<WallBuilderToggled>(_onWallBuilderToggled);
+    on<GridToggled>(_onGridToggled);
   }
 
   void _onEditorObjectMoved(
@@ -49,12 +51,7 @@ class LevelEditorBloc extends Bloc<LevelEditorEvent, LevelEditorState> {
   }
 
   void _onSegmentAdded(SegmentAdded event, Emitter<LevelEditorState> emit) {
-    EditorSegment newSegment;
-    if (event.isVertical) {
-      newSegment = EditorSegment.vertical(event.segment);
-    } else {
-      newSegment = EditorSegment.horizontal(event.segment);
-    }
+    EditorSegment newSegment = EditorSegment.initial(event.segment);
     emit(state.copyWith(
       objects: state.objects + [newSegment],
       selectedObject: state.selectedObject,
@@ -72,14 +69,26 @@ class LevelEditorBloc extends Bloc<LevelEditorEvent, LevelEditorState> {
     emit(state.withControlBlock(event.block));
   }
 
-  void _onWallBuilderOpened(
-      WallBuilderOpened event, Emitter<LevelEditorState> emit) {
-    emit(state.copyWith(isWallBuilderOpen: true));
+  void _onWallBuilderToggled(
+      WallBuilderToggled event, Emitter<LevelEditorState> emit) {
+    emit(state.copyWith(isWallBuilderOpen: !state.isWallBuilderOpen));
   }
 
-  void _onWallBuilderClosed(
-      WallBuilderClosed event, Emitter<LevelEditorState> emit) {
-    emit(state.copyWith(isWallBuilderOpen: false));
+  void _onGridToggled(GridToggled event, Emitter<LevelEditorState> emit) {
+    emit(state.copyWith(isGridVisible: !state.isGridVisible));
+  }
+
+  void _onSelectedEditorObjectDeleted(
+      SelectedEditorObjectDeleted event, Emitter<LevelEditorState> emit) {
+    if (state.selectedObject is! EditorFloor) {
+      emit(state.copyWith(
+        objects: state.objects
+            .where((object) => object != state.selectedObject)
+            .toList(),
+        selectedObject: null,
+        generatedPuzzle: null,
+      ));
+    }
   }
 }
 
@@ -101,6 +110,10 @@ class EditorObjectSelected extends LevelEditorEvent {
   final EditorObject? object;
 }
 
+class SelectedEditorObjectDeleted extends LevelEditorEvent {
+  const SelectedEditorObjectDeleted();
+}
+
 class MainEditorBlockSet extends LevelEditorEvent {
   const MainEditorBlockSet(this.block);
 
@@ -118,10 +131,9 @@ class BlockAdded extends LevelEditorEvent {
 }
 
 class SegmentAdded extends LevelEditorEvent {
-  const SegmentAdded(this.segment, {required this.isVertical});
+  const SegmentAdded(this.segment);
 
   final Segment segment;
-  final bool isVertical;
 }
 
 class TestMapPressed extends LevelEditorEvent {
@@ -132,52 +144,129 @@ class TestMapExited extends LevelEditorEvent {
   const TestMapExited();
 }
 
-class WallBuilderOpened extends LevelEditorEvent {
-  const WallBuilderOpened();
+class WallBuilderToggled extends LevelEditorEvent {
+  const WallBuilderToggled();
 }
 
-class WallBuilderClosed extends LevelEditorEvent {
-  const WallBuilderClosed();
+class GridToggled extends LevelEditorEvent {
+  const GridToggled();
+}
+
+class _InvalidEditorObject extends EditorObject {
+  const _InvalidEditorObject() : super(const Key(''), Size.zero, Offset.zero);
+
+  @override
+  EditorObject copyWith({Size? size, Offset? offset}) {
+    // TODO: implement copyWith
+    throw UnimplementedError();
+  }
+
+  @override
+  // TODO: implement height
+  int get height => throw UnimplementedError();
+
+  @override
+  // TODO: implement width
+  int get width => throw UnimplementedError();
+}
+
+class _InvalidPuzzleState extends PuzzleState {
+  const _InvalidPuzzleState()
+      : super(
+          0,
+          0,
+          innerWalls: const [],
+          blocks: const [],
+          exit: const Segment(
+            Position(0, 0),
+            Position(0, 0),
+          ),
+          controlledBlock: const PlacedBlock(0, 0, Position(0, 0),
+              isMain: false,
+              canMoveHorizontally: false,
+              canMoveVertically: false),
+          latestMove: null,
+          isCompleted: false,
+        );
 }
 
 class LevelEditorState {
   const LevelEditorState.initial(this.objects)
       : selectedObject = null,
         generatedPuzzle = null,
-        isWallBuilderOpen = false;
+        isWallBuilderOpen = false,
+        isGridVisible = true;
   const LevelEditorState(
     this.objects, {
     required this.selectedObject,
     required this.generatedPuzzle,
     required this.isWallBuilderOpen,
+    required this.isGridVisible,
   });
+
+  static const EditorObject _invalidObject = _InvalidEditorObject();
+  static const PuzzleState _invalidPuzzleState = _InvalidPuzzleState();
 
   final List<EditorObject> objects;
   final EditorObject? selectedObject;
   final PuzzleState? generatedPuzzle;
   final bool isWallBuilderOpen;
+  final bool isGridVisible;
 
-  EditorFloor get floor =>
-      objects.firstWhere((object) => object is EditorFloor) as EditorFloor;
   bool get isTesting => generatedPuzzle != null;
 
-  EditorBlock? get mainBlock => objects.firstWhereOrNull(
-      (object) => object is EditorBlock && object.isMain) as EditorBlock?;
+  EditorFloor get floor => objects.whereType<EditorFloor>().first;
 
-  EditorBlock? get initialBlock => objects.firstWhereOrNull(
-      (object) => object is EditorBlock && object.hasControl) as EditorBlock?;
+  Iterable<EditorSegment> getExits() => objects
+      .whereType<EditorSegment>()
+      .where((segment) => isExit(segment.toSegment()));
+
+  EditorBlock? get mainBlock => objects
+      .whereType<EditorBlock>()
+      .where((block) => block.isMain)
+      .firstOrNull;
+
+  EditorBlock? get initialBlock => objects
+      .whereType<EditorBlock>()
+      .where((block) => block.hasControl)
+      .firstOrNull;
+
+  bool isExit(Segment segment) {
+    int dx = -floor.offset.dx.wallOffsetToBlockCount();
+    int dy = -floor.offset.dy.wallOffsetToBlockCount();
+    Segment translatedSegment = segment.translate(dx, dy);
+    if (translatedSegment.isVertical) {
+      bool isXValid = translatedSegment.start.x == 0 ||
+          translatedSegment.start.x == floor.width;
+      bool isYValid = translatedSegment.start.y >= 0 &&
+          translatedSegment.end.y <= floor.height;
+      return isXValid && isYValid;
+    } else {
+      bool isXValid = translatedSegment.start.x >= 0 &&
+          translatedSegment.end.x <= floor.width;
+      bool isYValid = translatedSegment.start.y == 0 ||
+          translatedSegment.start.y == floor.height;
+      return isXValid && isYValid;
+    }
+  }
 
   LevelEditorState copyWith({
     List<EditorObject>? objects,
-    EditorObject? selectedObject,
-    PuzzleState? generatedPuzzle,
+    EditorObject? selectedObject = _invalidObject,
+    PuzzleState? generatedPuzzle = _invalidPuzzleState,
     bool? isWallBuilderOpen,
+    bool? isGridVisible,
   }) {
     return LevelEditorState(
       objects ?? this.objects,
-      selectedObject: selectedObject ?? this.selectedObject,
-      generatedPuzzle: generatedPuzzle ?? this.generatedPuzzle,
+      selectedObject: selectedObject != _invalidObject
+          ? selectedObject
+          : this.selectedObject,
+      generatedPuzzle: generatedPuzzle != _invalidPuzzleState
+          ? generatedPuzzle
+          : this.generatedPuzzle,
       isWallBuilderOpen: isWallBuilderOpen ?? this.isWallBuilderOpen,
+      isGridVisible: isGridVisible ?? this.isGridVisible,
     );
   }
 
@@ -190,10 +279,9 @@ class LevelEditorState {
   }
 
   LevelEditorState withSelectedObject(EditorObject? object) {
-    return LevelEditorState(objects,
-        selectedObject: object,
-        generatedPuzzle: generatedPuzzle,
-        isWallBuilderOpen: isWallBuilderOpen);
+    return copyWith(
+      selectedObject: object,
+    );
   }
 
   LevelEditorState withUpdatedObjectPosition(
@@ -263,22 +351,30 @@ class LevelEditorState {
   PuzzleState _generatePuzzleFromEditorObjects() {
     final initialBlock = this.initialBlock;
     assert(initialBlock != null, 'No initial block set');
-    final otherBlocks = objects.where((EditorObject object) =>
-        object is EditorBlock && object != initialBlock);
+    final otherBlocks = objects
+        .whereType<EditorBlock>()
+        .where((block) => block != initialBlock);
+    final walls = objects.whereType<EditorSegment>().toList();
+
+    final dx = -floor.left;
+    final dy = -floor.top;
+
+    print(getExits().firstOrNull?.toSegment().start.x);
 
     return PuzzleState.initial(floor.width, floor.height,
-        initialBlock: initialBlock!.toBlock(),
+        initialBlock: initialBlock!.toBlock().translate(dx, dy),
         otherBlocks:
-            otherBlocks.map((e) => (e as EditorBlock).toBlock()).toList(),
-        innerWalls: [],
-        exit: Segment.point(x: 1, y: 1));
+            otherBlocks.map((e) => e.toBlock().translate(dx, dy)).toList(),
+        innerWalls: walls.map((w) => w.toSegment().translate(dx, dy)).toList(),
+        exit: getExits().firstOrNull?.toSegment().translate(dx, dy) ??
+            Segment.point(x: 1, y: 1));
   }
 }
 
 abstract class EditorObject extends Equatable {
   const EditorObject(this.key, this.size, this.offset);
 
-  final UniqueKey key;
+  final Key key;
   final Size size;
   final Offset offset;
 
@@ -297,7 +393,7 @@ class EditorBlock extends EditorObject {
         hasControl = false,
         super(key ?? UniqueKey(), const Size(1, 1), Offset.zero);
   EditorBlock(Size size, Offset offset,
-      {UniqueKey? key, this.isMain = false, this.hasControl = false})
+      {Key? key, this.isMain = false, this.hasControl = false})
       : super(key ?? UniqueKey(), size, offset);
 
   final bool hasControl;
@@ -334,37 +430,40 @@ class EditorBlock extends EditorObject {
 class EditorSegment extends EditorObject {
   EditorSegment(
     Size size,
-    Offset offset,
-    this.segment,
-    this._isVertical, {
-    required UniqueKey key,
+    Offset offset, {
+    required Key key,
   }) : super(key, size, offset);
-  EditorSegment._initial(this.segment, this._isVertical)
+  EditorSegment.initial(Segment segment)
       : super(
             UniqueKey(),
             Size(segment.width.toWallSize(), segment.height.toWallSize()),
             Offset(segment.start.x.toWallOffset(),
                 segment.start.y.toWallOffset()));
-  EditorSegment.vertical(Segment segment) : this._initial(segment, true);
-  EditorSegment.horizontal(Segment segment) : this._initial(segment, false);
 
   @override
-  int get width => segment.width;
+  int get width => size.width.boardSizeToBlockCount();
 
   @override
-  int get height => segment.height;
+  int get height => size.height.boardSizeToBlockCount();
 
-  bool get isVertical => _isVertical;
-  bool get isHorizontal => !_isVertical;
+  int get top => offset.dy.wallOffsetToBlockCount();
+  int get left => offset.dx.wallOffsetToBlockCount();
 
-  final Segment segment;
-  final bool _isVertical;
+  // bool get isVertical => _isVertical;
+  // bool get isHorizontal => !_isVertical;
+
+  // final bool _isVertical;
+
+  Segment toSegment() {
+    return Segment.from(
+      Position(left, top),
+      Position(left + width, top + height),
+    );
+  }
 
   @override
   EditorObject copyWith({Size? size, Offset? offset}) {
-    return EditorSegment(
-        size ?? this.size, offset ?? this.offset, segment, _isVertical,
-        key: key);
+    return EditorSegment(size ?? this.size, offset ?? this.offset, key: key);
   }
 }
 
@@ -372,8 +471,11 @@ class EditorFloor extends EditorObject {
   EditorFloor.initial()
       : super(UniqueKey(), Size(1.toBoardSize(), 1.toBoardSize()), Offset.zero);
 
-  EditorFloor(Size size, Offset offset, {UniqueKey? key})
+  EditorFloor(Size size, Offset offset, {Key? key})
       : super(key ?? UniqueKey(), size, offset);
+
+  int get left => offset.dx.wallOffsetToBlockCount();
+  int get top => offset.dy.wallOffsetToBlockCount();
 
   @override
   int get width => size.width.boardSizeToBlockCount();

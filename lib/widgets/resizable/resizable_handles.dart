@@ -109,8 +109,14 @@ class DragHandle extends StatelessWidget {
             minHeight: size,
             minWidth: size,
           ),
-          child: Container(
-            color: Theme.of(context).primaryColor,
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: side.isHorizontal ? size / 4 : 0,
+              vertical: side.isVertical ? size / 4 : 0,
+            ),
+            child: Container(
+              color: Theme.of(context).primaryColor,
+            ),
           ),
         ),
       ),

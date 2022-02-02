@@ -33,6 +33,10 @@ extension BlockDimensionsReverseConversion on double {
     return (this - kWallWidth - kBlockGap) ~/ (kBlockSize + kBlockToBlockGap);
   }
 
+  int wallOffsetToBlockCount() {
+    return this ~/ kBlockSizeInterval;
+  }
+
   int blockSizeToBlockCount() {
     return ((this - kBlockSize) ~/ kBlockSizeInterval) + 1;
   }

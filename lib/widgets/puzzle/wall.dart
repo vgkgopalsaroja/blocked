@@ -15,18 +15,31 @@ class PuzzleWall extends StatelessWidget {
     return Material(
       color: Colors.grey[600],
       borderRadius: BorderRadius.circular(2.0),
-      // elevation: 8.0,
       child: Ink(
         width: segment.width.toWallSize(),
         height: segment.height.toWallSize(),
-        // width: kBlockGap +
-        //     (segment.width) * (kBlockGap + kBlockSize) -
-        //     (segment.width > 0 ? kBlockGap : 0) +
-        //     _getVerticalBorderCount() * (kBoardPadding - kBlockGap / 2),
-        // height: kBlockGap +
-        //     (segment.height) * (kBlockGap + kBlockSize) -
-        //     (segment.height > 0 ? kBlockGap : 0) +
-        //     _getHorizontalBorderCount() * (kBoardPadding - kBlockGap / 2),
+      ),
+    );
+  }
+}
+
+class PuzzleExit extends StatelessWidget {
+  const PuzzleExit(this.segment, {Key? key}) : super(key: key);
+
+  final Segment segment;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Ink(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.black,
+            width: 2.0,
+          ),
+        ),
+        width: segment.width.toWallSize(),
+        height: segment.height.toWallSize(),
       ),
     );
   }

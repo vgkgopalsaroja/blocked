@@ -23,6 +23,15 @@ class PlacedBlock extends Block with EquatableMixin {
   int get top => position.y;
   int get bottom => position.y + height - 1;
 
+  PlacedBlock translate(int dx, int dy) => PlacedBlock(
+        width,
+        height,
+        position + Position(dx, dy),
+        isMain: isMain,
+        canMoveHorizontally: canMoveHorizontally,
+        canMoveVertically: canMoveVertically,
+      );
+
   @override
   List<Object?> get props =>
       [width, height, position, isMain, canMoveHorizontally, canMoveVertically];

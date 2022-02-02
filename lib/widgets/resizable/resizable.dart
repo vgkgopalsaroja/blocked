@@ -12,35 +12,74 @@ typedef ResizableWidgetBuilder = Widget Function(
     BuildContext context, Size size);
 typedef ResizableUpdateCallback = void Function(ResizableState state);
 
+const double kHandleSize = 12.0;
+
 class Resizable extends StatelessWidget {
-  const Resizable({
+  Resizable({
     Key? key,
     required this.builder,
-    this.handleSize = 12.0,
     this.snapWhileMoving = false,
     this.snapWhileResizing = false,
-    this.snapWidthInterval,
-    this.snapHeightInterval,
-    this.snapOffsetInterval,
+    double? snapWidthInterval,
+    double? snapHeightInterval,
+    Offset? snapOffsetInterval,
     this.snapBaseOffset = Offset.zero,
     this.onUpdate,
     this.onTap,
     this.baseWidth = 0,
     this.baseHeight = 0,
+    this.initialSize,
+    this.initialOffset,
+    this.enabled = true,
+    required this.minWidth,
+    required this.minHeight,
+  })  : snapSizeDelegate =
+            (snapWidthInterval != null && snapHeightInterval != null)
+                ? SnapSizeDelegate.interval(
+                    minWidth: minWidth,
+                    minHeight: minHeight,
+                    width: snapWidthInterval,
+                    height: snapHeightInterval,
+                    widthOffset: baseWidth,
+                    heightOffset: baseHeight,
+                  )
+                : null,
+        snapOffsetDelegate = snapOffsetInterval != null
+            ? SnapOffsetDelegate.interval(
+                offset: snapBaseOffset,
+                interval: snapOffsetInterval,
+              )
+            : null,
+        super(key: key);
+
+  const Resizable.custom({
+    Key? key,
+    required this.builder,
+    this.snapWhileMoving = false,
+    this.snapWhileResizing = false,
+    this.snapSizeDelegate,
+    this.snapOffsetDelegate,
+    this.snapBaseOffset = Offset.zero,
+    this.onUpdate,
+    this.onTap,
+    this.baseWidth = 0,
+    this.baseHeight = 0,
+    this.initialSize,
+    this.initialOffset,
     this.enabled = true,
     required this.minWidth,
     required this.minHeight,
   }) : super(key: key);
 
   final ResizableWidgetBuilder builder;
-  final double handleSize;
-  final double? snapWidthInterval;
-  final double? snapHeightInterval;
+  final SnapOffsetDelegate? snapOffsetDelegate;
+  final SnapSizeDelegate? snapSizeDelegate;
   final double baseWidth;
   final double baseHeight;
   final double minWidth;
   final double minHeight;
-  final Offset? snapOffsetInterval;
+  final Size? initialSize;
+  final Offset? initialOffset;
   final Offset snapBaseOffset;
   final bool snapWhileMoving;
   final bool snapWhileResizing;
@@ -52,27 +91,14 @@ class Resizable extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => ResizableBloc(
-        top: snapBaseOffset.dy,
-        left: snapBaseOffset.dx,
-        width: minWidth,
-        height: minHeight,
-        snapSizeDelegate:
-            // (snapWidthInterval != null || snapHeightInterval != null)
-            SnapSizeDelegate.interval(
-          min: Size(minWidth, minHeight),
-          width: snapWidthInterval,
-          height: snapHeightInterval,
-          widthOffset: baseWidth,
-          heightOffset: baseHeight,
-        ),
+        top: initialOffset?.dy ?? snapBaseOffset.dy,
+        left: initialOffset?.dx ?? snapBaseOffset.dx,
+        width: initialSize?.width ?? minWidth,
+        height: initialSize?.height ?? minHeight,
+        snapSizeDelegate: snapSizeDelegate,
+        snapOffsetDelegate: snapOffsetDelegate,
         snapWhileResizing: snapWhileResizing,
         snapWhileMoving: snapWhileMoving,
-        snapOffsetDelegate: snapOffsetInterval != null
-            ? SnapOffsetDelegate.interval(
-                offset: snapBaseOffset,
-                interval: snapOffsetInterval!,
-              )
-            : null,
       ),
       child: BlocConsumer<ResizableBloc, ResizableState>(
         listener: (context, state) => onUpdate?.call(state),
@@ -85,76 +111,76 @@ class Resizable extends StatelessWidget {
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 100),
               curve: Curves.easeOut,
-              width: state.width + 2 * handleSize,
-              height: state.height + 2 * handleSize,
+              width: state.width + 2 * kHandleSize,
+              height: state.height + 2 * kHandleSize,
               child: Stack(
                 children: [
                   Positioned.fill(
                     child: Padding(
-                      padding: EdgeInsets.all(handleSize),
+                      padding: EdgeInsets.all(kHandleSize),
                       child: builder(context, state.size),
                     ),
                   ),
                   if (enabled) ...{
                     Positioned(
                       left: 0,
-                      top: handleSize,
-                      bottom: handleSize,
+                      top: kHandleSize,
+                      bottom: kHandleSize,
                       child: DragHandle(
                         BoxSide.left,
-                        size: handleSize,
+                        size: kHandleSize,
                       ),
                     ),
                     Positioned(
                       right: 0,
-                      top: handleSize,
-                      bottom: handleSize,
+                      top: kHandleSize,
+                      bottom: kHandleSize,
                       child: DragHandle(
                         BoxSide.right,
-                        size: handleSize,
+                        size: kHandleSize,
                       ),
                     ),
                     Positioned(
-                      left: handleSize,
-                      right: handleSize,
+                      left: kHandleSize,
+                      right: kHandleSize,
                       top: 0,
                       child: DragHandle(
                         BoxSide.top,
-                        size: handleSize,
+                        size: kHandleSize,
                       ),
                     ),
                     Positioned(
-                      left: handleSize,
-                      right: handleSize,
+                      left: kHandleSize,
+                      right: kHandleSize,
                       bottom: 0,
-                      child: DragHandle(BoxSide.bottom, size: handleSize),
+                      child: DragHandle(BoxSide.bottom, size: kHandleSize),
                     ),
                     Positioned(
                       left: 0,
                       top: 0,
-                      child: DragHandle(BoxSide.topLeft, size: handleSize),
+                      child: DragHandle(BoxSide.topLeft, size: kHandleSize),
                     ),
                     Positioned(
                       right: 0,
                       top: 0,
-                      child: DragHandle(BoxSide.topRight, size: handleSize),
+                      child: DragHandle(BoxSide.topRight, size: kHandleSize),
                     ),
                     Positioned(
                       left: 0,
                       bottom: 0,
-                      child: DragHandle(BoxSide.bottomLeft, size: handleSize),
+                      child: DragHandle(BoxSide.bottomLeft, size: kHandleSize),
                     ),
                     Positioned(
                       right: 0,
                       bottom: 0,
-                      child: DragHandle(BoxSide.bottomRight, size: handleSize),
+                      child: DragHandle(BoxSide.bottomRight, size: kHandleSize),
                     ),
                   },
                   Positioned.fill(
-                    // bottom: handleSize,
-                    // right: handleSize,
-                    // top: handleSize,
-                    // left: handleSize,
+                    bottom: kHandleSize,
+                    right: kHandleSize,
+                    top: kHandleSize,
+                    left: kHandleSize,
                     child: PanHandle(
                       onTap: onTap,
                     ),

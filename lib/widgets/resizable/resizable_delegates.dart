@@ -19,14 +19,15 @@ class SnapSizeDelegate {
     double? height,
     double widthOffset = 0,
     double heightOffset = 0,
-    Size min = Size.zero,
-    Size max = Size.infinite,
+    double minWidth = 0,
+    double maxWidth = double.infinity,
+    double minHeight = 0,
+    double maxHeight = double.infinity,
   }) : sizeSnapper = ((Size size) {
           return Size(
+            _snapToInterval(size.width, width, widthOffset, minWidth, maxWidth),
             _snapToInterval(
-                size.width, width, widthOffset, min.width, max.width),
-            _snapToInterval(
-                size.height, height, heightOffset, min.height, max.height),
+                size.height, height, heightOffset, minHeight, maxHeight),
           );
         });
 
