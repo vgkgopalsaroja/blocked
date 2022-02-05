@@ -23,14 +23,6 @@ class LevelSelectionPage extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Text('Levels', style: Theme.of(context).textTheme.headline4),
           )),
-          SliverToBoxAdapter(
-            child: TextButton(
-              child: const Text('Open editor'),
-              onPressed: () {
-                context.read<NavigationCubit>().navigateToEditor();
-              },
-            ),
-          ),
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             sliver: SliverGrid(

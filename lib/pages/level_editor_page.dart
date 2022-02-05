@@ -40,20 +40,28 @@ class LevelEditorPage extends StatelessWidget {
                     .push(MaterialPageRoute(builder: (context) {
                   final generatedLevel = Level('Generated puzzle',
                       initialState: state.generatedPuzzle!);
-                  return LevelPage(
-                    generatedLevel,
-                    onExit: () {
-                      Navigator.of(context).pop();
-                      outerContext
-                          .read<LevelEditorBloc>()
-                          .add(const TestMapExited());
-                    },
-                    onNext: () {
-                      Navigator.of(context).pop();
-                      outerContext
-                          .read<LevelEditorBloc>()
-                          .add(const TestMapExited());
-                    },
+                  return Scaffold(
+                    body: Stack(
+                      children: [
+                        LevelPage(
+                          generatedLevel,
+                          onExit: () {
+                            Navigator.of(context).pop();
+                            outerContext
+                                .read<LevelEditorBloc>()
+                                .add(const TestMapExited());
+                          },
+                          onNext: () {
+                            Navigator.of(context).pop();
+                            outerContext
+                                .read<LevelEditorBloc>()
+                                .add(const TestMapExited());
+                          },
+                        ),
+                        SelectableText(
+                            generatedLevel.initialState.toMapString()),
+                      ],
+                    ),
                   );
                 }));
               }

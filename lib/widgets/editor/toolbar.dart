@@ -14,6 +14,8 @@ class EditorToolbar extends StatelessWidget {
         context.select((LevelEditorBloc bloc) => bloc.state.selectedTool);
     final EditorObject? selectedObject =
         context.select((LevelEditorBloc bloc) => bloc.state.selectedObject);
+    final String? puzzleError =
+        context.select((LevelEditorBloc bloc) => bloc.state.puzzleError);
 
     return Material(
       elevation: 8.0,
@@ -23,6 +25,11 @@ class EditorToolbar extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
+            if (puzzleError != null)
+              Text(
+                puzzleError,
+                style: TextStyle(color: Colors.red),
+              ),
             if (selectedObject is EditorBlock) ...{
               Row(
                 mainAxisSize: MainAxisSize.min,
@@ -96,7 +103,7 @@ class EditorToolbar extends StatelessWidget {
                       : null,
                 ),
                 VerticalDivider(
-                    thickness: 8, color: Theme.of(context).primaryColor),
+                    width: 8, color: Theme.of(context).primaryColor),
                 TextButton.icon(
                   icon: const Icon(Icons.grid_3x3_rounded),
                   label: const Text('Toggle grid (G)'),
@@ -111,11 +118,12 @@ class EditorToolbar extends StatelessWidget {
                     levelEditorBloc.add(const MapCleared());
                   },
                 ),
-                ElevatedButton(
+                ElevatedButton.icon(
                   onPressed: () {
                     levelEditorBloc.add(const TestMapPressed());
                   },
-                  child: const Text('Play (Space/Enter)'),
+                  icon: const Icon(Icons.play_arrow),
+                  label: const Text('Play (Space/Enter)'),
                 ),
               ],
             ),
