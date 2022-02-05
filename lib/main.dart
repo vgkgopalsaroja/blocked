@@ -27,6 +27,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    ColorScheme colorScheme = ColorScheme.fromSeed(
+        seedColor: Colors.orange, brightness: Brightness.dark);
     return BlocProvider(
       create: (context) => NavigationCubit(),
       child: Builder(
@@ -35,8 +37,7 @@ class _MyAppState extends State<MyApp> {
           themeMode: ThemeMode.dark,
           darkTheme: ThemeData(
             useMaterial3: true,
-            colorScheme: ColorScheme.fromSeed(
-                seedColor: Colors.orange, brightness: Brightness.dark),
+            colorScheme: colorScheme,
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
                 padding: const EdgeInsets.all(16),
@@ -49,10 +50,10 @@ class _MyAppState extends State<MyApp> {
             ),
             outlinedButtonTheme: OutlinedButtonThemeData(
               style: OutlinedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4.0),
-                ),
-              ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4.0),
+                  ),
+                  side: BorderSide(color: colorScheme.outline, width: 2)),
             ),
             textTheme: GoogleFonts.poppinsTextTheme(
               ThemeData.dark().textTheme,
