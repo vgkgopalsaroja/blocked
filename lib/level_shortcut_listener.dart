@@ -51,7 +51,7 @@ class LevelShortcutListener extends StatelessWidget {
         },
         actions: {
           PuzzleIntent: CallbackAction<PuzzleIntent>(onInvoke: (intent) {
-            puzzleBloc.add(intent.puzzleEvent);
+            return puzzleBloc.add(intent.puzzleEvent);
           }),
         },
         child: child,

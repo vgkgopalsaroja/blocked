@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:slide/editor/editor_exception.dart';
 import 'package:slide/puzzle/bloc/puzzle_bloc.dart';
 import 'package:slide/puzzle/model/block.dart';
 import 'package:slide/puzzle/model/position.dart';
@@ -237,8 +238,8 @@ class LevelEditorState {
       return copyWith(
           generatedPuzzle: _generatePuzzleFromEditorObjects(),
           puzzleError: null);
-    } catch (e) {
-      return copyWith(puzzleError: e.toString());
+    } on EditorException catch (e) {
+      return copyWith(puzzleError: e.message);
     }
   }
 
@@ -319,11 +320,11 @@ class LevelEditorState {
   PuzzleState _generatePuzzleFromEditorObjects() {
     final initialBlock = this.initialBlock;
     if (initialBlock == null) {
-      throw Exception('No initial block found');
+      throw const EditorException('No initial block found');
     } else if (mainBlock == null) {
-      throw Exception('No main block found');
+      throw const EditorException('No main block found');
     } else if (getExits().isEmpty) {
-      throw Exception('Puzzle has no exits');
+      throw const EditorException('Puzzle has no exits');
     }
 
     final otherBlocks = objects

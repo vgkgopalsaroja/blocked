@@ -12,7 +12,6 @@ class LevelSelectionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final levels = context.select((LevelBloc bloc) => bloc.levels);
     return Scaffold(
       body: CustomScrollView(
         shrinkWrap: true,
@@ -21,7 +20,14 @@ class LevelSelectionPage extends StatelessWidget {
           SliverToBoxAdapter(
               child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Text('Levels', style: Theme.of(context).textTheme.headline4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('slide', style: Theme.of(context).textTheme.displayMedium),
+                const SizedBox(height: 32),
+                Text('levels', style: Theme.of(context).textTheme.displaySmall),
+              ],
+            ),
           )),
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -35,35 +41,14 @@ class LevelSelectionPage extends StatelessWidget {
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
                   final levelData = levels[index];
-                  return ElevatedButton(
+                  return OutlinedButton(
                     clipBehavior: Clip.antiAlias,
-                    style: ElevatedButton.styleFrom(
-                      primary: Theme.of(context).cardColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4.0),
-                      ),
-                      side: BorderSide(
-                        color: Colors.grey[500]!,
-                        width: 4.0,
-                      ),
-                      elevation: 2,
-                    ),
                     onPressed: () {
-                      // Launch route
                       context
                           .read<NavigationCubit>()
                           .navigateToLevel(levelData.name);
                     },
                     child: Ink(
-                      // width: 64.0,
-                      // height: 64.0,
-                      // decoration: BoxDecoration(
-                      //   borderRadius: BorderRadius.circular(4.0),
-                      //   border: Border.all(
-                      //     color: Colors.grey[500]!,
-                      //     width: 4.0,
-                      //   ),
-                      // ),
                       padding: const EdgeInsets.all(16),
                       child: Center(
                         child: Row(
@@ -72,12 +57,15 @@ class LevelSelectionPage extends StatelessWidget {
                               aspectRatio: 1,
                               child: Center(
                                 child: FittedBox(
-                                  child: BlocProvider(
-                                    create: (context) => PuzzleBloc(
-                                        levelData.toLevel().initialState,
-                                        onExit: () {},
-                                        onNext: () {}),
-                                    child: const Puzzle(),
+                                  child: Hero(
+                                    tag: levelData.name,
+                                    child: BlocProvider(
+                                      create: (context) => PuzzleBloc(
+                                          levelData.toLevel().initialState,
+                                          onExit: () {},
+                                          onNext: () {}),
+                                      child: const Puzzle(),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -85,12 +73,7 @@ class LevelSelectionPage extends StatelessWidget {
                             const SizedBox(width: 32.0),
                             Text(
                               levelData.name,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline5
-                                  ?.copyWith(
-                                    color: Colors.grey.shade700,
-                                  ),
+                              style: Theme.of(context).textTheme.titleLarge,
                             ),
                           ],
                         ),

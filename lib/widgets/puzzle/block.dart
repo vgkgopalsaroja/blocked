@@ -22,17 +22,21 @@ class PuzzleBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme green = ColorScheme.fromSeed(
+        seedColor: Colors.green, brightness: Theme.of(context).brightness);
+    final ColorScheme grey = ColorScheme.fromSeed(
+        seedColor: Colors.grey, brightness: Theme.of(context).brightness);
     return Material(
       elevation: 8.0,
-      color: Colors.transparent,
+      type: MaterialType.transparency,
       borderRadius: BorderRadius.circular(2.0),
       child: AnimatedContainer(
         curve: curve,
         decoration: BoxDecoration(
-          color: isControlled ? Colors.green[200] : Colors.grey[200],
+          color: isControlled ? green.primaryContainer : grey.surfaceVariant,
           borderRadius: BorderRadius.circular(4.0),
           border: Border.all(
-            color: isControlled ? Colors.green[700]! : Colors.grey[500]!,
+            color: isControlled ? green.primary : grey.outline,
             width: 4.0,
           ),
         ),
@@ -42,7 +46,7 @@ class PuzzleBlock extends StatelessWidget {
         child: block.isMain
             ? Icon(
                 Icons.circle_outlined,
-                color: isControlled ? Colors.green[800] : Colors.grey[700],
+                color: isControlled ? green.primary : grey.outline,
                 size: min(block.width, block.height) * kBlockSize / 2,
               )
             : null,

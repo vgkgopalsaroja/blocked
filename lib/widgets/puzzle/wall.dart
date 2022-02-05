@@ -20,13 +20,11 @@ class PuzzleWall extends StatelessWidget {
       curve: curve,
       duration: duration,
       decoration: BoxDecoration(
-        color: Colors.grey.shade600,
+        color: Theme.of(context).colorScheme.outline,
         borderRadius: BorderRadius.circular(2.0),
       ),
-      child: Ink(
-        width: segment.width.toWallSize(),
-        height: segment.height.toWallSize(),
-      ),
+      width: segment.width.toWallSize(),
+      height: segment.height.toWallSize(),
     );
   }
 }
@@ -38,10 +36,10 @@ class PuzzleExit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Ink(
+    return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: Colors.grey.shade600,
+          color: Theme.of(context).colorScheme.outline,
           width: 2.0,
         ),
       ),

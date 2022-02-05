@@ -32,21 +32,49 @@ class LevelPage extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(levelName,
-                            style: Theme.of(context).textTheme.headline6),
-                        if (levelHint != null)
-                          Text(levelHint,
-                              style: Theme.of(context).textTheme.subtitle1),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 16.0),
-                          child: FittedBox(child: Puzzle()),
-                        ),
-                        const IntrinsicWidth(child: BoardControls()),
-                      ],
+                    child: IntrinsicWidth(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(levelName,
+                              style: Theme.of(context).textTheme.displaySmall),
+                          if (levelHint != null)
+                            Text(levelHint,
+                                style: Theme.of(context).textTheme.titleLarge),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 32.0),
+                            child: Center(
+                              child: FittedBox(
+                                child: Hero(
+                                  tag: level.name,
+                                  flightShuttleBuilder: (
+                                    BuildContext flightContext,
+                                    Animation<double> animation,
+                                    HeroFlightDirection flightDirection,
+                                    BuildContext fromHeroContext,
+                                    BuildContext toHeroContext,
+                                  ) {
+                                    final Hero toHero =
+                                        toHeroContext.widget as Hero;
+                                    return BlocProvider(
+                                      create: (context) => PuzzleBloc(
+                                          level.initialState,
+                                          onExit: onExit,
+                                          onNext: onNext),
+                                      child: Material(
+                                          type: MaterialType.transparency,
+                                          child: toHero.child),
+                                    );
+                                  },
+                                  child: const Puzzle(),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const BoardControls(),
+                        ],
+                      ),
                     ),
                   ),
                 );

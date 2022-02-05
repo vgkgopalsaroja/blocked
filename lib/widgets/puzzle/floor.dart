@@ -17,7 +17,7 @@ class PuzzleFloor extends StatelessWidget {
   Widget build(BuildContext context) {
     return Ink(
       decoration: BoxDecoration(
-        color: Colors.grey[300],
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(8.0),
       ),
       width: width.toBoardSize(),

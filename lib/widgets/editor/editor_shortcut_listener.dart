@@ -39,7 +39,7 @@ class EditorShortcutListener extends StatelessWidget {
       actions: {
         EditorActionIntent:
             CallbackAction<EditorActionIntent>(onInvoke: (intent) {
-          levelEditorBloc.add(intent.event);
+          return levelEditorBloc.add(intent.event);
         }),
       },
       child: child,

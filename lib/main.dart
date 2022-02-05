@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:slide/puzzle/level_reader.dart';
 import 'package:slide/routing/app_route_parser.dart';
 import 'package:slide/routing/app_router_delegate.dart';
 import 'package:slide/level/bloc/level_bloc.dart';
 import 'package:slide/routing/navigator_bloc.dart';
-
-import 'keyboard/bloc/keyboard_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,12 +32,30 @@ class _MyAppState extends State<MyApp> {
       child: Builder(
         builder: (context) => MaterialApp.router(
           title: 'slide',
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-            textTheme: TextTheme(
-              subtitle1: TextStyle(
-                color: Colors.grey.shade700,
+          themeMode: ThemeMode.dark,
+          darkTheme: ThemeData(
+            useMaterial3: true,
+            colorScheme: ColorScheme.fromSeed(
+                seedColor: Colors.orange, brightness: Brightness.dark),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.all(16),
               ),
+            ),
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.all(16),
+              ),
+            ),
+            outlinedButtonTheme: OutlinedButtonThemeData(
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4.0),
+                ),
+              ),
+            ),
+            textTheme: GoogleFonts.poppinsTextTheme(
+              ThemeData.dark().textTheme,
             ),
           ),
           routerDelegate: AppRouterDelegate(
@@ -53,28 +69,6 @@ class _MyAppState extends State<MyApp> {
           routeInformationParser: AppRouteParser(),
         ),
       ),
-    );
-  }
-}
-
-class ArrowIndicator extends StatelessWidget {
-  const ArrowIndicator({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final pressedKey =
-        context.select((KeyboardBloc bloc) => bloc.state.latestKey);
-    return Icon(
-      pressedKey == LogicalKeyboardKey.arrowLeft
-          ? Icons.arrow_left
-          : pressedKey == LogicalKeyboardKey.arrowRight
-              ? Icons.arrow_right
-              : pressedKey == LogicalKeyboardKey.arrowUp
-                  ? Icons.arrow_upward
-                  : pressedKey == LogicalKeyboardKey.arrowDown
-                      ? Icons.arrow_downward
-                      : null,
-      color: Colors.blue,
     );
   }
 }

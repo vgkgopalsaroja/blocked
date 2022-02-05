@@ -28,7 +28,7 @@ class BoardControls extends StatelessWidget {
         ),
         if (isCompleted) ...{
           const Spacer(),
-          TextButton.icon(
+          ElevatedButton.icon(
             label: const Text('Next (Enter)'),
             icon: const Icon(Icons.arrow_forward),
             onPressed: () {

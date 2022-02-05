@@ -26,9 +26,13 @@ class EditorToolbar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             if (puzzleError != null)
-              Text(
-                puzzleError,
-                style: TextStyle(color: Colors.red),
+              Container(
+                color: Theme.of(context).colorScheme.errorContainer,
+                child: Text(
+                  puzzleError,
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.onErrorContainer),
+                ),
               ),
             if (selectedObject is EditorBlock) ...{
               Row(
@@ -57,73 +61,77 @@ class EditorToolbar extends StatelessWidget {
               ),
             },
             Wrap(
-              // mainAxisSize: MainAxisSize.min,
-              // mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextButton.icon(
-                  icon: const Icon(Icons.pan_tool),
-                  label: const Text('Select (Q)'),
-                  onPressed: () {
-                    levelEditorBloc
-                        .add(const EditorToolSelected(EditorTool.move));
-                  },
-                  style: selectedTool == EditorTool.move
-                      ? TextButton.styleFrom(
-                          primary: Theme.of(context).colorScheme.onPrimary,
-                          backgroundColor: Theme.of(context).primaryColor,
-                        )
-                      : null,
-                ),
-                TextButton.icon(
-                  icon: const Icon(Icons.brush_rounded),
-                  label: const Text('Wall/Exit (W)'),
-                  onPressed: () {
-                    levelEditorBloc
-                        .add(const EditorToolSelected(EditorTool.segment));
-                  },
-                  style: selectedTool == EditorTool.segment
-                      ? TextButton.styleFrom(
-                          primary: Theme.of(context).colorScheme.onPrimary,
-                          backgroundColor: Theme.of(context).primaryColor,
-                        )
-                      : null,
-                ),
-                TextButton.icon(
-                  icon: const Icon(Icons.brush_rounded),
-                  label: const Text('Block (E)'),
-                  onPressed: () {
-                    levelEditorBloc
-                        .add(const EditorToolSelected(EditorTool.block));
-                  },
-                  style: selectedTool == EditorTool.block
-                      ? TextButton.styleFrom(
-                          primary: Theme.of(context).colorScheme.onPrimary,
-                          backgroundColor: Theme.of(context).primaryColor,
-                        )
-                      : null,
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextButton.icon(
+                      icon: const Icon(Icons.mouse),
+                      label: const Text('Select (Q)'),
+                      onPressed: () {
+                        levelEditorBloc
+                            .add(const EditorToolSelected(EditorTool.move));
+                      },
+                      style: selectedTool == EditorTool.move
+                          ? TextButton.styleFrom(
+                              primary: Theme.of(context).colorScheme.onPrimary,
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary,
+                            )
+                          : null,
+                    ),
+                    TextButton.icon(
+                      icon: const Icon(Icons.brush_rounded),
+                      label: const Text('Wall/Exit (W)'),
+                      onPressed: () {
+                        levelEditorBloc
+                            .add(const EditorToolSelected(EditorTool.segment));
+                      },
+                      style: selectedTool == EditorTool.segment
+                          ? TextButton.styleFrom(
+                              primary: Theme.of(context).colorScheme.onPrimary,
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary,
+                            )
+                          : null,
+                    ),
+                    TextButton.icon(
+                      icon: const Icon(Icons.brush_rounded),
+                      label: const Text('Block (E)'),
+                      onPressed: () {
+                        levelEditorBloc
+                            .add(const EditorToolSelected(EditorTool.block));
+                      },
+                      style: selectedTool == EditorTool.block
+                          ? TextButton.styleFrom(
+                              primary: Theme.of(context).colorScheme.onPrimary,
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary,
+                            )
+                          : null,
+                    ),
+                  ],
                 ),
                 VerticalDivider(
-                    width: 8, color: Theme.of(context).primaryColor),
-                TextButton.icon(
-                  icon: const Icon(Icons.grid_3x3_rounded),
-                  label: const Text('Toggle grid (G)'),
-                  onPressed: () {
-                    levelEditorBloc.add(const GridToggled());
-                  },
-                ),
-                TextButton.icon(
-                  icon: const Icon(Icons.grid_3x3_rounded),
-                  label: const Text('Clear (C)'),
-                  onPressed: () {
-                    levelEditorBloc.add(const MapCleared());
-                  },
-                ),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    levelEditorBloc.add(const TestMapPressed());
-                  },
-                  icon: const Icon(Icons.play_arrow),
-                  label: const Text('Play (Space/Enter)'),
+                    width: 8, color: Theme.of(context).colorScheme.primary),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextButton.icon(
+                      icon: const Icon(Icons.grid_3x3_rounded),
+                      label: const Text('Toggle grid (G)'),
+                      onPressed: () {
+                        levelEditorBloc.add(const GridToggled());
+                      },
+                    ),
+                    TextButton.icon(
+                      icon: const Icon(Icons.clear_rounded),
+                      label: const Text('Clear (C)'),
+                      onPressed: () {
+                        levelEditorBloc.add(const MapCleared());
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),

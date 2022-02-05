@@ -67,27 +67,12 @@ class EditorBuilderState {
         _end = end;
 
   Position? get start => _start ?? hoveredPosition;
-  Position? get end => _end ?? _snappedHoveredPosition;
+  Position? get end => _end ?? hoveredPosition;
   bool get isObjectPlaced => _start != null && _end != null;
 
   final Position? _start;
   final Position? _end;
   final Position? hoveredPosition;
-
-  Position? get _snappedHoveredPosition {
-    if (false && hoveredPosition != null && start != null) {
-      Position snappedVerticalPosition = hoveredPosition!.copyWith(x: start!.x);
-      Position snappedHorizontalPosition =
-          hoveredPosition!.copyWith(y: start!.y);
-      int verticalLength = (hoveredPosition!.y - start!.y).abs();
-      int horizontalLength = (hoveredPosition!.x - start!.x).abs();
-      return verticalLength > horizontalLength
-          ? snappedVerticalPosition
-          : snappedHorizontalPosition;
-    } else {
-      return hoveredPosition;
-    }
-  }
 
   EditorBuilderState copyWith({
     Position? start = _invalidPosition,
