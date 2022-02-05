@@ -3,26 +3,26 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "assets/assets/levels.yaml": "234dddecab4ca58d87901b96dc3b08f3",
+  "assets/assets/levels.yaml": "bdb275c153d232be2ab4f5c9abfbd8b2",
 "assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
 "assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "6d342eb68f170c97609e9da345464e5e",
 "assets/AssetManifest.json": "f1094a99d330a2f67afe89366744050c",
-"assets/NOTICES": "08e20ad1b9c4ccb9a8267d914f0a8b4a",
+"assets/NOTICES": "0377cd87c222d7f8a5d97ce0ad62a74f",
 "assets/fonts/MaterialIcons-Regular.otf": "4e6447691c9509f7acdbf8a931a85ca1",
-"index.html": "96651447214636d97881aebf7314e6cf",
-"/": "96651447214636d97881aebf7314e6cf",
+"index.html": "e4ff281140b9b40e89e3df2210c30d45",
+"/": "e4ff281140b9b40e89e3df2210c30d45",
 "version.json": "6b5205f65619cfe5ded9c28b5903ccea",
 "icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2ea3c",
 "icons/Icon-maskable-512.png": "301a7604d45b3e739efc881eb04896ea",
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
 "icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
-"main.dart.js": "281a333dda0e4f632adf5240fdd3c265",
+"main.dart.js": "e9689cca7c7ab50ff9f75c52e7838b3e",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
 "manifest.json": "bd2873af0f0a16bc4f0ab70b9243f8df",
-"canvaskit/profiling/canvaskit.js": "f3bfccc993a1e0bfdd3440af60d99df4",
-"canvaskit/profiling/canvaskit.wasm": "a9610cf39260f60fbe7524a785c66101",
-"canvaskit/canvaskit.js": "43fa9e17039a625450b6aba93baf521e",
-"canvaskit/canvaskit.wasm": "04ed3c745ff1dee16504be01f9623498"
+"canvaskit/profiling/canvaskit.js": "3783918f48ef691e230156c251169480",
+"canvaskit/profiling/canvaskit.wasm": "6d1b0fc1ec88c3110db88caa3393c580",
+"canvaskit/canvaskit.js": "62b9906717d7215a6ff4cc24efbd1b5c",
+"canvaskit/canvaskit.wasm": "b179ba02b7a9f61ebc108f82c5a1ecdb"
 };
 
 // The application shell files that are downloaded before a service worker can
