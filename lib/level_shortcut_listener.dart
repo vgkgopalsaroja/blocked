@@ -47,6 +47,7 @@ class LevelShortcutListener extends StatelessWidget {
               PuzzleIntent(MoveAttempt(MoveDirection.up)),
           SingleActivator(LogicalKeyboardKey.arrowDown):
               PuzzleIntent(MoveAttempt(MoveDirection.down)),
+          SingleActivator(LogicalKeyboardKey.enter): PuzzleIntent(NextPuzzle()),
         },
         actions: {
           PuzzleIntent: CallbackAction<PuzzleIntent>(onInvoke: (intent) {

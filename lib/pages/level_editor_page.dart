@@ -1,16 +1,12 @@
-import 'dart:js';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slide/editor/bloc/level_editor_bloc.dart';
-import 'package:slide/editor/bloc/builder_bloc.dart';
+import 'package:slide/puzzle/model/block.dart';
 import 'package:slide/puzzle/model/position.dart';
 import 'package:slide/pages/level_page.dart';
-import 'package:slide/puzzle/bloc/puzzle_bloc.dart';
-import 'package:slide/level/bloc/level_bloc.dart';
 import 'package:slide/puzzle/level.dart';
-import 'package:slide/puzzle/level_reader.dart';
 import 'package:slide/puzzle/model/segment.dart';
 import 'package:slide/widgets/editor/builder/builder.dart';
 import 'package:slide/widgets/editor/editor_shortcut_listener.dart';
@@ -18,13 +14,11 @@ import 'package:slide/widgets/editor/grid_overlay.dart';
 import 'package:slide/widgets/editor/resizable_block.dart';
 import 'package:slide/widgets/editor/resizable_floor.dart';
 import 'package:slide/widgets/editor/resizable_wall.dart';
+import 'package:slide/widgets/editor/toolbar.dart';
 import 'package:slide/widgets/puzzle/block.dart';
-import 'package:slide/widgets/puzzle/puzzle.dart';
 import 'package:slide/widgets/puzzle/board_constants.dart';
-import 'package:slide/widgets/puzzle/floor.dart';
 import 'package:slide/widgets/puzzle/wall.dart';
 import 'package:slide/widgets/resizable/resizable.dart';
-import 'package:slide/puzzle/model/block.dart';
 
 class LevelEditorPage extends StatelessWidget {
   const LevelEditorPage({Key? key}) : super(key: key);
@@ -68,16 +62,17 @@ class LevelEditorPage extends StatelessWidget {
               return previous.isTesting != current.isTesting;
             },
             builder: (context, state) {
+              final levelEditorBloc = context.read<LevelEditorBloc>();
               return EditorShortcutListener(
-                levelEditorBloc: context.read<LevelEditorBloc>(),
+                key: ValueKey(levelEditorBloc),
+                levelEditorBloc: levelEditorBloc,
                 child: Stack(
                   children: [
                     Positioned.fill(
                       child: GestureDetector(
                           behavior: HitTestBehavior.opaque,
                           onTap: () {
-                            context
-                                .read<LevelEditorBloc>()
+                            levelEditorBloc
                                 .add(const EditorObjectSelected(null));
                           }),
                     ),
@@ -93,135 +88,173 @@ class LevelEditorPage extends StatelessWidget {
                     },
                     for (var object in state.objects) ...{
                       if (object is EditorBlock) ...{
-                        ResizableBlock(object),
+                        ResizableBlock(
+                          object,
+                          key: object.key,
+                        ),
                       } else if (object is EditorFloor) ...{
                         // ResizableFloor(
                         //     object, state.exits.map((s) => s.segment).toList()),
                       } else if (object is EditorSegment) ...{
-                        ResizableWall(object),
+                        ResizableWall(object, key: object.key),
                       }
                     },
-                    if (state.isWallBuilderOpen)
-                      WallBuilder(onObjectPlaced: (start, end) {
-                        context
-                            .read<LevelEditorBloc>()
-                            .add(SegmentAdded(Segment.from(start, end)));
-                      }, hintBuilder: (start, end) {
-                        if (start != null && end != null) {
-                          final Segment segment = Segment.from(
-                              Position(start.x, start.y),
-                              Position(end.x, end.y));
-                          return Positioned(
-                            left: kHandleSize + segment.start.x.toWallOffset(),
-                            top: kHandleSize + segment.start.y.toWallOffset(),
-                            child: PuzzleWall(segment),
+                    if (state.selectedTool == EditorTool.segment)
+                      EditorBuilder(
+                        onObjectPlaced: (start, end) {
+                          Position snappedVerticalPosition =
+                              end.copyWith(x: start.x);
+                          Position snappedHorizontalPosition =
+                              end.copyWith(y: start.y);
+                          int verticalLength = (end.y - start.y).abs();
+                          int horizontalLength = (end.x - start.x).abs();
+                          Position snappedEndPosition =
+                              verticalLength > horizontalLength
+                                  ? snappedVerticalPosition
+                                  : snappedHorizontalPosition;
+
+                          levelEditorBloc.add(SegmentAdded(
+                              Segment.from(start, snappedEndPosition)));
+                        },
+                        offsetTransformer: (offset) {
+                          final x = max(
+                              0,
+                              ((offset.dx - kWallWidth - kHandleSize) /
+                                      kBlockSizeInterval)
+                                  .round());
+                          final y = max(
+                              0,
+                              ((offset.dy - kWallWidth - kHandleSize) /
+                                      kBlockSizeInterval)
+                                  .round());
+
+                          return Position(x, y);
+                        },
+                        positionTransformer: (position) {
+                          return Offset(
+                            kWallWidth +
+                                kHandleSize +
+                                (position.x * kBlockSizeInterval),
+                            kWallWidth +
+                                kHandleSize +
+                                (position.y * kBlockSizeInterval),
                           );
-                        }
-                      }),
-                    Positioned(
-                      bottom: 0,
-                      child: Row(
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              context
-                                  .read<LevelEditorBloc>()
-                                  .add(const BlockAdded());
-                            },
-                            child: const Text('Add block'),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              context.read<LevelEditorBloc>().add(SegmentAdded(
-                                    Segment.vertical(x: 2, start: 0, end: 1),
-                                  ));
-                            },
-                            child: const Text('Add vertical wall'),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              context
-                                  .read<LevelEditorBloc>()
-                                  .add(const TestMapPressed());
-                            },
-                            child: const Text('Play'),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              context
-                                  .read<LevelEditorBloc>()
-                                  .add(const WallBuilderToggled());
-                            },
-                            child: const Text('Toggle wall builder'),
-                          ),
-                          if (state.selectedObject is EditorBlock) ...{
-                            ElevatedButton(
-                              onPressed: () {
-                                context.read<LevelEditorBloc>().add(
-                                    MainEditorBlockSet(
-                                        state.selectedObject as EditorBlock));
-                              },
-                              child: const Text('Set main'),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                context.read<LevelEditorBloc>().add(
-                                    ControlledEditorBlockSet(
-                                        state.selectedObject as EditorBlock));
-                              },
-                              child: const Text('Set controlled'),
-                            ),
+                        },
+                        threshold: kWallWidth * 2,
+                        hintBuilder: (start, end) {
+                          if (start != null && end != null) {
+                            Position snappedVerticalPosition =
+                                end.copyWith(x: start.x);
+                            Position snappedHorizontalPosition =
+                                end.copyWith(y: start.y);
+                            int verticalLength = (end.y - start.y).abs();
+                            int horizontalLength = (end.x - start.x).abs();
+                            Position snappedEndPosition =
+                                verticalLength > horizontalLength
+                                    ? snappedVerticalPosition
+                                    : snappedHorizontalPosition;
+
+                            final Segment segment =
+                                Segment.from(start, snappedEndPosition);
+                            return AnimatedPositioned(
+                              curve: Curves.easeOutCubic,
+                              duration: const Duration(milliseconds: 100),
+                              left:
+                                  kHandleSize + segment.start.x.toWallOffset(),
+                              top: kHandleSize + segment.start.y.toWallOffset(),
+                              child: PuzzleWall(
+                                segment,
+                                curve: Curves.easeOutCubic,
+                                duration: const Duration(milliseconds: 100),
+                              ),
+                            );
                           }
-                        ],
+                        },
+                      ),
+                    if (state.selectedTool == EditorTool.block)
+                      EditorBuilder(
+                        onObjectPlaced: (start, end) {
+                          levelEditorBloc.add(BlockAdded(PlacedBlock.from(
+                            start,
+                            end,
+                            isMain: false,
+                            canMoveHorizontally: true,
+                            canMoveVertically: true,
+                          )));
+                        },
+                        offsetTransformer: (offset) {
+                          final x = max(
+                              0,
+                              ((offset.dx -
+                                          kWallWidth -
+                                          kBlockGap -
+                                          kHandleSize -
+                                          kBlockSize / 2) /
+                                      (kBlockSize + kBlockToBlockGap))
+                                  .round());
+                          final y = max(
+                              0,
+                              ((offset.dy -
+                                          kWallWidth -
+                                          kBlockGap -
+                                          kHandleSize -
+                                          kBlockSize / 2) /
+                                      (kBlockSize + kBlockToBlockGap))
+                                  .round());
+
+                          return Position(x, y);
+                        },
+                        positionTransformer: (position) {
+                          return Offset(
+                            kWallWidth +
+                                kBlockGap +
+                                kHandleSize +
+                                kBlockSize / 2 +
+                                (position.x * (kBlockSize + kBlockToBlockGap)),
+                            kWallWidth +
+                                kBlockGap +
+                                kHandleSize +
+                                kBlockSize / 2 +
+                                (position.y * (kBlockSize + kBlockToBlockGap)),
+                          );
+                        },
+                        threshold: kBlockSize / 2,
+                        hintBuilder: (start, end) {
+                          if (start != null && end != null) {
+                            final PlacedBlock block = PlacedBlock.from(
+                                start, end,
+                                isMain: false,
+                                canMoveHorizontally: true,
+                                canMoveVertically: true);
+
+                            return AnimatedPositioned(
+                              curve: Curves.easeOutCubic,
+                              duration: const Duration(milliseconds: 100),
+                              left: kHandleSize + block.left.toBlockOffset(),
+                              top: kHandleSize + block.top.toBlockOffset(),
+                              child: PuzzleBlock(
+                                block,
+                                curve: Curves.easeOutCubic,
+                                duration: const Duration(milliseconds: 100),
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    const Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: RepaintBoundary(
+                        child: Center(
+                          child: EditorToolbar(),
+                        ),
                       ),
                     ),
                   ],
                 ),
               );
             },
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class WallPoint extends StatefulWidget {
-  const WallPoint(this.position, {Key? key}) : super(key: key);
-
-  final Position position;
-
-  @override
-  State<WallPoint> createState() => _WallPointState();
-}
-
-class _WallPointState extends State<WallPoint> {
-  bool isHovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.topLeft,
-      child: MouseRegion(
-        onEnter: (event) {
-          setState(() {
-            isHovered = true;
-          });
-          context.read<EditorBuilderBloc>().add(PointHovered(widget.position));
-        },
-        onExit: (event) {
-          setState(() {
-            isHovered = false;
-          });
-        },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 100),
-          curve: Curves.easeOut,
-          width: isHovered ? kWallWidth * 2 : kWallWidth,
-          height: isHovered ? kWallWidth * 2 : kWallWidth,
-          decoration: BoxDecoration(
-            color: Colors.black,
-            // borderRadius: BorderRadius.circular(4.0),
           ),
         ),
       ),

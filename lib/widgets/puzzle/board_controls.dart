@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slide/puzzle/bloc/puzzle_bloc.dart';
-import 'package:slide/level/bloc/level_bloc.dart';
 
 class BoardControls extends StatelessWidget {
   const BoardControls({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final isCompleted =
+        context.select((PuzzleBloc bloc) => bloc.state.isCompleted);
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -25,6 +26,16 @@ class BoardControls extends StatelessWidget {
             context.read<PuzzleBloc>().add(const PuzzleReset());
           },
         ),
+        if (isCompleted) ...{
+          const Spacer(),
+          TextButton.icon(
+            label: const Text('Next (Enter)'),
+            icon: const Icon(Icons.arrow_forward),
+            onPressed: () {
+              context.read<PuzzleBloc>().add(const NextPuzzle());
+            },
+          ),
+        }
       ],
     );
   }

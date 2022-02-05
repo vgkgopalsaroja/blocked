@@ -1,6 +1,18 @@
 part of 'block.dart';
 
 class PlacedBlock extends Block with EquatableMixin {
+  PlacedBlock.from(
+    Position start,
+    Position end, {
+    required bool isMain,
+    required bool canMoveHorizontally,
+    required bool canMoveVertically,
+  })  : position = Position(min(start.x, end.x), min(start.y, end.y)),
+        super.manual((end.x - start.x).abs() + 1, (end.y - start.y).abs() + 1,
+            isMain: isMain,
+            canMoveHorizontally: canMoveHorizontally,
+            canMoveVertically: canMoveVertically);
+
   const PlacedBlock(
     int width,
     int height,

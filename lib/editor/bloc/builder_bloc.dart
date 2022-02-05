@@ -3,37 +3,54 @@ import 'package:slide/puzzle/model/position.dart';
 
 class EditorBuilderBloc extends Bloc<EditorBuilderEvent, EditorBuilderState> {
   EditorBuilderBloc() : super(const EditorBuilderState.initial()) {
-    on<PointHovered>(_onPointHovered);
-    on<PointPressed>(_onPointPressed);
-    on<PointReleased>(_onPointReleased);
+    on<PointDown>(_onPointDown);
+    on<PointUp>(_onPointUp);
+    on<PointUpdate>(_onPointUpdate);
+    on<PointCancelled>(_onPointCancelled);
   }
 
-  void _onPointHovered(PointHovered event, Emitter<EditorBuilderState> emit) {
+
+  void _onPointUpdate(PointUpdate event, Emitter<EditorBuilderState> emit) {
     emit(state.copyWith(
       hoveredPosition: event.position,
     ));
   }
 
-  void _onPointPressed(PointPressed event, Emitter<EditorBuilderState> emit) {
+  void _onPointCancelled(
+      PointCancelled event, Emitter<EditorBuilderState> emit) {
+    emit(state.copyWith(
+      hoveredPosition: null,
+      start: null,
+      end: null,
+    ));
+  }
+
+  void _onPointDown(PointDown event, Emitter<EditorBuilderState> emit) {
     if (state._start == null) {
       emit(state.copyWith(
         start: event.position,
       ));
     } else {
+      // emit(state.copyWith(
+      //   end: state._snappedHoveredPosition,
+      // ));
+      // emit(state.copyWith(
+      //   start: null,
+      //   end: null,
+      // ));
+    }
+  }
+
+  void _onPointUp(PointUp event, Emitter<EditorBuilderState> emit) {
+    if (state._start != null) {
       emit(state.copyWith(
-        end: state._snappedHoveredPosition,
+        end:state.hoveredPosition!,
       ));
       emit(state.copyWith(
         start: null,
         end: null,
       ));
     }
-  }
-
-  void _onPointReleased(PointReleased event, Emitter<EditorBuilderState> emit) {
-    emit(state.copyWith(
-      end: event.position,
-    ));
   }
 }
 
@@ -44,7 +61,8 @@ class EditorBuilderState {
       : _start = null,
         _end = null,
         hoveredPosition = null;
-  const EditorBuilderState({Position? start, Position? end, this.hoveredPosition})
+  const EditorBuilderState(
+      {Position? start, Position? end, this.hoveredPosition})
       : _start = start,
         _end = end;
 
@@ -57,7 +75,7 @@ class EditorBuilderState {
   final Position? hoveredPosition;
 
   Position? get _snappedHoveredPosition {
-    if (hoveredPosition != null && start != null) {
+    if (false && hoveredPosition != null && start != null) {
       Position snappedVerticalPosition = hoveredPosition!.copyWith(x: start!.x);
       Position snappedHorizontalPosition =
           hoveredPosition!.copyWith(y: start!.y);
@@ -86,22 +104,28 @@ class EditorBuilderState {
   }
 }
 
-abstract class EditorBuilderEvent {}
+abstract class EditorBuilderEvent {
+  const EditorBuilderEvent();
+}
 
-class PointHovered extends EditorBuilderEvent {
-  PointHovered(this.position);
+class PointUpdate extends EditorBuilderEvent {
+  const PointUpdate(this.position);
 
   final Position position;
 }
 
-class PointPressed extends EditorBuilderEvent {
-  PointPressed(this.position);
+class PointCancelled extends EditorBuilderEvent {
+  const PointCancelled();
+}
+
+class PointDown extends EditorBuilderEvent {
+  const PointDown(this.position);
 
   final Position position;
 }
 
-class PointReleased extends EditorBuilderEvent {
-  PointReleased(this.position);
+class PointUp extends EditorBuilderEvent {
+  const PointUp(this.position);
 
   final Position position;
 }

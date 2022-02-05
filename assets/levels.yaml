@@ -3,16 +3,16 @@
     Swipe or use the arrow keys to move.
     Exit the room to win.
   map: |-
-    ******e
+    *******
     *M....e
-    ******e
+    *******
 
 - name: 2
   hint: Move into blocks to transfer control.
   map: |-
-    ******e
+    *******
     *M.xxxe
-    *..xxxe
+    *..xxx*
     *..xxx*
     *.....*
     *.....*
@@ -20,9 +20,9 @@
 
 - name: 3
   map: |-
-    ******e
+    *******
     *M.x.xe
-    *..x.xe
+    *..x.x*
     *..x.x*
     *.....*
     *.....*
@@ -31,11 +31,31 @@
 - name: 4
   hint: Only the main block (marked with a circle) can exit the room.
   map: |-
-    ****e
+    *****
     *M.xe
-    *...e
+    *...*
     *...*
     *****
+
+- name: 4-1
+  hint: Sometimes walls get in your way.
+  map: |-
+    *******
+    *M..*.e
+    *...*.*
+    *x.x..*
+    *******
+
+- name: 4-2
+  hint: Even small walls.
+  map: |-
+    *******
+    *MMM..* 
+    *.*...*
+    *..x..*
+    *...*.*
+    *x....*
+    ***eee*
 
 - name: 5
   hint: Control can only be transferred when there is exactly one target.
@@ -46,23 +66,23 @@
     *M.x..*
     *.....*
     *x....*
-    ****eee
+    *****e*
 
 - name: 6
   map: |-
-    ********e
+    *********
     *MMM.x..e
     *MMM....e
     *MMM.x..e
-    *...*.*.e
+    *...*.*.*
     *..x....*
     *********
 
 - name: 7
   map: |-
-    ********e
+    *********
     *M.....xe
-    *.*....xe
+    *.*....x*
     *..xxx.x*
     *...*...*
     *..xxx..*
@@ -71,9 +91,9 @@
 - name: 8
   hint: You may not always start with the main block.
   map: |-
-    **********e
+    ***********
     *..X......e
-    *.........e
+    *.........*
     *....xxx.x*
     *.*.*.....*
     *.*mmmmm..*
@@ -82,21 +102,52 @@
 - name: 9
   hint: Sometimes all you need is a little teamwork.
   map: |-
-    **********e
+    ***********
     *MMM.....xe
-    *.*...***xe
+    *.*...***x*
     *....xxx.x*
     *.*...*...*
     *.*..xxx..*
     ***********
 
 - name: 10
-  hint: hi
   map: |-
-    ********e
+    *********
     *MMM.x..e
-    *..*..*.e
+    *..*..*.*
     *xxx.xxx*
     *..*....*
     *..x.x..*
     *********
+
+- name: 11
+  map: |-
+    *********
+    *M.x.x.x*
+    *..x*x..*
+    *..x.x..*
+    *...*...*
+    *..x.x..*
+    *..x*x..e
+    *x.x.x.xe
+    ********e
+
+- name: hmm
+  map: |-
+    *********
+    *M.x....*
+    *..x*...*
+    *..x*x..*
+    *...*x..*
+    *..x.x.xe
+    *********
+
+- name: yikes
+  map: |-
+    *********
+    *x.....x*
+    *x....*.*
+    *x.M..*.*
+    *.*...*.*
+    *xxx...x*
+    ***e*****

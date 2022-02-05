@@ -1,85 +1,81 @@
 import 'dart:math';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slide/editor/bloc/builder_bloc.dart';
 import 'package:slide/puzzle/model/position.dart';
-import 'package:slide/widgets/puzzle/board_constants.dart';
 
-class WallBuilder extends StatelessWidget {
-  const WallBuilder({Key? key, this.onObjectPlaced, required this.hintBuilder})
-      : super(key: key);
+class EditorBuilder extends StatelessWidget {
+  const EditorBuilder({
+    Key? key,
+    required this.onObjectPlaced,
+    required this.hintBuilder,
+    required this.offsetTransformer,
+    required this.positionTransformer,
+    required this.threshold,
+  }) : super(key: key);
 
-  final void Function(Position start, Position end)? onObjectPlaced;
+  final void Function(Position start, Position end) onObjectPlaced;
   final Widget? Function(Position? start, Position? end) hintBuilder;
+  final Position Function(Offset offset) offsetTransformer;
+  final Offset Function(Position position) positionTransformer;
+
+  /// The number of pixels from a point that the cursor must be within to show hint.
+  final double threshold;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => EditorBuilderBloc(),
-      child: BlocListener<EditorBuilderBloc, EditorBuilderState>(
+      child: BlocConsumer<EditorBuilderBloc, EditorBuilderState>(
         listener: (context, state) {
           final start = state.start;
           final end = state.end;
           assert(start != null && end != null);
-          onObjectPlaced?.call(start!, end!);
+          onObjectPlaced(start!, end!);
         },
         listenWhen: (previous, current) {
           return previous.isObjectPlaced != current.isObjectPlaced &&
               current.isObjectPlaced;
         },
-        child: Builder(builder: (context) {
-          final Position? start =
-              context.select((EditorBuilderBloc bloc) => bloc.state.start);
-          final Position? end =
-              context.select((EditorBuilderBloc bloc) => bloc.state.end);
+        buildWhen: (previous, current) {
+          return previous.start != current.start || previous.end != current.end;
+        },
+        builder: (context, state) {
+          final Position? start = state.start;
+          final Position? end = state.end;
 
           return Listener(
             onPointerHover: (event) {
-              final globalPosition = event.position;
+              final position = offsetTransformer(event.position);
+              final snappedOffset = positionTransformer(position);
+              final difference = snappedOffset - event.position;
 
-              final x = max(
-                  0,
-                  ((globalPosition.dx - kWallWidth) / kBlockSizeInterval)
-                      .round());
-              final y = max(
-                  0,
-                  ((globalPosition.dy - kWallWidth) / kBlockSizeInterval)
-                      .round());
-              context
-                  .read<EditorBuilderBloc>()
-                  .add(PointHovered(Position(x, y)));
+              if (min(difference.dx, difference.dy) < threshold) {
+                context.read<EditorBuilderBloc>().add(PointUpdate(position));
+              } else {
+                context.read<EditorBuilderBloc>().add(const PointCancelled());
+              }
             },
             child: GestureDetector(
+              dragStartBehavior: DragStartBehavior.down,
               behavior: HitTestBehavior.opaque,
               onTapDown: (details) {
-                final globalPosition = details.globalPosition;
-                final x = max(
-                    0,
-                    ((globalPosition.dx - kWallWidth) / kBlockSizeInterval)
-                        .round());
-                final y = max(
-                    0,
-                    ((globalPosition.dy - kWallWidth) / kBlockSizeInterval)
-                        .round());
-                context
-                    .read<EditorBuilderBloc>()
-                    .add(PointPressed(Position(x, y)));
+                final position = offsetTransformer(details.globalPosition);
+                context.read<EditorBuilderBloc>().add(PointDown(position));
+              },
+              onTapUp: (details) {
+                final position = offsetTransformer(details.globalPosition);
+                context.read<EditorBuilderBloc>().add(PointUp(position));
+              },
+              onPanDown: (details) {
+                final position = offsetTransformer(details.globalPosition);
+                context.read<EditorBuilderBloc>().add(PointDown(position));
               },
               onPanUpdate: (details) {
-                final globalPosition = details.globalPosition;
-
-                final x = max(
-                    0,
-                    ((globalPosition.dx - kWallWidth) / kBlockSizeInterval)
-                        .round());
-                final y = max(
-                    0,
-                    ((globalPosition.dy - kWallWidth) / kBlockSizeInterval)
-                        .round());
-                context
-                    .read<EditorBuilderBloc>()
-                    .add(PointHovered(Position(x, y)));
+                final position = offsetTransformer(details.globalPosition);
+                context.read<EditorBuilderBloc>().add(PointUpdate(position));
               },
               onPanEnd: (details) {
                 final hoveredPosition =
@@ -87,7 +83,7 @@ class WallBuilder extends StatelessWidget {
 
                 context
                     .read<EditorBuilderBloc>()
-                    .add(PointReleased(hoveredPosition!));
+                    .add(PointUp(hoveredPosition!));
               },
               child: Stack(
                 children: [
@@ -100,7 +96,7 @@ class WallBuilder extends StatelessWidget {
               ),
             ),
           );
-        }),
+        },
       ),
     );
   }

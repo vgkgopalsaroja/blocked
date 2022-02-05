@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:slide/pages/level_editor_page.dart';
 import 'package:slide/pages/level_page.dart';
-import 'package:slide/puzzle/level_reader.dart';
 import 'package:slide/routing/app_route_path.dart';
 import 'package:slide/level/bloc/level_bloc.dart';
 import 'package:slide/pages/level_selection_page.dart';
@@ -44,10 +43,21 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
           ),
         if (path.isLevel) ...{
           MaterialPage(
-              child: LevelPage(
-            levelList.getLevelWithId(path.levelId!)!.toLevel(),
-            key: Key(levelList.getLevelWithId(path.levelId!)!.name),
-          )),
+            child: LevelPage(
+              levelList.getLevelWithId(path.levelId!)!.toLevel(),
+              key: Key(levelList.getLevelWithId(path.levelId!)!.name),
+              onExit: () => navigationCubit.navigateToLevelSelection(),
+              onNext: () {
+                String? nextLevelId =
+                    levelList.getLevelAfterId(path.levelId!)?.name;
+                if (nextLevelId != null) {
+                  navigationCubit.navigateToLevel(nextLevelId);
+                } else {
+                  navigationCubit.navigateToLevelSelection();
+                }
+              },
+            ),
+          ),
         }
       ],
       onPopPage: (route, result) {

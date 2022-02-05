@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slide/puzzle/bloc/puzzle_bloc.dart';
-import 'package:slide/level/bloc/level_bloc.dart';
-import 'package:slide/puzzle/level.dart';
 import 'package:slide/puzzle/level_reader.dart';
 import 'package:slide/routing/navigator_bloc.dart';
 import 'package:slide/widgets/puzzle/puzzle.dart';
@@ -27,7 +25,7 @@ class LevelSelectionPage extends StatelessWidget {
           )),
           SliverToBoxAdapter(
             child: TextButton(
-              child: Text('Open editor'),
+              child: const Text('Open editor'),
               onPressed: () {
                 context.read<NavigationCubit>().navigateToEditor();
               },
@@ -84,7 +82,9 @@ class LevelSelectionPage extends StatelessWidget {
                                 child: FittedBox(
                                   child: BlocProvider(
                                     create: (context) => PuzzleBloc(
-                                        levelData.toLevel().initialState),
+                                        levelData.toLevel().initialState,
+                                        onExit: () {},
+                                        onNext: () {}),
                                     child: const Puzzle(),
                                   ),
                                 ),

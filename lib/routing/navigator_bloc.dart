@@ -13,10 +13,10 @@ class NavigationCubit extends Cubit<AppRoutePath> {
   }
 
   void navigateToEditor() {
-    emit(AppRoutePath.editor());
+    emit(const AppRoutePath.editor());
   }
 
   void navigateToPreviousPage() {
-    emit(AppRoutePath.levelSelection());
+    emit(const AppRoutePath.levelSelection());
   }
 }

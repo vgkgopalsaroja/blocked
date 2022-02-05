@@ -17,6 +17,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   equatable: ^2.0.3
   flutter_bloc: ^8.0.1
+  flutter_portal: ^0.4.0
   url_strategy: ^0.2.0
   yaml: ^3.1.0
 

@@ -12,24 +12,35 @@ part 'puzzle_state.dart';
 
 class PuzzleBloc extends Bloc<PuzzleEvent, PuzzleState> {
   final PuzzleState initialState;
-  final VoidCallback? onExit;
+  final VoidCallback onNext;
+  final VoidCallback onExit;
 
-  PuzzleBloc(this.initialState, {this.onExit}) : super(initialState) {
+  PuzzleBloc(this.initialState, {required this.onNext, required this.onExit})
+      : super(initialState) {
     on<MoveAttempt>(_onMove);
     on<PuzzleReset>(_onReset);
     on<PuzzleExited>(_onExit);
+    on<NextPuzzle>(_onNext);
   }
 
   void _onMove(MoveAttempt event, Emitter<PuzzleState> emit) {
-    emit(state.withMoveAttempt(event));
+    if (!state.isCompleted) {
+      emit(state.withMoveAttempt(event));
+    }
   }
 
   void _onReset(PuzzleReset event, Emitter<PuzzleState> emit) {
     emit(initialState);
   }
 
+  void _onNext(NextPuzzle event, Emitter<PuzzleState> emit) {
+    if (state.isCompleted) {
+      onNext.call();
+    }
+  }
+
   void _onExit(PuzzleExited event, Emitter<PuzzleState> emit) {
-    onExit?.call();
+    onExit.call();
   }
 }
 
@@ -43,6 +54,10 @@ class PuzzleReset extends PuzzleEvent {
 
 class PuzzleExited extends PuzzleEvent {
   const PuzzleExited();
+}
+
+class NextPuzzle extends PuzzleEvent {
+  const NextPuzzle();
 }
 
 class MoveAttempt extends PuzzleEvent with EquatableMixin {
@@ -73,28 +88,6 @@ class Move extends MoveAttempt {
   List<Object?> get props => [block, direction, didMove];
 }
 
-extension on Segment {
-  List<Segment> subtract(Segment segment) {
-    if (segment.isVertical && isVertical && segment.start.x == start.x) {
-      assert(start.y <= segment.start.y && end.y >= segment.end.y);
-      return [
-        Segment.vertical(x: start.x, start: start.y, end: segment.start.y),
-        Segment.vertical(x: start.x, start: segment.end.y, end: end.y),
-      ];
-    } else if (segment.isHorizontal &&
-        isHorizontal &&
-        segment.start.y == start.y) {
-      assert(start.x <= segment.start.x && end.x >= segment.end.x);
-      return [
-        Segment.horizontal(y: start.y, start: start.x, end: segment.start.x),
-        Segment.horizontal(y: start.y, start: segment.end.x, end: end.x),
-      ];
-    } else {
-      return [this];
-    }
-  }
-}
-
 extension MovePosition on Position {
   Position move(MoveDirection direction) {
     switch (direction) {
@@ -109,18 +102,3 @@ extension MovePosition on Position {
     }
   }
 }
-
-// abstract class PuzzleEvent {
-//   const PuzzleEvent();
-// }
-
-// class ControlTransferred extends PuzzleEvent {
-//   const ControlTransferred(this.target, this.move);
-//   final PlacedBlock target;
-//   final Move move;
-// }
-
-// class BlockMoved extends PuzzleEvent {
-//   const BlockMoved(this.move);
-//   final Move move;
-// }

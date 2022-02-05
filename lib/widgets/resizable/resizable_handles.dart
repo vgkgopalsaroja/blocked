@@ -75,7 +75,7 @@ class DragHandle extends StatelessWidget {
             : null,
         onVerticalDragEnd: side.isVertical
             ? (details) {
-                context.read<ResizableBloc>().add(ResizeEnd());
+                context.read<ResizableBloc>().add(const ResizeEnd());
               }
             : null,
         onHorizontalDragUpdate: side.isHorizontal

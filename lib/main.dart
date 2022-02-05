@@ -33,7 +33,7 @@ class _MyAppState extends State<MyApp> {
       create: (context) => NavigationCubit(),
       child: Builder(
         builder: (context) => MaterialApp.router(
-          title: 'Flutter Demo',
+          title: 'slide',
           theme: ThemeData(
             primarySwatch: Colors.blue,
             textTheme: TextTheme(
@@ -44,7 +44,10 @@ class _MyAppState extends State<MyApp> {
           ),
           routerDelegate: AppRouterDelegate(
             navigationCubit: context.watch<NavigationCubit>(),
-            levelList: LevelList(widget.levels),
+            levelList: LevelList([
+              ...widget.levels,
+              // LevelData(name: 'test', map: ''),
+            ]),
             navigatorKey: navigatorKey,
           ),
           routeInformationParser: AppRouteParser(),

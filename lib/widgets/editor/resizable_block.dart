@@ -24,6 +24,8 @@ class ResizableBlock extends StatelessWidget {
       minWidth: kBlockSize,
       baseHeight: kBlockSize,
       baseWidth: kBlockSize,
+      initialOffset: block.offset,
+      initialSize: block.size,
       snapHeightInterval: kBlockSizeInterval,
       snapWidthInterval: kBlockSizeInterval,
       snapWhileMoving: true,

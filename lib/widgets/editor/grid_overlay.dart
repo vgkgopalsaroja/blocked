@@ -35,7 +35,7 @@ class _GridOverlayPainter extends CustomPainter {
       for (double y = 12; y < size.height; y += kBlockSizeInterval) {
         canvas.drawRRect(
             RRect.fromRectAndRadius(Rect.fromLTWH(x, y, kWallWidth, kWallWidth),
-                Radius.circular(2)),
+                const Radius.circular(2)),
             paint);
       }
     }
@@ -47,11 +47,10 @@ class _GridOverlayPainter extends CustomPainter {
           y += kBlockSizeInterval) {
         canvas.drawRRect(
             RRect.fromRectAndRadius(Rect.fromLTWH(x, y, kBlockSize, kBlockSize),
-                Radius.circular(2)),
+                const Radius.circular(2)),
             paint);
       }
     }
-    // TODO: implement paint
   }
 
   @override

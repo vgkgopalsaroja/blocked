@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slide/editor/bloc/level_editor_bloc.dart';
 
 class EditorShortcutListener extends StatelessWidget {
@@ -18,8 +17,14 @@ class EditorShortcutListener extends StatelessWidget {
     return FocusableActionDetector(
       autofocus: true,
       shortcuts: {
+        LogicalKeySet(LogicalKeyboardKey.keyQ):
+            const EditorActionIntent(EditorToolSelected(EditorTool.move)),
         LogicalKeySet(LogicalKeyboardKey.keyW):
-            const EditorActionIntent(WallBuilderToggled()),
+            const EditorActionIntent(EditorToolSelected(EditorTool.segment)),
+        LogicalKeySet(LogicalKeyboardKey.keyE):
+            const EditorActionIntent(EditorToolSelected(EditorTool.block)),
+        LogicalKeySet(LogicalKeyboardKey.keyC):
+            const EditorActionIntent(MapCleared()),
         LogicalKeySet(LogicalKeyboardKey.delete):
             const EditorActionIntent(SelectedEditorObjectDeleted()),
         LogicalKeySet(LogicalKeyboardKey.backspace):

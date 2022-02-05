@@ -20,7 +20,7 @@ class ResizableWall extends StatelessWidget {
     );
 
     final isExit = context.select(
-      (LevelEditorBloc bloc) => bloc.state.isExit(wall.toSegment()),
+      (LevelEditorBloc bloc) => bloc.state.isExit(wall),
     );
 
     return Resizable.custom(
@@ -91,8 +91,10 @@ class ResizableWall extends StatelessWidget {
         return AnimatedSelectable(
           isSelected: isSelected,
           child: isExit
-              ? PuzzleExit(Segment(Position(0, 0), Position(width, height)))
-              : PuzzleWall(Segment(Position(0, 0), Position(width, height))),
+              ? PuzzleExit(
+                  Segment(const Position(0, 0), Position(width, height)))
+              : PuzzleWall(
+                  Segment(const Position(0, 0), Position(width, height))),
         );
       },
     );

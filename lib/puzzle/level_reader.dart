@@ -25,13 +25,13 @@ class TileType {
 }
 
 const defaultMap = [
-  '########e',
-  '#MMM.x..e',
-  '#..#..#.e',
-  '#xxx.xxx#',
-  '#..#....#',
-  '#..x.x..#',
-  '#########',
+  '********e',
+  '*MMM.x..e',
+  '*..*..*.e',
+  '*xxx.xxx*',
+  '*..*....*',
+  '*..x.x..*',
+  '*********',
 ];
 
 bool isTileType(Tile tile, Tile type) {
@@ -192,7 +192,7 @@ class LevelReader {
       height ~/ 2,
       initialBlock: initialBlock,
       otherBlocks: otherBlocks,
-      innerWalls: walls,
+      walls: walls,
       exit: exit,
     );
   }

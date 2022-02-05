@@ -51,8 +51,8 @@ class ResizableFloor extends StatelessWidget {
         int boardHeight = size.height.boardSizeToBlockCount();
 
         final walls = [
-          Segment.from(Position(0, 0), Position(boardWidth, 0)),
-          Segment.from(Position(0, 0), Position(0, boardHeight)),
+          Segment.from(const Position(0, 0), Position(boardWidth, 0)),
+          Segment.from(const Position(0, 0), Position(0, boardHeight)),
           Segment.from(
               Position(0, boardHeight), Position(boardWidth, boardHeight)),
           Segment.from(
