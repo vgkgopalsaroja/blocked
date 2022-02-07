@@ -12,9 +12,12 @@ class GridOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      foregroundPainter: _GridOverlayPainter(color),
-      child: child,
+    return RepaintBoundary(
+      child: CustomPaint(
+        willChange: false,
+        foregroundPainter: _GridOverlayPainter(color),
+        child: child,
+      ),
     );
   }
 }

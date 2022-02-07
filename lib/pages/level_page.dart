@@ -22,9 +22,12 @@ class LevelPage extends StatelessWidget {
           PuzzleBloc(level.initialState, onExit: onExit, onNext: onNext),
       child: Builder(builder: (context) {
         return LevelShortcutListener(
-          puzzleBloc: context.watch<PuzzleBloc>(),
+          puzzleBloc: context.read<PuzzleBloc>(),
           child: Scaffold(
             body: BlocBuilder<PuzzleBloc, PuzzleState>(
+              buildWhen: (previous, current) {
+                return previous.isCompleted != current.isCompleted;
+              },
               builder: (context, state) {
                 final levelName = level.name;
                 final levelHint = level.hint;
@@ -57,14 +60,12 @@ class LevelPage extends StatelessWidget {
                                   ) {
                                     final Hero toHero =
                                         toHeroContext.widget as Hero;
-                                    return BlocProvider(
-                                      create: (context) => PuzzleBloc(
-                                          level.initialState,
-                                          onExit: onExit,
-                                          onNext: onNext),
+                                    return BlocProvider.value(
+                                      value: context.read<PuzzleBloc>(),
                                       child: Material(
-                                          type: MaterialType.transparency,
-                                          child: toHero.child),
+                                        type: MaterialType.transparency,
+                                        child: toHero.child,
+                                      ),
                                     );
                                   },
                                   child: const Puzzle(),

@@ -25,6 +25,8 @@ class EditorShortcutListener extends StatelessWidget {
             const EditorActionIntent(EditorToolSelected(EditorTool.block)),
         LogicalKeySet(LogicalKeyboardKey.keyC):
             const EditorActionIntent(MapCleared()),
+        LogicalKeySet(LogicalKeyboardKey.keyS):
+            const EditorActionIntent(SavePressed()),
         LogicalKeySet(LogicalKeyboardKey.delete):
             const EditorActionIntent(SelectedEditorObjectDeleted()),
         LogicalKeySet(LogicalKeyboardKey.backspace):

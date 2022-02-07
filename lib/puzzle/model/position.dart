@@ -1,11 +1,13 @@
-class Position {
+import 'package:equatable/equatable.dart';
+
+class Position extends Equatable {
   const Position(this.x, this.y);
   final int x;
   final int y;
 
   @override
   String toString() {
-    return 'Position{x: $x, y: $y}';
+    return '($x, $y)';
   }
 
   Position operator +(Position other) {
@@ -19,4 +21,7 @@ class Position {
   Position copyWith({int? x, int? y}) {
     return Position(x ?? this.x, y ?? this.y);
   }
+
+  @override
+  List<Object?> get props => [x, y];
 }

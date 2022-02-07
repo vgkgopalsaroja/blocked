@@ -67,3 +67,7 @@ class GridToggled extends LevelEditorEvent {
 class MapCleared extends LevelEditorEvent {
   const MapCleared();
 }
+
+class SavePressed extends LevelEditorEvent {
+  const SavePressed();
+}

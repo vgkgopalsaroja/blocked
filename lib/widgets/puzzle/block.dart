@@ -26,30 +26,32 @@ class PuzzleBlock extends StatelessWidget {
         seedColor: Colors.green, brightness: Theme.of(context).brightness);
     final ColorScheme grey = ColorScheme.fromSeed(
         seedColor: Colors.grey, brightness: Theme.of(context).brightness);
-    return Material(
-      elevation: 8.0,
-      type: MaterialType.transparency,
-      borderRadius: BorderRadius.circular(2.0),
-      child: AnimatedContainer(
-        curve: curve,
-        decoration: BoxDecoration(
-          color: isControlled ? green.primaryContainer : grey.surfaceVariant,
-          borderRadius: BorderRadius.circular(4.0),
-          border: Border.all(
-            color: isControlled ? green.primary : grey.outline,
-            width: 4.0,
+    return RepaintBoundary(
+      child: Material(
+        elevation: 8.0,
+        type: MaterialType.transparency,
+        borderRadius: BorderRadius.circular(2.0),
+        child: AnimatedContainer(
+          curve: curve,
+          decoration: BoxDecoration(
+            color: isControlled ? green.primaryContainer : grey.surfaceVariant,
+            borderRadius: BorderRadius.circular(4.0),
+            border: Border.all(
+              color: isControlled ? green.primary : grey.outline,
+              width: 4.0,
+            ),
           ),
+          duration: duration,
+          width: block.width.toBlockSize(),
+          height: block.height.toBlockSize(),
+          child: block.isMain
+              ? Icon(
+                  Icons.circle_outlined,
+                  color: isControlled ? green.primary : grey.outline,
+                  size: min(block.width, block.height) * kBlockSize / 2,
+                )
+              : null,
         ),
-        duration: duration,
-        width: block.width.toBlockSize(),
-        height: block.height.toBlockSize(),
-        child: block.isMain
-            ? Icon(
-                Icons.circle_outlined,
-                color: isControlled ? green.primary : grey.outline,
-                size: min(block.width, block.height) * kBlockSize / 2,
-              )
-            : null,
       ),
     );
   }

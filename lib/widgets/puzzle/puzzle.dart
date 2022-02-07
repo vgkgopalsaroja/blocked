@@ -30,65 +30,65 @@ class _PuzzleState extends State<Puzzle> with SingleTickerProviderStateMixin {
     final controlledBlock =
         context.select((PuzzleBloc bloc) => bloc.state.controlledBlock);
 
-    return FittedBox(
-      child: BlocListener<PuzzleBloc, PuzzleState>(
-        listener: (context, state) async {
-          final latestMove = state.latestMove;
-          if (latestMove != null && !latestMove.didMove) {
-            await controller.forward(from: 0);
-            await controller.reverse();
-          }
-        },
-        child: PuzzleFloor(
-          width: board.width,
-          height: board.height,
-          child: Stack(
-            clipBehavior: Clip.none,
-            alignment: Alignment.topLeft,
-            children: [
-              for (var block in board.blocks)
-                AnimatedPositioned(
-                  key: ValueKey(board.blocks.indexOf(block)),
-                  duration: kSlideDuration,
-                  curve: Curves.easeInOutCubic,
-                  left: block.left.toBlockOffset(),
-                  top: block.top.toBlockOffset(),
-                  child: SlideTransition(
-                    position: (block == latestMove?.block
-                            ? controller
-                            : const AlwaysStoppedAnimation(0.0))
-                        .drive(CurveTween(curve: Curves.easeInOutCubic))
-                        .drive(Tween(
-                            begin: Offset.zero,
-                            end: Offset.fromDirection(
-                                latestMove?.direction.toRadians() ?? 0,
-                                ((2 * kBlockGap + kWallWidth) / kBlockSize) /
-                                    (latestMove?.direction.isVertical ?? false
-                                        ? block.height
-                                        : block.width)))),
-                    child: PuzzleBlock(
-                      block,
-                      isControlled: block == controlledBlock,
+    return RepaintBoundary(
+      child: FittedBox(
+        child: BlocListener<PuzzleBloc, PuzzleState>(
+          listenWhen: (previous, current) =>
+              previous.latestMove != current.latestMove,
+          listener: (context, state) async {
+            final latestMove = state.latestMove;
+            if (latestMove != null && !latestMove.didMove) {
+              await controller.forward(from: 0);
+              await controller.reverse();
+            }
+          },
+          child: PuzzleFloor(
+            width: board.width,
+            height: board.height,
+            child: Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.topLeft,
+              children: [
+                for (var block in board.blocks)
+                  AnimatedPositioned(
+                    key: ValueKey(board.blocks.indexOf(block)),
+                    duration: kSlideDuration,
+                    curve: Curves.easeInOutCubic,
+                    left: block.left.toBlockOffset(),
+                    top: block.top.toBlockOffset(),
+                    child: SlideTransition(
+                      position: (block == latestMove?.block
+                              ? controller
+                              : const AlwaysStoppedAnimation(0.0))
+                          .drive(CurveTween(curve: Curves.easeInOutCubic))
+                          .drive(Tween(
+                              begin: Offset.zero,
+                              end: Offset.fromDirection(
+                                  latestMove?.direction.toRadians() ?? 0,
+                                  ((2 * kBlockGap + kWallWidth) / kBlockSize) /
+                                      (latestMove?.direction.isVertical ?? false
+                                          ? block.height
+                                          : block.width)))),
+                      child: PuzzleBlock(
+                        block,
+                        isControlled: block == controlledBlock,
+                      ),
                     ),
                   ),
-                ),
-              for (var wall in board.walls)
-                Positioned(
-                  left: wall.start.x.toWallOffset(),
-                  top: wall.start.y.toWallOffset(),
-                  child: PuzzleWall(wall),
-                ),
-            ],
+                for (var wall in board.walls)
+                  Positioned(
+                    left: wall.start.x.toWallOffset(),
+                    top: wall.start.y.toWallOffset(),
+                    child: PuzzleWall(wall),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 }
-
-// int getBoardSize(int width) {
-//   return width.toWallOffset() + kWallWidth;
-// }
 
 extension on MoveDirection {
   double toRadians() {

@@ -3,13 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slide/editor/editor_exception.dart';
 import 'package:slide/puzzle/bloc/puzzle_bloc.dart';
+import 'package:slide/puzzle/level_reader.dart';
 import 'package:slide/puzzle/model/block.dart';
 import 'package:slide/puzzle/model/position.dart';
+import 'package:slide/puzzle/model/puzzle_specifications.dart';
 import 'package:slide/puzzle/model/segment.dart';
+import 'package:slide/routing/navigator_cubit.dart';
 import 'package:slide/widgets/puzzle/board_constants.dart';
 import 'package:collection/collection.dart';
 
 part 'level_editor_event.dart';
+part 'level_editor_state.dart';
 
 enum EditorTool {
   block,
@@ -18,7 +22,10 @@ enum EditorTool {
 }
 
 class LevelEditorBloc extends Bloc<LevelEditorEvent, LevelEditorState> {
-  LevelEditorBloc() : super(LevelEditorState.initial([EditorFloor.initial()])) {
+  LevelEditorBloc(this.navigatorCubit, PuzzleSpecifications? puzzleSpecs)
+      : super(puzzleSpecs != null
+            ? LevelEditorState.fromPuzzleSpecifications(puzzleSpecs)
+            : LevelEditorState.initial([EditorFloor.initial(1, 1)])) {
     on<EditorObjectMoved>(_onEditorObjectMoved);
     on<EditorObjectSelected>(_onEditorObjectSelected);
     on<SelectedEditorObjectDeleted>(_onSelectedEditorObjectDeleted);
@@ -31,7 +38,10 @@ class LevelEditorBloc extends Bloc<LevelEditorEvent, LevelEditorState> {
     on<EditorToolSelected>(_onEditorToolSelected);
     on<GridToggled>(_onGridToggled);
     on<MapCleared>(_onMapCleared);
+    on<SavePressed>(_onSavePressed);
   }
+
+  final NavigatorCubit navigatorCubit;
 
   void _onEditorObjectMoved(
       EditorObjectMoved event, Emitter<LevelEditorState> emit) {
@@ -45,7 +55,23 @@ class LevelEditorBloc extends Bloc<LevelEditorEvent, LevelEditorState> {
   }
 
   void _onTestMapPressed(TestMapPressed event, Emitter<LevelEditorState> emit) {
-    emit(state.withGeneratedPuzzle());
+    final newState = state.withGeneratedPuzzle();
+    emit(newState);
+    if (newState.generatedPuzzle != null) {
+      navigatorCubit
+          .navigateToGeneratedLevel(newState.generatedPuzzle!.toMapString());
+    }
+  }
+
+  void _onSavePressed(SavePressed event, Emitter<LevelEditorState> emit) {
+    final mapString = state.getMapString();
+    if (mapString != null) {
+      navigatorCubit.navigateToEditor(mapString);
+    } else {
+      emit(state.copyWith(
+        puzzleError: 'Cannot save invalid puzzle',
+      ));
+    }
   }
 
   void _onTestMapExited(TestMapExited event, Emitter<LevelEditorState> emit) {
@@ -92,7 +118,7 @@ class LevelEditorBloc extends Bloc<LevelEditorEvent, LevelEditorState> {
 
   void _onMapCleared(MapCleared event, Emitter<LevelEditorState> emit) {
     emit(state.copyWith(
-      objects: [EditorFloor.initial()],
+      objects: [state.floor],
       selectedObject: null,
       generatedPuzzle: null,
     ));
@@ -134,10 +160,6 @@ class _InvalidPuzzleState extends PuzzleState {
           0,
           walls: const [],
           blocks: const [],
-          exit: const Segment(
-            Position(0, 0),
-            Position(0, 0),
-          ),
           controlledBlock: const PlacedBlock(0, 0, Position(0, 0),
               isMain: false,
               canMoveHorizontally: false,
@@ -145,224 +167,6 @@ class _InvalidPuzzleState extends PuzzleState {
           latestMove: null,
           isCompleted: false,
         );
-}
-
-class LevelEditorState {
-  const LevelEditorState.initial(this.objects)
-      : selectedObject = null,
-        generatedPuzzle = null,
-        puzzleError = null,
-        selectedTool = EditorTool.move,
-        isGridVisible = true;
-  const LevelEditorState(
-    this.objects, {
-    required this.selectedObject,
-    required this.generatedPuzzle,
-    required this.puzzleError,
-    required this.selectedTool,
-    required this.isGridVisible,
-  });
-
-  static const EditorObject _invalidObject = _InvalidEditorObject();
-  static const PuzzleState _invalidPuzzleState = _InvalidPuzzleState();
-  static const String _invalidPuzzleError = 'Valid';
-
-  final List<EditorObject> objects;
-  final EditorObject? selectedObject;
-  final PuzzleState? generatedPuzzle;
-  final String? puzzleError;
-  final EditorTool selectedTool;
-  final bool isGridVisible;
-
-  bool get isTesting => generatedPuzzle != null;
-
-  EditorFloor get floor => objects.whereType<EditorFloor>().first;
-
-  Iterable<EditorSegment> getExits() =>
-      objects.whereType<EditorSegment>().where((segment) => isExit(segment));
-
-  EditorBlock? get mainBlock => objects
-      .whereType<EditorBlock>()
-      .where((block) => block.isMain)
-      .firstOrNull;
-
-  EditorBlock? get initialBlock => objects
-      .whereType<EditorBlock>()
-      .where((block) => block.hasControl)
-      .firstOrNull;
-
-  bool isExit(EditorSegment segment) {
-    int dx = -floor.offset.dx.wallOffsetToBlockCount();
-    int dy = -floor.offset.dy.wallOffsetToBlockCount();
-    Segment translatedSegment = segment.toSegment().translate(dx, dy);
-    if (translatedSegment.isVertical) {
-      bool isXValid = translatedSegment.start.x == 0 ||
-          translatedSegment.start.x == floor.width;
-      bool isYValid = translatedSegment.start.y >= 0 &&
-          translatedSegment.end.y <= floor.height;
-      return isXValid && isYValid;
-    } else {
-      bool isXValid = translatedSegment.start.x >= 0 &&
-          translatedSegment.end.x <= floor.width;
-      bool isYValid = translatedSegment.start.y == 0 ||
-          translatedSegment.start.y == floor.height;
-      return isXValid && isYValid;
-    }
-  }
-
-  LevelEditorState copyWith({
-    List<EditorObject>? objects,
-    EditorObject? selectedObject = _invalidObject,
-    PuzzleState? generatedPuzzle = _invalidPuzzleState,
-    String? puzzleError = _invalidPuzzleError,
-    EditorTool? selectedTool,
-    bool? isGridVisible,
-  }) {
-    return LevelEditorState(
-      objects ?? this.objects,
-      selectedObject: selectedObject != _invalidObject
-          ? selectedObject
-          : this.selectedObject,
-      generatedPuzzle: generatedPuzzle != _invalidPuzzleState
-          ? generatedPuzzle
-          : this.generatedPuzzle,
-      puzzleError:
-          puzzleError != _invalidPuzzleError ? puzzleError : this.puzzleError,
-      selectedTool: selectedTool ?? this.selectedTool,
-      isGridVisible: isGridVisible ?? this.isGridVisible,
-    );
-  }
-
-  LevelEditorState withGeneratedPuzzle() {
-    try {
-      return copyWith(
-          generatedPuzzle: _generatePuzzleFromEditorObjects(),
-          puzzleError: null);
-    } on EditorException catch (e) {
-      return copyWith(puzzleError: e.message);
-    }
-  }
-
-  LevelEditorState withoutGeneratedPuzzle() {
-    return copyWith(generatedPuzzle: null, puzzleError: null);
-  }
-
-  LevelEditorState withSelectedObject(EditorObject? object) {
-    return copyWith(
-      selectedObject: object,
-    );
-  }
-
-  LevelEditorState withUpdatedObjectPosition(
-      EditorObject object, Size size, Offset offset) {
-    assert(objects.contains(object),
-        'Editor object is not in list of known editor objects');
-
-    return withUpdatedObject(
-        object, object.copyWith(size: size, offset: offset));
-  }
-
-  LevelEditorState withUpdatedObject(
-      EditorObject object, EditorObject newObject) {
-    final wasSelected = selectedObject == object;
-    assert(objects.contains(object),
-        'Editor object is not in list of known editor objects');
-    assert(object.key == newObject.key,
-        'New editor object does not have the same key as the old object');
-
-    final newObjects = [
-      ...objects,
-    ];
-
-    newObjects[newObjects.indexOf(object)] = newObject;
-    // newObjects.remove(object);
-    // newObjects.add(newObject);
-
-    return copyWith(
-        objects: newObjects,
-        selectedObject: wasSelected ? newObject : selectedObject,
-        generatedPuzzle: null);
-  }
-
-  LevelEditorState withMainBlock(EditorBlock block) {
-    assert(objects.contains(block),
-        'Editor block is not in list of known editor objects');
-
-    // Set main to false for current main block
-    final state = mainBlock != null
-        ? withUpdatedObject(mainBlock!, mainBlock!.copyWith(isMain: false))
-        : this;
-
-    // Set main to true
-    final newBlock = block.copyWith(
-      isMain: true,
-    );
-    return state.withUpdatedObject(block, newBlock);
-  }
-
-  LevelEditorState withControlBlock(EditorBlock block) {
-    assert(objects.contains(block),
-        'Editor block is not in list of known editor objects');
-
-    // Set control to false for current initial block
-    final state = initialBlock != null
-        ? withUpdatedObject(
-            initialBlock!, initialBlock!.copyWith(hasControl: false))
-        : this;
-
-    // Set control to true
-    final newBlock = block.copyWith(
-      hasControl: true,
-    );
-    return state.withUpdatedObject(block, newBlock);
-  }
-
-  PuzzleState _generatePuzzleFromEditorObjects() {
-    final initialBlock = this.initialBlock;
-    if (initialBlock == null) {
-      throw const EditorException('No initial block found');
-    } else if (mainBlock == null) {
-      throw const EditorException('No main block found');
-    } else if (getExits().isEmpty) {
-      throw const EditorException('Puzzle has no exits');
-    }
-
-    final otherBlocks = objects
-        .whereType<EditorBlock>()
-        .where((block) => block != initialBlock);
-    final segments = objects.whereType<EditorSegment>().toList();
-
-    final dx = -floor.left;
-    final dy = -floor.top;
-
-    final exitSegment = getExits().firstOrNull?.toSegment().translate(dx, dy);
-
-    final outerWalls = [
-      ...Segment.horizontal(y: 0, start: 0, end: floor.width)
-          .subtract(exitSegment),
-      ...Segment.horizontal(y: floor.height, start: 0, end: floor.width)
-          .subtract(exitSegment),
-      ...Segment.vertical(x: 0, start: 0, end: floor.height)
-          .subtract(exitSegment),
-      ...Segment.vertical(x: floor.width, start: 0, end: floor.height)
-          .subtract(exitSegment),
-    ];
-
-    final innerWalls = segments
-        .whereNot((segment) => isExit(segment))
-        .map((w) => w.toSegment().translate(dx, dy))
-        .toList();
-
-    // TODO: Catch walls/blocks outside of play area.
-
-    PuzzleState state = PuzzleState.initial(floor.width, floor.height,
-        initialBlock: initialBlock.toBlock().translate(dx, dy),
-        otherBlocks:
-            otherBlocks.map((e) => e.toBlock().translate(dx, dy)).toList(),
-        walls: innerWalls + outerWalls,
-        exit: exitSegment ?? Segment.point(x: 1, y: 1));
-    return state;
-  }
 }
 
 abstract class EditorObject extends Equatable {
@@ -382,9 +186,9 @@ abstract class EditorObject extends Equatable {
 }
 
 class EditorBlock extends EditorObject {
-  EditorBlock.initial(PlacedBlock block, {UniqueKey? key})
-      : isMain = false,
-        hasControl = false,
+  EditorBlock.initial(PlacedBlock block,
+      {UniqueKey? key, this.hasControl = false})
+      : isMain = block.isMain,
         super(
             key ?? UniqueKey(),
             Size(block.width.toBlockSize(), block.height.toBlockSize()),
@@ -465,8 +269,9 @@ class EditorSegment extends EditorObject {
 }
 
 class EditorFloor extends EditorObject {
-  EditorFloor.initial()
-      : super(UniqueKey(), Size(1.toBoardSize(), 1.toBoardSize()), Offset.zero);
+  EditorFloor.initial(int width, int height)
+      : super(UniqueKey(), Size(width.toBoardSize(), height.toBoardSize()),
+            Offset.zero);
 
   EditorFloor(Size size, Offset offset, {Key? key})
       : super(key ?? UniqueKey(), size, offset);

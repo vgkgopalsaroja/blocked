@@ -41,15 +41,15 @@ class ResizableBlock extends StatelessWidget {
       onTap: () {
         context.read<LevelEditorBloc>().add(EditorObjectSelected(block));
       },
-      onUpdate: (state) {
-        final newSize = state.size;
-        final newOffset = state.offset;
+      onUpdate: (position) {
+        final newSize = position.size;
+        final newOffset = position.offset;
         if (block.offset != newOffset || block.size != newSize) {
           context.read<LevelEditorBloc>().add(
                 EditorObjectMoved(
                   block,
-                  state.size,
-                  state.offset,
+                  position.size,
+                  position.offset,
                 ),
               );
         }

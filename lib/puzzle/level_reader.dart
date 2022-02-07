@@ -3,6 +3,8 @@ import 'package:slide/puzzle/level.dart';
 import 'package:slide/puzzle/model/block.dart';
 import 'package:slide/puzzle/model/position.dart';
 import 'package:flutter/services.dart';
+import 'package:slide/puzzle/model/puzzle_specifications.dart';
+import 'package:collection/collection.dart';
 import 'package:yaml/yaml.dart';
 
 import 'model/segment.dart';
@@ -53,10 +55,18 @@ class LevelData {
     return Level(
       name,
       hint: hint,
-      initialState: LevelReader.parseLevel(
-        LevelReader.parseMapToTiles(map.split('\n')),
-      ),
+      initialState: LevelReader.parseLevel(map),
     );
+  }
+}
+
+extension on int {
+  int segmentToTileCount() {
+    return 1 + this * 2;
+  }
+
+  int toTileCount() {
+    return 1 + (this - 1) * 2;
   }
 }
 
@@ -78,7 +88,87 @@ class LevelReader {
     return levels;
   }
 
-  static List<List<Tile>> parseMapToTiles(Iterable<String> rawMap) {
+  static String stateToMapString(PuzzleState state) {
+    return toMapString(
+        width: state.width,
+        height: state.height,
+        walls: state.walls,
+        blocks: state.blocks,
+        initialBlock: state.controlledBlock);
+  }
+
+  static String specsToMapString(PuzzleSpecifications state) {
+    return toMapString(
+        width: state.width,
+        height: state.height,
+        walls: state.walls,
+        blocks: [
+          ...state.otherBlocks,
+          if (state.initialBlock != null) state.initialBlock!,
+        ],
+        initialBlock: state.initialBlock);
+  }
+
+  static String toMapString({
+    required int width,
+    required int height,
+    required Iterable<Segment> walls,
+    required Iterable<PlacedBlock> blocks,
+    required PlacedBlock? initialBlock,
+  }) {
+    final List<List<String>> map = List.generate(height.toTileCount() + 2, (y) {
+      return List.generate(width.toTileCount() + 2, (x) {
+        if (x == 0 ||
+            x == width.toTileCount() + 1 ||
+            y == 0 ||
+            y == height.toTileCount() + 1) {
+          return 'e';
+        }
+        return '.';
+      });
+    });
+
+    for (final wall in walls) {
+      int wallTileWidth = wall.width.segmentToTileCount();
+      int wallTileHeight = wall.height.segmentToTileCount();
+      for (int dx = 0; dx < wallTileWidth; dx++) {
+        for (int dy = 0; dy < wallTileHeight; dy++) {
+          map[wall.start.y * 2 + dy][wall.start.x * 2 + dx] = '*';
+        }
+      }
+    }
+
+    for (final block in blocks) {
+      int blockTileWidth = block.width.toTileCount();
+      int blockTileHeight = block.height.toTileCount();
+      String blockChar = block.isMain ? 'm' : 'x';
+      if (block == initialBlock) {
+        blockChar = blockChar.toUpperCase();
+      }
+
+      for (int dx = 0; dx < blockTileWidth; dx++) {
+        for (int dy = 0; dy < blockTileHeight; dy++) {
+          map[block.top * 2 + 1 + dy][block.left * 2 + 1 + dx] = blockChar;
+        }
+      }
+    }
+
+    return map.map((row) {
+      return row.join();
+    }).join('\n');
+  }
+
+  static PuzzleState parseLevel(String mapString) {
+    return LevelReader._parseLevelFromTiles(
+        LevelReader._parseTilesFromMap(mapString.split('\n')));
+  }
+
+  static PuzzleSpecifications parsePuzzleSpecs(String mapString) {
+    return LevelReader._parsePuzzleFromTiles(
+        LevelReader._parseTilesFromMap(mapString.split('\n')));
+  }
+
+  static List<List<Tile>> _parseTilesFromMap(Iterable<String> rawMap) {
     return rawMap.map((line) {
       return line.split('').map((char) {
         if (char == wall) {
@@ -166,35 +256,38 @@ class LevelReader {
     return segments;
   }
 
-  static PuzzleState parseLevel(List<List<Tile>> map) {
-    // The level is defined as a 2w+1 x 2h+1 grid of cells.
-    // The even rows/columns represent the walls,
-    // and the odd rows/columns represent the cells.
+  static PuzzleSpecifications _parsePuzzleFromTiles(List<List<Tile>> map) {
+    final width = map[0].length;
+    final height = map.length;
 
-    List<Segment> walls = getSegmentsOfType(map, TileType.wall);
-    Segment exit = getSegmentsOfType(map, TileType.exit).first;
+    assert(width % 2 == 1 && height % 2 == 1, 'Map must be odd-sized');
 
-    // Vertical walls
-
-    int width = map[0].length;
-    int height = map.length;
-
-    var blocks = LevelReader.getBlocks(map);
-
-    var initialBlock = blocks.firstWhere((block) => block.isControlled).block;
-    var otherBlocks = blocks
+    final walls = getSegmentsOfType(map, TileType.wall);
+    final parsedBlocks = LevelReader.getBlocks(map);
+    final blocks = parsedBlocks
         .where((block) => !block.isControlled)
-        .map((b) => b.block)
+        .map((block) => block.block)
         .toList();
+    final controlledBlock =
+        parsedBlocks.where((block) => block.isControlled).firstOrNull?.block;
 
-    return PuzzleState.initial(
-      width ~/ 2,
-      height ~/ 2,
-      initialBlock: initialBlock,
-      otherBlocks: otherBlocks,
+    return PuzzleSpecifications(
+      width: width ~/ 2,
+      height: height ~/ 2,
       walls: walls,
-      exit: exit,
+      otherBlocks: blocks,
+      initialBlock: controlledBlock,
     );
+  }
+
+  static PuzzleState _parseLevelFromTiles(List<List<Tile>> map) {
+    final spec = _parsePuzzleFromTiles(map);
+
+    assert(spec.initialBlock != null);
+    return PuzzleState.initial(spec.width, spec.height,
+        initialBlock: spec.initialBlock!,
+        otherBlocks: spec.otherBlocks,
+        walls: spec.walls);
   }
 
   static List<_ParsedBlock> getBlocks(List<List<int>> map) {

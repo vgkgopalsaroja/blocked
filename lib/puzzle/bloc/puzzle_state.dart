@@ -6,7 +6,6 @@ class PuzzleState {
     this.height, {
     required this.blocks,
     required this.walls,
-    required this.exit,
     required this.controlledBlock,
     required this.latestMove,
     required this.isCompleted,
@@ -18,7 +17,6 @@ class PuzzleState {
     required PlacedBlock initialBlock,
     required Iterable<PlacedBlock> otherBlocks,
     required this.walls,
-    required this.exit,
   })  : blocks = [initialBlock, ...otherBlocks],
         controlledBlock = initialBlock,
         latestMove = null,
@@ -41,7 +39,6 @@ class PuzzleState {
   final int height;
   final List<PlacedBlock> blocks;
   final List<Segment> walls;
-  final Segment exit;
   final PlacedBlock controlledBlock;
   final Move? latestMove;
   final bool isCompleted;
@@ -97,7 +94,6 @@ class PuzzleState {
       height,
       blocks: blocks,
       walls: walls,
-      exit: exit,
       controlledBlock: newControlledBlock,
       latestMove: move,
       isCompleted: false,
@@ -137,7 +133,6 @@ class PuzzleState {
         return PuzzleState(
           width,
           height,
-          exit: exit,
           blocks: blocks,
           walls: walls,
           isCompleted: isCompleted,
@@ -151,7 +146,6 @@ class PuzzleState {
       return PuzzleState(
         width,
         height,
-        exit: exit,
         blocks: blocks,
         walls: walls,
         isCompleted: isCompleted,
@@ -163,7 +157,6 @@ class PuzzleState {
     return PuzzleState(
       width,
       height,
-      exit: exit,
       blocks: blocks.map((b) {
         return b == movedBlock ? newBlock : b;
       }).toList(),
@@ -210,60 +203,6 @@ class PuzzleState {
 
   /// Convert the puzzle to a string representation parseable by [LevelReader].
   String toMapString() {
-    final List<List<String>> map = List.generate(height.toTileCount() + 2, (y) {
-      return List.generate(width.toTileCount() + 2, (x) {
-        return '.';
-      });
-    });
-
-    for (final wall in walls) {
-      int wallTileWidth = wall.width.segmentToTileCount();
-      int wallTileHeight = wall.height.segmentToTileCount();
-      debugPrint('width and height: $wallTileWidth, $wallTileHeight');
-      for (int dx = 0; dx < wallTileWidth; dx++) {
-        for (int dy = 0; dy < wallTileHeight; dy++) {
-          map[wall.start.y * 2 + dy][wall.start.x * 2 + dx] = '*';
-        }
-      }
-    }
-
-    for (final block in blocks) {
-      int blockTileWidth = block.width.toTileCount();
-      int blockTileHeight = block.height.toTileCount();
-      String blockChar = block.isMain ? 'm' : 'x';
-      if (block == controlledBlock) {
-        blockChar = blockChar.toUpperCase();
-      }
-
-      for (int dx = 0; dx < blockTileWidth; dx++) {
-        for (int dy = 0; dy < blockTileHeight; dy++) {
-          map[block.top * 2 + 1 + dy][block.left * 2 + 1 + dx] = blockChar;
-        }
-      }
-    }
-
-    //Remove wall segment at exit
-    int exitTileWidth = exit.width.segmentToTileCount();
-    int exitTileHeight = exit.height.segmentToTileCount();
-
-    for (int dx = 0; dx < exitTileWidth; dx++) {
-      for (int dy = 0; dy < exitTileHeight; dy++) {
-        map[exit.start.y * 2 + dy][exit.start.x * 2 + dx] = 'e';
-      }
-    }
-
-    return map.map((row) {
-      return row.join();
-    }).join('\n');
-  }
-}
-
-extension on int {
-  int segmentToTileCount() {
-    return 1 + this * 2;
-  }
-
-  int toTileCount() {
-    return 1 + (this - 1) * 2;
+    return LevelReader.stateToMapString(this);
   }
 }

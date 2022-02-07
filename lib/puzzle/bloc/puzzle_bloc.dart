@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:slide/puzzle/level_reader.dart';
 import 'package:slide/puzzle/model/block.dart';
 import 'package:slide/puzzle/model/position.dart';
 import 'package:slide/puzzle/model/segment.dart';

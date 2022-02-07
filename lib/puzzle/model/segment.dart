@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:slide/puzzle/model/position.dart';
+import 'package:collection/collection.dart';
 
 class Segment {
   const Segment(this.start, this.end);
@@ -99,23 +100,16 @@ class Segment {
     }
   }
 
-  // List<Segment> subtract(Segment segment) {
-  //   if (segment.isVertical && isVertical && segment.start.x == start.x) {
-  //     assert(start.y <= segment.start.y && end.y >= segment.end.y);
-  //     return [
-  //       Segment.vertical(x: start.x, start: start.y, end: segment.start.y),
-  //       Segment.vertical(x: start.x, start: segment.end.y, end: end.y),
-  //     ];
-  //   } else if (segment.isHorizontal &&
-  //       isHorizontal &&
-  //       segment.start.y == start.y) {
-  //     assert(start.x <= segment.start.x && end.x >= segment.end.x);
-  //     return [
-  //       Segment.horizontal(y: start.y, start: start.x, end: segment.start.x),
-  //       Segment.horizontal(y: start.y, start: segment.end.x, end: end.x),
-  //     ];
-  //   } else {
-  //     return [this];
-  //   }
-  // }
+  Iterable<Segment> subtractAll(Iterable<Segment> others) {
+    Iterable<Segment> segments = [this];
+    for (final other in others) {
+      segments = segments.map((s) => s.subtract(other)).flattened;
+    }
+    return segments;
+  }
+
+  @override
+  String toString() {
+    return 'Segment($start, $end)';
+  }
 }

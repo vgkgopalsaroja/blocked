@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slide/puzzle/bloc/puzzle_bloc.dart';
 import 'package:slide/puzzle/level_reader.dart';
-import 'package:slide/routing/navigator_bloc.dart';
+import 'package:slide/routing/navigator_cubit.dart';
 import 'package:slide/widgets/puzzle/puzzle.dart';
 
-class LevelSelectionPage extends StatelessWidget {
-  const LevelSelectionPage(this.levels, {Key? key}) : super(key: key);
+import '../puzzle/level.dart';
 
-  final List<LevelData> levels;
+class LevelSelectionPage extends StatelessWidget {
+  LevelSelectionPage(Iterable<LevelData> levelData, {Key? key})
+      : levels = levelData.map((data) => data.toLevel()).toList(),
+        super(key: key);
+
+  final List<Level> levels;
 
   @override
   Widget build(BuildContext context) {
@@ -40,13 +44,14 @@ class LevelSelectionPage extends StatelessWidget {
               ),
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
-                  final levelData = levels[index];
+                  final level = levels[index];
+                  final initialLevelState = level.initialState;
                   return OutlinedButton(
                     clipBehavior: Clip.antiAlias,
                     onPressed: () {
                       context
-                          .read<NavigationCubit>()
-                          .navigateToLevel(levelData.name);
+                          .read<NavigatorCubit>()
+                          .navigateToLevel(level.name);
                     },
                     child: Ink(
                       padding: const EdgeInsets.all(16),
@@ -58,10 +63,10 @@ class LevelSelectionPage extends StatelessWidget {
                               child: Center(
                                 child: FittedBox(
                                   child: Hero(
-                                    tag: levelData.name,
+                                    tag: level.name,
                                     child: BlocProvider(
                                       create: (context) => PuzzleBloc(
-                                          levelData.toLevel().initialState,
+                                          initialLevelState,
                                           onExit: () {},
                                           onNext: () {}),
                                       child: const Puzzle(),
@@ -72,7 +77,7 @@ class LevelSelectionPage extends StatelessWidget {
                             ),
                             const SizedBox(width: 32.0),
                             Text(
-                              levelData.name,
+                              level.name,
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
                           ],

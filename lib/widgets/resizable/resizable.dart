@@ -10,7 +10,8 @@ part 'resizable_delegates.dart';
 
 typedef ResizableWidgetBuilder = Widget Function(
     BuildContext context, Size size);
-typedef ResizableUpdateCallback = void Function(ResizableState state);
+typedef ResizableUpdateCallback = void Function(
+    ResizablePosition resizablePosition);
 
 const double kHandleSize = 12.0;
 
@@ -101,7 +102,11 @@ class Resizable extends StatelessWidget {
         snapWhileMoving: snapWhileMoving,
       ),
       child: BlocConsumer<ResizableBloc, ResizableState>(
-        listener: (context, state) => onUpdate?.call(state),
+        listenWhen: (previous, current) =>
+            previous.displayedPosition != current.displayedPosition,
+        listener: (context, state) => onUpdate?.call(state.displayedPosition),
+        buildWhen: (previous, current) =>
+            previous.displayedPosition != current.displayedPosition,
         builder: (context, state) {
           return AnimatedPositioned(
             duration: const Duration(milliseconds: 100),

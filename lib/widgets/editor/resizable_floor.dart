@@ -18,9 +18,10 @@ class ResizableFloor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Segment> exits = context.select((LevelEditorBloc bloc) =>
-        bloc.state.getExits().map((e) => e.toSegment()).toList());
+        bloc.state.exits.map((e) => e.toSegment()).toList());
     return Resizable(
       enabled: true,
+      initialSize: Size(floor.width.toBoardSize(), floor.height.toBoardSize()),
       minHeight: 1.toBoardSize(),
       minWidth: 1.toBoardSize(),
       snapHeightInterval: 2.toBoardSize() - 1.toBoardSize(),
@@ -33,15 +34,15 @@ class ResizableFloor extends StatelessWidget {
         kBlockSize + kBlockToBlockGap,
         kBlockSize + kBlockToBlockGap,
       ),
-      onUpdate: (state) {
-        final newSize = state.size;
-        final newOffset = state.offset;
+      onUpdate: (position) {
+        final newSize = position.size;
+        final newOffset = position.offset;
         if (floor.offset != newOffset || floor.size != newSize) {
           context.read<LevelEditorBloc>().add(
                 EditorObjectMoved(
                   floor,
-                  state.size,
-                  state.offset,
+                  position.size,
+                  position.offset,
                 ),
               );
         }
@@ -60,8 +61,8 @@ class ResizableFloor extends StatelessWidget {
         ];
 
         final subtractedWalls = walls
-            .map((wall) => wall.subtract(
-                exits.firstOrNull?.translate(-floor.left, -floor.top)))
+            .map((wall) => wall.subtractAll(
+                exits.map((e) => e.translate(-floor.left, -floor.top))))
             .flattened
             .toList();
 

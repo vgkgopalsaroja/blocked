@@ -29,15 +29,15 @@ class EditorBuilder extends StatelessWidget {
     return BlocProvider(
       create: (context) => EditorBuilderBloc(),
       child: BlocConsumer<EditorBuilderBloc, EditorBuilderState>(
+        listenWhen: (previous, current) {
+          return previous.isObjectPlaced != current.isObjectPlaced &&
+              current.isObjectPlaced;
+        },
         listener: (context, state) {
           final start = state.start;
           final end = state.end;
           assert(start != null && end != null);
           onObjectPlaced(start!, end!);
-        },
-        listenWhen: (previous, current) {
-          return previous.isObjectPlaced != current.isObjectPlaced &&
-              current.isObjectPlaced;
         },
         buildWhen: (previous, current) {
           return previous.start != current.start || previous.end != current.end;

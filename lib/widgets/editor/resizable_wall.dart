@@ -72,15 +72,15 @@ class ResizableWall extends StatelessWidget {
       onTap: () {
         context.read<LevelEditorBloc>().add(EditorObjectSelected(wall));
       },
-      onUpdate: (state) {
-        final newSize = state.size;
-        final newOffset = state.offset;
+      onUpdate: (position) {
+        final newSize = position.size;
+        final newOffset = position.offset;
         if (wall.offset != newOffset || wall.size != newSize) {
           context.read<LevelEditorBloc>().add(
                 EditorObjectMoved(
                   wall,
-                  state.size,
-                  state.offset,
+                  position.size,
+                  position.offset,
                 ),
               );
         }
