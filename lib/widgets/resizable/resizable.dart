@@ -13,7 +13,9 @@ typedef ResizableWidgetBuilder = Widget Function(
 typedef ResizableUpdateCallback = void Function(
     ResizablePosition resizablePosition);
 
-const double kHandleSize = 12.0;
+const double kHandleSize = 48.0;
+const double kHandleRenderSize = 16.0;
+const double kHandleStrokeWidth = 8.0;
 
 class Resizable extends StatelessWidget {
   Resizable({
@@ -126,61 +128,7 @@ class Resizable extends StatelessWidget {
                       child: builder(context, state.size),
                     ),
                   ),
-                  if (enabled) ...{
-                    const Positioned(
-                      left: 0,
-                      top: kHandleSize,
-                      bottom: kHandleSize,
-                      child: DragHandle(
-                        BoxSide.left,
-                        size: kHandleSize,
-                      ),
-                    ),
-                    const Positioned(
-                      right: 0,
-                      top: kHandleSize,
-                      bottom: kHandleSize,
-                      child: DragHandle(
-                        BoxSide.right,
-                        size: kHandleSize,
-                      ),
-                    ),
-                    const Positioned(
-                      left: kHandleSize,
-                      right: kHandleSize,
-                      top: 0,
-                      child: DragHandle(
-                        BoxSide.top,
-                        size: kHandleSize,
-                      ),
-                    ),
-                    const Positioned(
-                      left: kHandleSize,
-                      right: kHandleSize,
-                      bottom: 0,
-                      child: DragHandle(BoxSide.bottom, size: kHandleSize),
-                    ),
-                    const Positioned(
-                      left: 0,
-                      top: 0,
-                      child: DragHandle(BoxSide.topLeft, size: kHandleSize),
-                    ),
-                    const Positioned(
-                      right: 0,
-                      top: 0,
-                      child: DragHandle(BoxSide.topRight, size: kHandleSize),
-                    ),
-                    const Positioned(
-                      left: 0,
-                      bottom: 0,
-                      child: DragHandle(BoxSide.bottomLeft, size: kHandleSize),
-                    ),
-                    const Positioned(
-                      right: 0,
-                      bottom: 0,
-                      child: DragHandle(BoxSide.bottomRight, size: kHandleSize),
-                    ),
-                  },
+                  if (enabled) ..._buildDragHandles(context),
                   Positioned.fill(
                     bottom: kHandleSize,
                     right: kHandleSize,
@@ -197,5 +145,77 @@ class Resizable extends StatelessWidget {
         },
       ),
     );
+  }
+
+  List<Widget> _buildDragHandles(BuildContext context) {
+    return [
+      Positioned.fill(
+        child: Padding(
+          padding:
+              const EdgeInsets.all(kHandleSize / 2 - kHandleStrokeWidth / 2),
+          child: Container(
+            foregroundDecoration: BoxDecoration(
+              border: Border.all(
+                color: Theme.of(context).colorScheme.primary,
+                width: kHandleStrokeWidth,
+              ),
+            ),
+          ),
+        ),
+      ),
+      const Positioned(
+        left: 0,
+        top: kHandleSize,
+        bottom: kHandleSize,
+        child: DragHandle(
+          BoxSide.left,
+          size: kHandleSize,
+        ),
+      ),
+      const Positioned(
+        right: 0,
+        top: kHandleSize,
+        bottom: kHandleSize,
+        child: DragHandle(
+          BoxSide.right,
+          size: kHandleSize,
+        ),
+      ),
+      const Positioned(
+        left: kHandleSize,
+        right: kHandleSize,
+        top: 0,
+        child: DragHandle(
+          BoxSide.top,
+          size: kHandleSize,
+        ),
+      ),
+      const Positioned(
+        left: kHandleSize,
+        right: kHandleSize,
+        bottom: 0,
+        child: DragHandle(BoxSide.bottom, size: kHandleSize),
+      ),
+      const Positioned(
+        left: 0,
+        top: 0,
+        child: DragHandle(BoxSide.topLeft, size: kHandleSize),
+      ),
+      const Positioned(
+        right: 0,
+        top: 0,
+        child: DragHandle(BoxSide.topRight, size: kHandleSize),
+      ),
+      const Positioned(
+        left: 0,
+        bottom: 0,
+        child: DragHandle(BoxSide.bottomLeft, size: kHandleSize),
+      ),
+      const Positioned(
+        right: 0,
+        bottom: 0,
+        child: DragHandle(BoxSide.bottomRight, size: kHandleSize),
+      ),
+    ];
   }
 }

@@ -70,7 +70,7 @@ class ResizableBlock extends StatelessWidget {
           childAnchor: Alignment.topRight,
           portalAnchor: Alignment.topLeft,
           portal: Padding(
-            padding: const EdgeInsets.only(left: kBlockToBlockGap),
+            padding: const EdgeInsets.only(left: kHandleSize),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

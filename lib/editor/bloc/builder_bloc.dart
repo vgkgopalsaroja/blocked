@@ -9,7 +9,6 @@ class EditorBuilderBloc extends Bloc<EditorBuilderEvent, EditorBuilderState> {
     on<PointCancelled>(_onPointCancelled);
   }
 
-
   void _onPointUpdate(PointUpdate event, Emitter<EditorBuilderState> emit) {
     emit(state.copyWith(
       hoveredPosition: event.position,
@@ -44,7 +43,7 @@ class EditorBuilderBloc extends Bloc<EditorBuilderEvent, EditorBuilderState> {
   void _onPointUp(PointUp event, Emitter<EditorBuilderState> emit) {
     if (state._start != null) {
       emit(state.copyWith(
-        end:state.hoveredPosition!,
+        end: state.hoveredPosition ?? event.position,
       ));
       emit(state.copyWith(
         start: null,

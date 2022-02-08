@@ -94,7 +94,7 @@ class ResizableWall extends StatelessWidget {
           childAnchor: Alignment.topRight,
           portalAnchor: Alignment.topLeft,
           portal: Padding(
-            padding: const EdgeInsets.only(left: kBlockToBlockGap),
+            padding: const EdgeInsets.only(left: kHandleSize),
             child: ElevatedButton(
               onPressed: () {
                 context

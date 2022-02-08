@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:slide/widgets/puzzle/board_constants.dart';
+import 'package:slide/widgets/resizable/resizable.dart';
 
 class GridOverlay extends StatelessWidget {
   const GridOverlay(
@@ -34,8 +35,10 @@ class _GridOverlayPainter extends CustomPainter {
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke;
 
-    for (double x = 12; x + kWallWidth <= size.width; x += kBlockSizeInterval) {
-      for (double y = 12;
+    for (double x = kHandleSize;
+        x + kWallWidth <= size.width;
+        x += kBlockSizeInterval) {
+      for (double y = kHandleSize;
           y + kWallWidth <= size.height;
           y += kBlockSizeInterval) {
         canvas.drawRRect(
@@ -44,10 +47,10 @@ class _GridOverlayPainter extends CustomPainter {
             paint);
       }
     }
-    for (double x = 12 + kWallWidth + kBlockGap;
+    for (double x = kHandleSize + kWallWidth + kBlockGap;
         x + kBlockSize <= size.width;
         x += kBlockSizeInterval) {
-      for (double y = 12 + kWallWidth + kBlockGap;
+      for (double y = kHandleSize + kWallWidth + kBlockGap;
           y + kBlockSize <= size.height;
           y += kBlockSizeInterval) {
         canvas.drawRRect(
