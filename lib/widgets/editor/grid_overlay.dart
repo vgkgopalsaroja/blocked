@@ -34,8 +34,10 @@ class _GridOverlayPainter extends CustomPainter {
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke;
 
-    for (double x = 12; x < size.width; x += kBlockSizeInterval) {
-      for (double y = 12; y < size.height; y += kBlockSizeInterval) {
+    for (double x = 12; x + kWallWidth <= size.width; x += kBlockSizeInterval) {
+      for (double y = 12;
+          y + kWallWidth <= size.height;
+          y += kBlockSizeInterval) {
         canvas.drawRRect(
             RRect.fromRectAndRadius(Rect.fromLTWH(x, y, kWallWidth, kWallWidth),
                 const Radius.circular(2)),
@@ -43,10 +45,10 @@ class _GridOverlayPainter extends CustomPainter {
       }
     }
     for (double x = 12 + kWallWidth + kBlockGap;
-        x < size.width;
+        x + kBlockSize <= size.width;
         x += kBlockSizeInterval) {
       for (double y = 12 + kWallWidth + kBlockGap;
-          y < size.height;
+          y + kBlockSize <= size.height;
           y += kBlockSizeInterval) {
         canvas.drawRRect(
             RRect.fromRectAndRadius(Rect.fromLTWH(x, y, kBlockSize, kBlockSize),

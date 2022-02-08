@@ -48,9 +48,9 @@ class EditorBuilder extends StatelessWidget {
 
           return Listener(
             onPointerHover: (event) {
-              final position = offsetTransformer(event.position);
+              final position = offsetTransformer(event.localPosition);
               final snappedOffset = positionTransformer(position);
-              final difference = snappedOffset - event.position;
+              final difference = snappedOffset - event.localPosition;
 
               if (min(difference.dx, difference.dy) < threshold) {
                 context.read<EditorBuilderBloc>().add(PointUpdate(position));
@@ -62,19 +62,19 @@ class EditorBuilder extends StatelessWidget {
               dragStartBehavior: DragStartBehavior.down,
               behavior: HitTestBehavior.opaque,
               onTapDown: (details) {
-                final position = offsetTransformer(details.globalPosition);
+                final position = offsetTransformer(details.localPosition);
                 context.read<EditorBuilderBloc>().add(PointDown(position));
               },
               onTapUp: (details) {
-                final position = offsetTransformer(details.globalPosition);
+                final position = offsetTransformer(details.localPosition);
                 context.read<EditorBuilderBloc>().add(PointUp(position));
               },
               onPanDown: (details) {
-                final position = offsetTransformer(details.globalPosition);
+                final position = offsetTransformer(details.localPosition);
                 context.read<EditorBuilderBloc>().add(PointDown(position));
               },
               onPanUpdate: (details) {
-                final position = offsetTransformer(details.globalPosition);
+                final position = offsetTransformer(details.localPosition);
                 context.read<EditorBuilderBloc>().add(PointUpdate(position));
               },
               onPanEnd: (details) {
