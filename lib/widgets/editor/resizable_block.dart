@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_portal/flutter_portal.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:slide/editor/bloc/level_editor_bloc.dart';
 import 'package:slide/puzzle/model/block.dart';
 import 'package:slide/widgets/editor/animated_selectable.dart';
@@ -16,6 +18,12 @@ class ResizableBlock extends StatelessWidget {
   Widget build(BuildContext context) {
     final isSelected = context.select(
       (LevelEditorBloc bloc) => bloc.state.selectedObject == block,
+    );
+    final isMainBlock = context.select(
+      (LevelEditorBloc bloc) => bloc.state.mainBlock == block,
+    );
+    final isInitialBlock = context.select(
+      (LevelEditorBloc bloc) => bloc.state.initialBlock == block,
     );
 
     return Resizable(
@@ -56,17 +64,67 @@ class ResizableBlock extends StatelessWidget {
       },
       builder: (context, size) {
         final blockSize = size / kBlockSize;
-        return AnimatedSelectable(
-          isSelected: isSelected,
-          child: PuzzleBlock(
-            Block.manual(
-              blockSize.width.round(),
-              blockSize.height.round(),
-              isMain: block.isMain,
-              canMoveHorizontally: true,
-              canMoveVertically: true,
+
+        return PortalEntry(
+          visible: isSelected,
+          childAnchor: Alignment.topRight,
+          portalAnchor: Alignment.topLeft,
+          portal: Padding(
+            padding: const EdgeInsets.only(left: kBlockToBlockGap),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    context
+                        .read<LevelEditorBloc>()
+                        .add(const SelectedEditorObjectDeleted());
+                  },
+                  child: const Icon(Icons.clear),
+                  style: ElevatedButton.styleFrom(
+                    primary: Theme.of(context).colorScheme.error,
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+                Opacity(
+                  opacity: isMainBlock ? 0 : 1,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      context
+                          .read<LevelEditorBloc>()
+                          .add(MainEditorBlockSet(block));
+                    },
+                    icon: const Icon(MdiIcons.circleBoxOutline),
+                    label: const Text('Make main'),
+                  ),
+                ),
+                const SizedBox(height: 8.0),
+                if (!isInitialBlock) ...{
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      context
+                          .read<LevelEditorBloc>()
+                          .add(InitialEditorBlockSet(block));
+                    },
+                    icon: const Icon(MdiIcons.checkboxBlank),
+                    label: const Text('Make initial'),
+                  ),
+                },
+              ],
             ),
-            isControlled: block.hasControl,
+          ),
+          child: AnimatedSelectable(
+            isSelected: isSelected,
+            child: PuzzleBlock(
+              Block.manual(
+                blockSize.width.round(),
+                blockSize.height.round(),
+                isMain: block.isMain,
+                canMoveHorizontally: true,
+                canMoveVertically: true,
+              ),
+              isControlled: block.hasControl,
+            ),
           ),
         );
       },

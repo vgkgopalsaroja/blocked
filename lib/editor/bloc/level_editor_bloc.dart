@@ -33,7 +33,7 @@ class LevelEditorBloc extends Bloc<LevelEditorEvent, LevelEditorState> {
     on<SegmentAdded>(_onSegmentAdded);
     on<TestMapPressed>(_onTestMapPressed);
     on<MainEditorBlockSet>(_onMainEditorBlockSet);
-    on<ControlledEditorBlockSet>(_onControlledEditorBlockSet);
+    on<InitialEditorBlockSet>(_onControlledEditorBlockSet);
     on<TestMapExited>(_onTestMapExited);
     on<EditorToolSelected>(_onEditorToolSelected);
     on<GridToggled>(_onGridToggled);
@@ -103,7 +103,7 @@ class LevelEditorBloc extends Bloc<LevelEditorEvent, LevelEditorState> {
   }
 
   void _onControlledEditorBlockSet(
-      ControlledEditorBlockSet event, Emitter<LevelEditorState> emit) {
+      InitialEditorBlockSet event, Emitter<LevelEditorState> emit) {
     emit(state.withControlBlock(event.block));
   }
 

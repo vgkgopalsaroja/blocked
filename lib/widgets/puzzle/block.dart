@@ -44,13 +44,16 @@ class PuzzleBlock extends StatelessWidget {
           duration: duration,
           width: block.width.toBlockSize(),
           height: block.height.toBlockSize(),
-          child: block.isMain
-              ? Icon(
-                  Icons.circle_outlined,
-                  color: isControlled ? green.primary : grey.outline,
-                  size: min(block.width, block.height) * kBlockSize / 2,
-                )
-              : null,
+          child: AnimatedOpacity(
+            opacity: block.isMain ? 1 : 0,
+            duration: duration,
+            curve: curve,
+            child: Icon(
+              Icons.circle_outlined,
+              color: isControlled ? green.primary : grey.outline,
+              size: min(block.width, block.height) * kBlockSize / 2,
+            ),
+          ),
         ),
       ),
     );

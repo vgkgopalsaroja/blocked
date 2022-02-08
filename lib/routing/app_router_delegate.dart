@@ -13,20 +13,22 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
   AppRouterDelegate({
     required this.levelList,
-    // required this.navigatorCubit,
     required GlobalKey<NavigatorState> navigatorKey,
-  }) : _navigatorKey = navigatorKey;
-
-  final LevelList levelList;
-  late final NavigatorCubit navigatorCubit;
+  })  : _navigatorKey = navigatorKey,
+        isLoaded = false;
 
   final GlobalKey<NavigatorState> _navigatorKey;
+  final LevelList levelList;
+
+  bool isLoaded;
+  NavigatorCubit navigatorCubit =
+      NavigatorCubit(const LevelRoutePath.levelSelection());
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<NavigatorCubit, AppRoutePath>(
       bloc: navigatorCubit,
-      // listenWhen: (previous, current) => previous != current,
+      listenWhen: (previous, current) => isLoaded,
       listener: (context, state) {
         notifyListeners();
       },
@@ -82,6 +84,7 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
   @override
   Future<void> setInitialRoutePath(AppRoutePath configuration) {
     navigatorCubit = NavigatorCubit(configuration);
+    isLoaded = true;
     return SynchronousFuture(null);
   }
 

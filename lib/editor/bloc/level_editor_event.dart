@@ -28,8 +28,8 @@ class MainEditorBlockSet extends LevelEditorEvent {
   final EditorBlock block;
 }
 
-class ControlledEditorBlockSet extends LevelEditorEvent {
-  const ControlledEditorBlockSet(this.block);
+class InitialEditorBlockSet extends LevelEditorEvent {
+  const InitialEditorBlockSet(this.block);
 
   final EditorBlock block;
 }

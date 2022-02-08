@@ -34,6 +34,9 @@ class ResizableFloor extends StatelessWidget {
         kBlockSize + kBlockToBlockGap,
         kBlockSize + kBlockToBlockGap,
       ),
+      onTap: () {
+        context.read<LevelEditorBloc>().add(EditorObjectSelected(null));
+      },
       onUpdate: (position) {
         final newSize = position.size;
         final newOffset = position.offset;
@@ -79,13 +82,6 @@ class ResizableFloor extends StatelessWidget {
                 child: PuzzleWall(wall),
               ),
             },
-            // for (var exit in exits) ...{
-            //   Positioned(
-            //     left: exit.start.x.toWallOffset(),
-            //     top: exit.start.y.toWallOffset(),
-            //     child: PuzzleExit(exit),
-            //   ),
-            // },
           ],
         );
       },

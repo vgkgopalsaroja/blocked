@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:slide/editor/bloc/level_editor_bloc.dart';
 
 class EditorShortcutListener extends StatelessWidget {
-  const EditorShortcutListener({
+  EditorShortcutListener({
     Key? key,
     required this.levelEditorBloc,
     required this.child,
@@ -11,11 +11,20 @@ class EditorShortcutListener extends StatelessWidget {
 
   final LevelEditorBloc levelEditorBloc;
   final Widget child;
+  final FocusNode focusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
     return FocusableActionDetector(
       autofocus: true,
+      onFocusChange: (hasFocus) {
+        if (!hasFocus) {
+          if (FocusScope.of(context).focusedChild == null) {
+            FocusScope.of(context).requestFocus(focusNode);
+          }
+        }
+      },
+      focusNode: focusNode,
       shortcuts: {
         LogicalKeySet(LogicalKeyboardKey.keyQ):
             const EditorActionIntent(EditorToolSelected(EditorTool.move)),

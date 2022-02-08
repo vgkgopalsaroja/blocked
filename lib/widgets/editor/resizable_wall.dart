@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_portal/flutter_portal.dart';
 import 'package:slide/editor/bloc/level_editor_bloc.dart';
 import 'package:slide/puzzle/model/position.dart';
 import 'package:slide/puzzle/model/segment.dart';
@@ -88,13 +89,32 @@ class ResizableWall extends StatelessWidget {
       builder: (context, size) {
         final width = size.width.boardSizeToBlockCount();
         final height = size.height.boardSizeToBlockCount();
-        return AnimatedSelectable(
-          isSelected: isSelected,
-          child: isExit
-              ? PuzzleExit(
-                  Segment(const Position(0, 0), Position(width, height)))
-              : PuzzleWall(
-                  Segment(const Position(0, 0), Position(width, height))),
+        return PortalEntry(
+          visible: isSelected,
+          childAnchor: Alignment.topRight,
+          portalAnchor: Alignment.topLeft,
+          portal: Padding(
+            padding: const EdgeInsets.only(left: kBlockToBlockGap),
+            child: ElevatedButton(
+              onPressed: () {
+                context
+                    .read<LevelEditorBloc>()
+                    .add(const SelectedEditorObjectDeleted());
+              },
+              child: const Icon(Icons.clear),
+              style: ElevatedButton.styleFrom(
+                primary: Theme.of(context).colorScheme.error,
+              ),
+            ),
+          ),
+          child: AnimatedSelectable(
+            isSelected: isSelected,
+            child: isExit
+                ? PuzzleExit(
+                    Segment(const Position(0, 0), Position(width, height)))
+                : PuzzleWall(
+                    Segment(const Position(0, 0), Position(width, height))),
+          ),
         );
       },
     );
