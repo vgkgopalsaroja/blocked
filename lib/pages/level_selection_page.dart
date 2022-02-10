@@ -77,7 +77,7 @@ class LevelSelectionPage extends StatelessWidget {
                                           initialLevelState,
                                           onExit: () {},
                                           onNext: () {}),
-                                      child: const Puzzle(),
+                                      child: const StaticPuzzle(),
                                     ),
                                   ),
                                 ),

@@ -4,6 +4,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:slide/pages/level_page.dart';
 import 'package:slide/puzzle/level.dart';
 import 'package:slide/puzzle/level_reader.dart';
+import 'package:slide/routing/app_route_path.dart';
 import 'package:slide/widgets/editor/generated_board_controls.dart';
 
 class GeneratedLevelPage extends StatelessWidget {
@@ -19,7 +20,7 @@ class GeneratedLevelPage extends StatelessWidget {
           Clipboard.setData(
             ClipboardData(
                 text:
-                    'https://slide.jeffsieu.com/#/editor/generated/$mapString'),
+                    'https://slide.jeffsieu.com/#/editor/generated/${encodeMapString(mapString)}'),
           );
         },
         icon: const Icon(MdiIcons.contentCopy),

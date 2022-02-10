@@ -73,7 +73,7 @@ class LevelPage extends StatelessWidget {
                                       ),
                                     );
                                   },
-                                  child: const StaticPuzzle(),
+                                  child: const Puzzle(),
                                 ),
                               ),
                             ),

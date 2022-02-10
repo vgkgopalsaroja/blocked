@@ -14,21 +14,17 @@ class GeneratedBoardControls extends StatelessWidget {
     final isCompleted =
         context.select((PuzzleBloc bloc) => bloc.state.isCompleted);
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        IconButton(
-          icon: const Icon(Icons.arrow_back_rounded),
-          tooltip: 'Back to editor (Esc)',
-          onPressed: () {
-            context.read<PuzzleBloc>().add(const PuzzleExited());
-          },
-        ),
-        IconButton(
-          icon: const Icon(Icons.refresh_rounded),
-          tooltip: 'Reset (R)',
-          onPressed: () {
-            context.read<PuzzleBloc>().add(const PuzzleReset());
-          },
+        Tooltip(
+          message: 'Back to editor (Esc)',
+          child: TextButton.icon(
+            icon: const Icon(Icons.arrow_back_rounded),
+            label: Text('Back'),
+            onPressed: () {
+              context.read<PuzzleBloc>().add(const PuzzleExited());
+            },
+          ),
         ),
         TextButton.icon(
           onPressed: () {
@@ -40,18 +36,21 @@ class GeneratedBoardControls extends StatelessWidget {
             );
           },
           icon: const Icon(MdiIcons.contentCopy),
-          label: const Text('Copy YAML'),
-        ),
-        if (isCompleted) ...{
-          const Spacer(),
-          ElevatedButton.icon(
-            label: const Text('Next (Enter)'),
-            icon: const Icon(Icons.arrow_forward),
-            onPressed: () {
-              context.read<PuzzleBloc>().add(const NextPuzzle());
-            },
+          label: const Text('YAML'),
+          style: TextButton.styleFrom(
+            primary: Theme.of(context).hintColor,
           ),
-        }
+        ),
+        Tooltip(
+          message: 'Reset (R)',
+          child: ElevatedButton.icon(
+            icon: const Icon(Icons.refresh_rounded),
+            onPressed: () {
+              context.read<PuzzleBloc>().add(const PuzzleReset());
+            },
+            label: const Text('Reset'),
+          ),
+        ),
       ],
     );
   }

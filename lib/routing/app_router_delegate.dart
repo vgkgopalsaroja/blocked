@@ -29,7 +29,7 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
   Widget build(BuildContext context) {
     return BlocConsumer<NavigatorCubit, AppRoutePath>(
       bloc: navigatorCubit,
-      // listenWhen: (previous, current) => isLoaded,
+      listenWhen: (previous, current) => true,
       listener: (context, state) {
         notifyListeners();
       },
