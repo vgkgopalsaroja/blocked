@@ -59,3 +59,46 @@ class PuzzleBlock extends StatelessWidget {
     );
   }
 }
+
+class StaticPuzzleBlock extends StatelessWidget {
+  const StaticPuzzleBlock(
+    this.block, {
+    Key? key,
+    this.isControlled = false,
+  }) : super(key: key);
+
+  final Block block;
+  final bool isControlled;
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme green = ColorScheme.fromSeed(
+        seedColor: Colors.green, brightness: Theme.of(context).brightness);
+    final ColorScheme grey = ColorScheme.fromSeed(
+        seedColor: Colors.grey, brightness: Theme.of(context).brightness);
+    return RepaintBoundary(
+      child: Material(
+        elevation: 8.0,
+        type: MaterialType.transparency,
+        borderRadius: BorderRadius.circular(2.0),
+        child: Container(
+          decoration: BoxDecoration(
+            color: isControlled ? green.primaryContainer : grey.surfaceVariant,
+            borderRadius: BorderRadius.circular(2.0),
+            border: Border.all(
+              color: isControlled ? green.primary : grey.outline,
+              width: 4.0,
+            ),
+          ),
+          width: block.width.toBlockSize(),
+          height: block.height.toBlockSize(),
+          child: Icon(
+            Icons.circle_outlined,
+            color: isControlled ? green.primary : grey.outline,
+            size: min(block.width, block.height) * kBlockSize / 2,
+          ),
+        ),
+      ),
+    );
+  }
+}

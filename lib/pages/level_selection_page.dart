@@ -4,7 +4,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:slide/puzzle/bloc/puzzle_bloc.dart';
 import 'package:slide/puzzle/level_reader.dart';
 import 'package:slide/routing/navigator_cubit.dart';
-import 'package:slide/widgets/puzzle/puzzle.dart';
+import 'package:slide/widgets/puzzle/static_puzzle.dart';
 
 import '../puzzle/level.dart';
 
@@ -61,7 +61,7 @@ class LevelSelectionPage extends StatelessWidget {
                           .read<NavigatorCubit>()
                           .navigateToLevel(level.name);
                     },
-                    child: Ink(
+                    child: Container(
                       padding: const EdgeInsets.all(16),
                       child: Center(
                         child: Row(

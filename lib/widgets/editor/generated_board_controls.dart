@@ -11,8 +11,6 @@ class GeneratedBoardControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isCompleted =
-        context.select((PuzzleBloc bloc) => bloc.state.isCompleted);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -20,7 +18,7 @@ class GeneratedBoardControls extends StatelessWidget {
           message: 'Back to editor (Esc)',
           child: TextButton.icon(
             icon: const Icon(Icons.arrow_back_rounded),
-            label: Text('Back'),
+            label: const Text('Back'),
             onPressed: () {
               context.read<PuzzleBloc>().add(const PuzzleExited());
             },
