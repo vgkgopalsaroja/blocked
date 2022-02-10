@@ -18,16 +18,16 @@ class ResizableState {
           bottom: bottom,
           right: right,
         ),
-        resizingSide = null;
+        resizingSides = [];
   const ResizableState._({
     required this.internalPosition,
     required this.displayedPosition,
-    this.resizingSide,
+    required this.resizingSides,
   });
 
   final ResizablePosition internalPosition;
   final ResizablePosition displayedPosition;
-  final BoxSide? resizingSide;
+  final List<BoxSide> resizingSides;
 
   double get top => displayedPosition.top;
   double get left => displayedPosition.left;
@@ -44,7 +44,7 @@ class ResizableState {
     double? left,
     double? bottom,
     double? right,
-    required BoxSide sideToAdjust,
+    required List<BoxSide> sidesToAdjust,
     required OffsetSnapper? offsetSnapper,
     required SizeSnapper? sizeSnapper,
   }) {
@@ -63,7 +63,7 @@ class ResizableState {
     if (sizeSnapper != null) {
       newDisplayedPosition = newDisplayedPosition.withSize(
         sizeSnapper(newDisplayedPosition.size),
-        sideToAdjust: sideToAdjust,
+        sidesToAdjust: sidesToAdjust,
       );
     }
     if (offsetSnapper != null) {
@@ -73,7 +73,7 @@ class ResizableState {
     return ResizableState._(
       internalPosition: newInternalPosition,
       displayedPosition: newDisplayedPosition,
-      resizingSide: sideToAdjust,
+      resizingSides: sidesToAdjust,
     );
   }
 }
@@ -110,13 +110,10 @@ class ResizablePosition extends Equatable {
     );
   }
 
-  ResizablePosition withSize(Size size, {required BoxSide sideToAdjust}) {
-    bool adjustTop = sideToAdjust == BoxSide.top ||
-        sideToAdjust == BoxSide.topLeft ||
-        sideToAdjust == BoxSide.topRight;
-    bool adjustLeft = sideToAdjust == BoxSide.left ||
-        sideToAdjust == BoxSide.topLeft ||
-        sideToAdjust == BoxSide.bottomLeft;
+  ResizablePosition withSize(Size size,
+      {required List<BoxSide> sidesToAdjust}) {
+    bool adjustTop = sidesToAdjust.contains(BoxSide.top);
+    bool adjustLeft = sidesToAdjust.contains(BoxSide.left);
     double newTop = adjustTop ? bottom - size.height : top;
     double newLeft = adjustLeft ? right - size.width : left;
     double newBottom = adjustTop ? bottom : top + size.height;

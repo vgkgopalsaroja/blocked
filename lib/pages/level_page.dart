@@ -4,16 +4,20 @@ import 'package:slide/level_shortcut_listener.dart';
 import 'package:slide/puzzle/bloc/puzzle_bloc.dart';
 import 'package:slide/puzzle/level.dart';
 import 'package:slide/widgets/puzzle/puzzle.dart';
-import 'package:slide/widgets/puzzle/board_controls.dart';
 
 class LevelPage extends StatelessWidget {
-  const LevelPage(this.level,
-      {Key? key, required this.onExit, required this.onNext})
-      : super(key: key);
+  const LevelPage(
+    this.level, {
+    Key? key,
+    required this.onExit,
+    required this.onNext,
+    required this.boardControls,
+  }) : super(key: key);
 
   final Level level;
   final VoidCallback onExit;
   final VoidCallback onNext;
+  final Widget boardControls;
 
   @override
   Widget build(BuildContext context) {
@@ -23,21 +27,22 @@ class LevelPage extends StatelessWidget {
       child: Builder(builder: (context) {
         return LevelShortcutListener(
           puzzleBloc: context.read<PuzzleBloc>(),
-          child: Scaffold(
-            body: BlocBuilder<PuzzleBloc, PuzzleState>(
-              buildWhen: (previous, current) {
-                return previous.isCompleted != current.isCompleted;
-              },
-              builder: (context, state) {
-                final levelName = level.name;
-                final levelHint = level.hint;
+          child: BlocBuilder<PuzzleBloc, PuzzleState>(
+            buildWhen: (previous, current) {
+              return previous.isCompleted != current.isCompleted;
+            },
+            builder: (context, state) {
+              final levelName = level.name;
+              final levelHint = level.hint;
 
-                return Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Center(
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Center(
+                  child: IntrinsicHeight(
                     child: IntrinsicWidth(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(levelName,
@@ -45,8 +50,8 @@ class LevelPage extends StatelessWidget {
                           if (levelHint != null)
                             Text(levelHint,
                                 style: Theme.of(context).textTheme.titleLarge),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 32.0),
+                          const SizedBox(height: 32),
+                          Expanded(
                             child: Center(
                               child: FittedBox(
                                 child: Hero(
@@ -68,19 +73,20 @@ class LevelPage extends StatelessWidget {
                                       ),
                                     );
                                   },
-                                  child: const Puzzle(),
+                                  child: const StaticPuzzle(),
                                 ),
                               ),
                             ),
                           ),
-                          const BoardControls(),
+                          const SizedBox(height: 32),
+                          boardControls,
                         ],
                       ),
                     ),
                   ),
-                );
-              },
-            ),
+                ),
+              );
+            },
           ),
         );
       }),

@@ -167,7 +167,7 @@ class Resizable extends StatelessWidget {
         left: 0,
         top: kHandleSize,
         bottom: kHandleSize,
-        child: DragHandle(
+        child: DragHandle.side(
           BoxSide.left,
           size: kHandleSize,
         ),
@@ -176,7 +176,7 @@ class Resizable extends StatelessWidget {
         right: 0,
         top: kHandleSize,
         bottom: kHandleSize,
-        child: DragHandle(
+        child: DragHandle.side(
           BoxSide.right,
           size: kHandleSize,
         ),
@@ -185,7 +185,7 @@ class Resizable extends StatelessWidget {
         left: kHandleSize,
         right: kHandleSize,
         top: 0,
-        child: DragHandle(
+        child: DragHandle.side(
           BoxSide.top,
           size: kHandleSize,
         ),
@@ -194,27 +194,27 @@ class Resizable extends StatelessWidget {
         left: kHandleSize,
         right: kHandleSize,
         bottom: 0,
-        child: DragHandle(BoxSide.bottom, size: kHandleSize),
+        child: DragHandle.side(BoxSide.bottom, size: kHandleSize),
       ),
       const Positioned(
         left: 0,
         top: 0,
-        child: DragHandle(BoxSide.topLeft, size: kHandleSize),
+        child: DragHandle.corner(BoxCorner.topLeft, size: kHandleSize),
       ),
       const Positioned(
         right: 0,
         top: 0,
-        child: DragHandle(BoxSide.topRight, size: kHandleSize),
+        child: DragHandle.corner(BoxCorner.topRight, size: kHandleSize),
       ),
       const Positioned(
         left: 0,
         bottom: 0,
-        child: DragHandle(BoxSide.bottomLeft, size: kHandleSize),
+        child: DragHandle.corner(BoxCorner.bottomLeft, size: kHandleSize),
       ),
       const Positioned(
         right: 0,
         bottom: 0,
-        child: DragHandle(BoxSide.bottomRight, size: kHandleSize),
+        child: DragHandle.corner(BoxCorner.bottomRight, size: kHandleSize),
       ),
     ];
   }

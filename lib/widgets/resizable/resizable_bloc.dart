@@ -20,7 +20,7 @@ class ResizableBloc extends Bloc<ResizeEvent, ResizableState> {
         ),
         super(ResizableState(
             top: top, left: left, bottom: top + height, right: left + width)) {
-    on<Resize>(_onResize);
+    on<ResizeSide>(_onResize);
     on<ResizeCorner>(_onResizeCorner);
     on<Pan>(_onPan);
     on<ResizeEnd>(_onResizeEnd);
@@ -32,14 +32,14 @@ class ResizableBloc extends Bloc<ResizeEvent, ResizableState> {
   final bool snapWhileResizing;
   final bool snapWhileMoving;
 
-  void _onResize(Resize event, Emitter<ResizableState> emit) {
+  void _onResize(ResizeSide event, Emitter<ResizableState> emit) {
     switch (event.side) {
       case BoxSide.top:
         emit(state.copyWith(
           top: state.internalPosition.top + event.delta,
           sizeSnapper: snapSizeDelegate?.sizeSnapper,
           offsetSnapper: snapOffsetDelegate?.offsetSnapper,
-          sideToAdjust: event.side,
+          sidesToAdjust: [event.side],
         ));
         break;
       case BoxSide.left:
@@ -47,7 +47,7 @@ class ResizableBloc extends Bloc<ResizeEvent, ResizableState> {
           left: state.internalPosition.left + event.delta,
           sizeSnapper: snapSizeDelegate?.sizeSnapper,
           offsetSnapper: snapOffsetDelegate?.offsetSnapper,
-          sideToAdjust: event.side,
+          sidesToAdjust: [event.side],
         ));
         break;
       case BoxSide.bottom:
@@ -55,7 +55,7 @@ class ResizableBloc extends Bloc<ResizeEvent, ResizableState> {
           bottom: state.internalPosition.bottom + event.delta,
           sizeSnapper: snapSizeDelegate?.sizeSnapper,
           offsetSnapper: snapOffsetDelegate?.offsetSnapper,
-          sideToAdjust: event.side,
+          sidesToAdjust: [event.side],
         ));
         break;
       case BoxSide.right:
@@ -63,7 +63,7 @@ class ResizableBloc extends Bloc<ResizeEvent, ResizableState> {
           right: state.internalPosition.right + event.delta,
           sizeSnapper: snapSizeDelegate?.sizeSnapper,
           offsetSnapper: snapOffsetDelegate?.offsetSnapper,
-          sideToAdjust: event.side,
+          sidesToAdjust: [event.side],
         ));
         break;
       default:
@@ -71,39 +71,39 @@ class ResizableBloc extends Bloc<ResizeEvent, ResizableState> {
   }
 
   void _onResizeCorner(ResizeCorner event, Emitter<ResizableState> emit) {
-    switch (event.side) {
-      case BoxSide.topLeft:
+    switch (event.corner) {
+      case BoxCorner.topLeft:
         emit(state.copyWith(
           top: state.internalPosition.top + event.delta.dy,
           left: state.internalPosition.left + event.delta.dx,
           sizeSnapper: snapSizeDelegate?.sizeSnapper,
           offsetSnapper: snapOffsetDelegate?.offsetSnapper,
-          sideToAdjust: event.side,
+          sidesToAdjust: event.corner.sides,
         ));
         break;
-      case BoxSide.topRight:
+      case BoxCorner.topRight:
         emit(state.copyWith(
           top: state.internalPosition.top + event.delta.dy,
           right: state.internalPosition.right + event.delta.dx,
           sizeSnapper: snapSizeDelegate?.sizeSnapper,
           offsetSnapper: snapOffsetDelegate?.offsetSnapper,
-          sideToAdjust: event.side,
+          sidesToAdjust: event.corner.sides,
         ));
         break;
-      case BoxSide.bottomLeft:
+      case BoxCorner.bottomLeft:
         emit(state.copyWith(
           bottom: state.internalPosition.bottom + event.delta.dy,
           left: state.internalPosition.left + event.delta.dx,
           sizeSnapper: snapSizeDelegate?.sizeSnapper,
           offsetSnapper: snapOffsetDelegate?.offsetSnapper,
-          sideToAdjust: event.side,
+          sidesToAdjust: event.corner.sides,
         ));
         break;
-      case BoxSide.bottomRight:
+      case BoxCorner.bottomRight:
         emit(state.copyWith(
           bottom: state.internalPosition.bottom + event.delta.dy,
           right: state.internalPosition.right + event.delta.dx,
-          sideToAdjust: event.side,
+          sidesToAdjust: event.corner.sides,
           sizeSnapper: snapSizeDelegate?.sizeSnapper,
           offsetSnapper: snapOffsetDelegate?.offsetSnapper,
         ));
@@ -120,7 +120,7 @@ class ResizableBloc extends Bloc<ResizeEvent, ResizableState> {
       right: state.internalPosition.right + delta.dx,
       offsetSnapper: snapOffsetDelegate?.offsetSnapper,
       sizeSnapper: snapSizeDelegate?.sizeSnapper,
-      sideToAdjust: BoxSide.bottomRight,
+      sidesToAdjust: [],
     ));
   }
 
@@ -135,7 +135,7 @@ class ResizableBloc extends Bloc<ResizeEvent, ResizableState> {
         left: snapOffset.dx,
         sizeSnapper: snapSizeDelegate?.sizeSnapper,
         offsetSnapper: snapOffsetDelegate?.offsetSnapper,
-        sideToAdjust: BoxSide.bottomRight,
+        sidesToAdjust: [],
       ));
     }
   }
@@ -150,7 +150,7 @@ class ResizableBloc extends Bloc<ResizeEvent, ResizableState> {
         bottom: state.internalPosition.top + snapSize.height,
         sizeSnapper: snapSizeDelegate?.sizeSnapper,
         offsetSnapper: snapOffsetDelegate?.offsetSnapper,
-        sideToAdjust: BoxSide.bottomRight,
+        sidesToAdjust: [],
       ));
     }
   }

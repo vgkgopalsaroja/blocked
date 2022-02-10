@@ -1,11 +1,11 @@
 part of 'resizable.dart';
 
 extension on BoxSide {
-  bool get isCorner =>
-      this == BoxSide.topLeft ||
-      this == BoxSide.topRight ||
-      this == BoxSide.bottomLeft ||
-      this == BoxSide.bottomRight;
+  // bool get isCorner =>
+  //     this == BoxSide.topLeft ||
+  //     this == BoxSide.topRight ||
+  //     this == BoxSide.bottomLeft ||
+  //     this == BoxSide.bottomRight;
   bool get isVertical => this == BoxSide.top || this == BoxSide.bottom;
   bool get isHorizontal => this == BoxSide.left || this == BoxSide.right;
 
@@ -14,13 +14,21 @@ extension on BoxSide {
       return SystemMouseCursors.resizeUpDown;
     } else if (isHorizontal) {
       return SystemMouseCursors.resizeLeftRight;
-    } else if (this == BoxSide.topLeft) {
+    } else {
+      throw Error();
+    }
+  }
+}
+
+extension on BoxCorner {
+  MouseCursor toResizeCursor() {
+    if (this == BoxCorner.topLeft) {
       return SystemMouseCursors.resizeUpLeft;
-    } else if (this == BoxSide.topRight) {
+    } else if (this == BoxCorner.topRight) {
       return SystemMouseCursors.resizeUpRight;
-    } else if (this == BoxSide.bottomLeft) {
+    } else if (this == BoxCorner.bottomLeft) {
       return SystemMouseCursors.resizeDownLeft;
-    } else if (this == BoxSide.bottomRight) {
+    } else if (this == BoxCorner.bottomRight) {
       return SystemMouseCursors.resizeDownRight;
     } else {
       throw Error();
@@ -54,52 +62,58 @@ class PanHandle extends StatelessWidget {
 }
 
 class DragHandle extends StatelessWidget {
-  const DragHandle(this.side, {required this.size, Key? key}) : super(key: key);
+  const DragHandle.side(this.side, {required this.size, Key? key})
+      : corner = null,
+        super(key: key);
+  const DragHandle.corner(this.corner, {required this.size, Key? key})
+      : side = null,
+        super(key: key);
 
-  final BoxSide side;
+  final BoxSide? side;
+  final BoxCorner? corner;
   final double size;
 
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      cursor: side.toResizeCursor(),
+      cursor: side?.toResizeCursor() ?? corner!.toResizeCursor(),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onVerticalDragUpdate: side.isVertical
+        onVerticalDragUpdate: (side?.isVertical ?? false)
             ? (details) {
-                context.read<ResizableBloc>().add(Resize(
-                      side: side,
+                context.read<ResizableBloc>().add(ResizeSide(
+                      side: side!,
                       delta: details.primaryDelta!,
                     ));
               }
             : null,
-        onVerticalDragEnd: side.isVertical
+        onVerticalDragEnd: (side?.isVertical ?? false)
             ? (details) {
                 context.read<ResizableBloc>().add(const ResizeEnd());
               }
             : null,
-        onHorizontalDragUpdate: side.isHorizontal
+        onHorizontalDragUpdate: (side?.isHorizontal ?? false)
             ? (details) {
-                context.read<ResizableBloc>().add(Resize(
-                      side: side,
+                context.read<ResizableBloc>().add(ResizeSide(
+                      side: side!,
                       delta: details.primaryDelta!,
                     ));
               }
             : null,
-        onHorizontalDragEnd: side.isHorizontal
+        onHorizontalDragEnd: (side?.isHorizontal ?? false)
             ? (details) {
                 context.read<ResizableBloc>().add(const ResizeEnd());
               }
             : null,
-        onPanUpdate: side.isCorner
+        onPanUpdate: corner != null
             ? (details) {
                 context.read<ResizableBloc>().add(ResizeCorner(
-                      side: side,
+                      corner: corner!,
                       delta: details.delta,
                     ));
               }
             : null,
-        onPanEnd: side.isCorner
+        onPanEnd: corner != null
             ? (details) {
                 context.read<ResizableBloc>().add(const ResizeEnd());
               }

@@ -35,7 +35,7 @@ class ResizableFloor extends StatelessWidget {
         kBlockSize + kBlockToBlockGap,
       ),
       onTap: () {
-        context.read<LevelEditorBloc>().add(EditorObjectSelected(null));
+        context.read<LevelEditorBloc>().add(const EditorObjectSelected(null));
       },
       onUpdate: (position) {
         final newSize = position.size;

@@ -5,10 +5,28 @@ enum BoxSide {
   left,
   bottom,
   right,
+}
+
+enum BoxCorner {
   topLeft,
   topRight,
   bottomLeft,
   bottomRight,
+}
+
+extension CornerToSides on BoxCorner {
+  List<BoxSide> get sides {
+    switch (this) {
+      case BoxCorner.topLeft:
+        return [BoxSide.top, BoxSide.left];
+      case BoxCorner.topRight:
+        return [BoxSide.top, BoxSide.right];
+      case BoxCorner.bottomLeft:
+        return [BoxSide.bottom, BoxSide.left];
+      case BoxCorner.bottomRight:
+        return [BoxSide.bottom, BoxSide.right];
+    }
+  }
 }
 
 abstract class ResizeEvent {
@@ -25,8 +43,8 @@ class PanEnd extends ResizeEvent {
   const PanEnd();
 }
 
-class Resize extends ResizeEvent {
-  const Resize({
+class ResizeSide extends ResizeEvent {
+  const ResizeSide({
     required this.side,
     required this.delta,
   });
@@ -37,11 +55,11 @@ class Resize extends ResizeEvent {
 
 class ResizeCorner extends ResizeEvent {
   const ResizeCorner({
-    required this.side,
+    required this.corner,
     required this.delta,
   });
 
-  final BoxSide side;
+  final BoxCorner corner;
   final Offset delta;
 }
 

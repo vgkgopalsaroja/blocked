@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:slide/editor/bloc/level_editor_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:slide/routing/app_route_path.dart';
 import 'package:slide/widgets/editor/adaptive_button.dart';
 
 class EditorToolbar extends StatelessWidget {
@@ -121,11 +119,5 @@ class EditorToolbar extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-extension on String {
-  String encodeAsMapString() {
-    return encodeMapString(this);
   }
 }
