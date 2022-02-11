@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:slide/puzzle/model/segment.dart';
+import 'package:slide/widgets/puzzle/board_colors.dart';
 import 'board_constants.dart';
 
 class PuzzleWall extends StatelessWidget {
@@ -20,7 +21,7 @@ class PuzzleWall extends StatelessWidget {
       curve: curve,
       duration: duration,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.outline,
+        color: BoardColor.of(context).wall,
         borderRadius: BorderRadius.circular(2.0),
       ),
       width: segment.width.toWallSize(),
@@ -39,7 +40,7 @@ class PuzzleExit extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: Theme.of(context).colorScheme.outline,
+          color: BoardColor.of(context).wall,
           width: 2.0,
         ),
       ),

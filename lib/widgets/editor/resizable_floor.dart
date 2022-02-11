@@ -71,7 +71,7 @@ class ResizableFloor extends StatelessWidget {
 
         return Stack(
           children: [
-            PuzzleFloor(
+            PuzzleFloor.material(
               width: boardWidth,
               height: boardHeight,
             ),

@@ -1,5 +1,4 @@
 const kBlockSize = 64.0;
-// const kBoardPadding = 12.0;
 const kBlockGap = 4.0;
 const kWallWidth = 8.0;
 const kBlockToBlockGap = 2 * kBlockGap + kWallWidth;

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:slide/puzzle/model/block.dart';
+import 'package:slide/widgets/puzzle/board_colors.dart';
 import 'package:slide/widgets/puzzle/board_constants.dart';
 
 const _defaultDuration = Duration(milliseconds: 225); // kSlideDuration * 1.5
@@ -22,10 +23,7 @@ class PuzzleBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme green = ColorScheme.fromSeed(
-        seedColor: Colors.green, brightness: Theme.of(context).brightness);
-    final ColorScheme grey = ColorScheme.fromSeed(
-        seedColor: Colors.grey, brightness: Theme.of(context).brightness);
+    final boardColors = BoardColor.of(context);
     return RepaintBoundary(
       child: Material(
         elevation: 8.0,
@@ -34,23 +32,29 @@ class PuzzleBlock extends StatelessWidget {
         child: AnimatedContainer(
           curve: curve,
           decoration: BoxDecoration(
-            color: isControlled ? green.primaryContainer : grey.surfaceVariant,
+            color:
+                isControlled ? boardColors.controlledBlock : boardColors.block,
             borderRadius: BorderRadius.circular(4.0),
             border: Border.all(
-              color: isControlled ? green.primary : grey.outline,
+              color: isControlled
+                  ? boardColors.controlledBlockOutline
+                  : boardColors.blockOutline,
               width: 4.0,
             ),
           ),
           duration: duration,
           width: block.width.toBlockSize(),
           height: block.height.toBlockSize(),
+          alignment: Alignment.center,
           child: AnimatedOpacity(
             opacity: block.isMain ? 1 : 0,
             duration: duration,
             curve: curve,
             child: Icon(
               Icons.circle_outlined,
-              color: isControlled ? green.primary : grey.outline,
+              color: isControlled
+                  ? boardColors.controlledBlockOutline
+                  : boardColors.blockOutline,
               size: min(block.width, block.height) * kBlockSize / 2,
             ),
           ),

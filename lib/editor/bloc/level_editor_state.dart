@@ -299,8 +299,6 @@ class LevelEditorState {
     final dx = -floor.left;
     final dy = -floor.top;
 
-    // TODO: Catch walls/blocks outside of play area.
-
     PuzzleState state = PuzzleState.initial(
       floor.width,
       floor.height,

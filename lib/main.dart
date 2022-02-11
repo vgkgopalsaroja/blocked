@@ -1,3 +1,4 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:slide/puzzle/level_reader.dart';
@@ -25,43 +26,32 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    ColorScheme colorScheme = ColorScheme.fromSeed(
-        seedColor: Colors.orange, brightness: Brightness.dark);
-    return Builder(
-      builder: (context) => MaterialApp.router(
-        title: 'slide',
-        themeMode: ThemeMode.dark,
-        darkTheme: ThemeData(
-          useMaterial3: true,
-          colorScheme: colorScheme,
-          textButtonTheme: TextButtonThemeData(
-            style: TextButton.styleFrom(
-              padding: const EdgeInsets.all(16),
-            ),
-          ),
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.all(16),
-            ),
-          ),
-          outlinedButtonTheme: OutlinedButtonThemeData(
-            style: OutlinedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4.0),
-                ),
-                side: BorderSide(color: colorScheme.outline, width: 2)),
-          ),
-          textTheme: GoogleFonts.poppinsTextTheme(
-            ThemeData.dark().textTheme,
-          ),
+    ColorScheme greenColorScheme = ColorScheme.fromSeed(
+        seedColor: Colors.green, brightness: Brightness.dark);
+    return MaterialApp.router(
+      title: 'slide',
+      themeMode: ThemeMode.system,
+      theme: FlexThemeData.dark(
+        colors: FlexSchemeColor.from(
+          primary: greenColorScheme.primary,
+          secondary: greenColorScheme.tertiary,
         ),
-        routerDelegate: AppRouterDelegate(
-          // navigatorCubit: context.select((NavigatorCubit cubit) => cubit),
-          levelList: LevelList(widget.levels),
-          navigatorKey: navigatorKey,
+        useSubThemes: true,
+        blendLevel: 16,
+        fontFamily: GoogleFonts.poppins().fontFamily,
+        subThemesData: const FlexSubThemesData(
+          buttonPadding: EdgeInsets.all(16),
+          textButtonRadius: 8,
+          outlinedButtonRadius: 8,
+          elevatedButtonRadius: 8,
         ),
-        routeInformationParser: AppRouteParser(),
+        surfaceMode: FlexSurfaceMode.highBackgroundLowScaffold,
       ),
+      routerDelegate: AppRouterDelegate(
+        levelList: LevelList(widget.levels),
+        navigatorKey: navigatorKey,
+      ),
+      routeInformationParser: AppRouteParser(),
     );
   }
 }

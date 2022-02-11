@@ -42,7 +42,7 @@ class _PuzzleState extends State<Puzzle> with SingleTickerProviderStateMixin {
               await controller.reverse();
             }
           },
-          child: PuzzleFloor(
+          child: PuzzleFloor.container(
             width: board.width,
             height: board.height,
             child: Stack(

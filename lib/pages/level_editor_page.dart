@@ -95,7 +95,7 @@ class LevelEditorPage extends StatelessWidget {
                                 color: Theme.of(context)
                                     .colorScheme
                                     .outline
-                                    .withOpacity(0.5),
+                                    .withOpacity(0.3),
                               )),
                             for (var object in state.objects) ...{
                               if (object is EditorFloor) ...{

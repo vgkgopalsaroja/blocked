@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:slide/puzzle/bloc/puzzle_bloc.dart';
 import 'package:slide/puzzle/model/block.dart';
+import 'package:slide/widgets/puzzle/board_colors.dart';
 import 'package:slide/widgets/puzzle/board_constants.dart';
 
 class BoardPainter extends CustomPainter {
-  const BoardPainter(this.context, this.board, this.controlledBlock);
+  BoardPainter(this.context, this.board, this.controlledBlock)
+      : boardColors = BoardColor.of(context);
 
   final PuzzleState board;
   final BuildContext context;
   final PlacedBlock controlledBlock;
+  final BoardColorData boardColors;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -21,7 +24,7 @@ class BoardPainter extends CustomPainter {
         Paint()..color = Theme.of(context).colorScheme.surface);
 
     for (var wall in board.walls) {
-      final wallPaint = Paint()..color = Theme.of(context).colorScheme.outline;
+      final wallPaint = Paint()..color = boardColors.wall;
       final wallRect = Rect.fromLTWH(
           wall.start.x.toWallOffset(),
           wall.start.y.toWallOffset(),
@@ -32,19 +35,16 @@ class BoardPainter extends CustomPainter {
           wallPaint);
     }
 
-    final ColorScheme green = ColorScheme.fromSeed(
-        seedColor: Colors.green, brightness: Theme.of(context).brightness);
-    final ColorScheme grey = ColorScheme.fromSeed(
-        seedColor: Colors.grey, brightness: Theme.of(context).brightness);
-
     for (var block in board.blocks) {
       final blockPaint = Paint()
         ..color = block == controlledBlock
-            ? green.primaryContainer
-            : grey.surfaceVariant
+            ? boardColors.controlledBlock
+            : boardColors.block
         ..style = PaintingStyle.fill;
       final outlinePaint = Paint()
-        ..color = block == controlledBlock ? green.primary : grey.outline
+        ..color = block == controlledBlock
+            ? boardColors.controlledBlockOutline
+            : boardColors.blockOutline
         ..style = PaintingStyle.stroke
         ..strokeWidth = 4;
       final blockRect = Rect.fromLTWH(
