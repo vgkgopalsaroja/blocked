@@ -15,106 +15,73 @@ class EditorToolbar extends StatelessWidget {
         context.select((LevelEditorBloc bloc) => bloc);
     final EditorTool selectedTool =
         context.select((LevelEditorBloc bloc) => bloc.state.selectedTool);
-    final String? puzzleError =
-        context.select((LevelEditorBloc bloc) => bloc.state.puzzleError);
-    final bool isGridVisible =
-        context.select((LevelEditorBloc bloc) => bloc.state.isGridVisible);
 
     return RepaintBoundary(
       child: Material(
         elevation: 8.0,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              if (puzzleError != null)
-                Container(
-                  color: Theme.of(context).colorScheme.errorContainer,
-                  child: Text(
-                    puzzleError,
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.onErrorContainer),
-                  ),
+          child: IntrinsicHeight(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AdaptiveTextButton(
+                  icon: const Icon(MdiIcons.cursorDefault),
+                  label: const Text('Select (Q)'),
+                  onPressed: () {
+                    context
+                        .read<LevelEditorBloc>()
+                        .add(const EditorToolSelected(EditorTool.move));
+                  },
+                  style: selectedTool == EditorTool.move
+                      ? TextButton.styleFrom(
+                          primary: Theme.of(context).colorScheme.onPrimary,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                        )
+                      : null,
                 ),
-              Wrap(
-                spacing: 8.0,
-                runSpacing: 8.0,
-                runAlignment: WrapAlignment.center,
-                children: [
-                  AdaptiveTextButton(
-                    icon: const Icon(MdiIcons.cursorDefault),
-                    label: const Text('Select (Q)'),
-                    onPressed: () {
-                      context
-                          .read<LevelEditorBloc>()
-                          .add(const EditorToolSelected(EditorTool.move));
-                    },
-                    style: selectedTool == EditorTool.move
-                        ? TextButton.styleFrom(
-                            primary: Theme.of(context).colorScheme.onPrimary,
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary,
-                          )
-                        : null,
-                  ),
-                  AdaptiveTextButton(
-                    icon: const Icon(MdiIcons.wall),
-                    label: const Text('Wall/Exit (W)'),
-                    onPressed: () {
-                      levelEditorBloc
-                          .add(const EditorToolSelected(EditorTool.segment));
-                    },
-                    style: selectedTool == EditorTool.segment
-                        ? TextButton.styleFrom(
-                            primary: Theme.of(context).colorScheme.onPrimary,
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary,
-                          )
-                        : null,
-                  ),
-                  AdaptiveTextButton(
-                    icon: const Icon(MdiIcons.checkboxIntermediate),
-                    label: const Text('Block (E)'),
-                    onPressed: () {
-                      levelEditorBloc
-                          .add(const EditorToolSelected(EditorTool.block));
-                    },
-                    style: selectedTool == EditorTool.block
-                        ? TextButton.styleFrom(
-                            primary: Theme.of(context).colorScheme.onPrimary,
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary,
-                          )
-                        : null,
-                  ),
-                  AdaptiveTextButton(
-                    icon: isGridVisible
-                        ? const Icon(Icons.grid_on_rounded)
-                        : const Icon(Icons.grid_off_rounded),
-                    label: const Text('Grid (G)'),
-                    onPressed: () {
-                      levelEditorBloc.add(const GridToggled());
-                    },
-                  ),
-                  AdaptiveTextButton(
-                    icon: const Icon(Icons.delete_rounded),
-                    label: const Text('Clear (C)'),
-                    onPressed: () {
-                      levelEditorBloc.add(const MapCleared());
-                    },
-                  ),
-                  AdaptiveTextButton(
-                    icon: const Icon(Icons.save),
-                    label: const Text('Save (S)'),
-                    onPressed: () {
-                      levelEditorBloc.add(const SavePressed());
-                    },
-                  ),
-                ],
-              ),
-            ],
+                AdaptiveTextButton(
+                  icon: const Icon(MdiIcons.wall),
+                  label: const Text('Wall/Exit (W)'),
+                  onPressed: () {
+                    levelEditorBloc
+                        .add(const EditorToolSelected(EditorTool.segment));
+                  },
+                  style: selectedTool == EditorTool.segment
+                      ? TextButton.styleFrom(
+                          primary: Theme.of(context).colorScheme.onPrimary,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                        )
+                      : null,
+                ),
+                AdaptiveTextButton(
+                  icon: const Icon(MdiIcons.checkboxIntermediate),
+                  label: const Text('Block (E)'),
+                  onPressed: () {
+                    levelEditorBloc
+                        .add(const EditorToolSelected(EditorTool.block));
+                  },
+                  style: selectedTool == EditorTool.block
+                      ? TextButton.styleFrom(
+                          primary: Theme.of(context).colorScheme.onPrimary,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                        )
+                      : null,
+                ),
+                VerticalDivider(
+                    color: Theme.of(context).colorScheme.primaryContainer),
+                AdaptiveTextButton(
+                  icon: const Icon(Icons.delete_rounded),
+                  label: const Text('Clear (C)'),
+                  onPressed: () {
+                    levelEditorBloc.add(const MapCleared());
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

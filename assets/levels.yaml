@@ -184,6 +184,7 @@
     *********
 
 - name: 2-9
+  hint: This looks familiar.
   map: |-
     ***********
     *MMM.....xe
@@ -194,6 +195,7 @@
     ***********
 
 - name: 2-10
+  hint: So close yet so far.
   map: |-
     *********
     *m.xxx..*

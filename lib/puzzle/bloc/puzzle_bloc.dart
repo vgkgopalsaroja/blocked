@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slide/puzzle/level_reader.dart';
@@ -61,7 +60,7 @@ class NextPuzzle extends PuzzleEvent {
   const NextPuzzle();
 }
 
-class MoveAttempt extends PuzzleEvent with EquatableMixin {
+class MoveAttempt extends PuzzleEvent {
   const MoveAttempt(this.direction);
 
   final MoveDirection direction;
@@ -73,9 +72,6 @@ class MoveAttempt extends PuzzleEvent with EquatableMixin {
   Move moved(PlacedBlock block) {
     return Move(block, direction, true);
   }
-
-  @override
-  List<Object?> get props => [direction];
 }
 
 class Move extends MoveAttempt {
@@ -84,9 +80,6 @@ class Move extends MoveAttempt {
 
   final PlacedBlock block;
   final bool didMove;
-
-  @override
-  List<Object?> get props => [block, direction, didMove];
 }
 
 extension MovePosition on Position {

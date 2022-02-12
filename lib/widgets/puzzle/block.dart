@@ -50,12 +50,18 @@ class PuzzleBlock extends StatelessWidget {
             opacity: block.isMain ? 1 : 0,
             duration: duration,
             curve: curve,
-            child: Icon(
-              Icons.circle_outlined,
-              color: isControlled
-                  ? boardColors.controlledBlockOutline
-                  : boardColors.blockOutline,
-              size: min(block.width, block.height) * kBlockSize / 2,
+            child: AnimatedSwitcher(
+              duration: duration,
+              switchInCurve: curve,
+              switchOutCurve: curve.flipped,
+              child: Icon(
+                Icons.circle_outlined,
+                key: ValueKey(isControlled),
+                color: isControlled
+                    ? boardColors.controlledBlockOutline
+                    : boardColors.blockOutline,
+                size: min(block.width, block.height) * kBlockSize / 2,
+              ),
             ),
           ),
         ),

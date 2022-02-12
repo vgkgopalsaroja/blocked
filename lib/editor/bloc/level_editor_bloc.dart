@@ -67,9 +67,13 @@ class LevelEditorBloc extends Bloc<LevelEditorEvent, LevelEditorState> {
     final mapString = state.getMapString();
     if (mapString != null) {
       navigatorCubit.navigateToEditor(mapString);
+      emit(state.copyWith(
+        snackbarMessage: const SnackbarMessage.info('Puzzle saved to url'),
+      ));
     } else {
       emit(state.copyWith(
-        puzzleError: 'Cannot save invalid puzzle',
+        snackbarMessage:
+            const SnackbarMessage.error('Cannot save invalid puzzle'),
       ));
     }
   }

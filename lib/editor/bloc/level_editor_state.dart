@@ -13,26 +13,25 @@ class LevelEditorState {
   const LevelEditorState.initial(this.objects)
       : selectedObject = null,
         generatedPuzzle = null,
-        puzzleError = null,
+        snackbarMessage = null,
         selectedTool = EditorTool.move,
         isGridVisible = true;
   const LevelEditorState(
     this.objects, {
     required this.selectedObject,
     required this.generatedPuzzle,
-    required this.puzzleError,
+    required this.snackbarMessage,
     required this.selectedTool,
     required this.isGridVisible,
   });
 
   static const EditorObject _invalidObject = _InvalidEditorObject();
   static const PuzzleState _invalidPuzzleState = _InvalidPuzzleState();
-  static const String _invalidPuzzleError = 'Valid';
 
   final List<EditorObject> objects;
   final EditorObject? selectedObject;
   final PuzzleState? generatedPuzzle;
-  final String? puzzleError;
+  final SnackbarMessage? snackbarMessage;
   final EditorTool selectedTool;
   final bool isGridVisible;
 
@@ -143,7 +142,7 @@ class LevelEditorState {
     List<EditorObject>? objects,
     EditorObject? selectedObject = _invalidObject,
     PuzzleState? generatedPuzzle = _invalidPuzzleState,
-    String? puzzleError = _invalidPuzzleError,
+    SnackbarMessage? snackbarMessage,
     EditorTool? selectedTool,
     bool? isGridVisible,
   }) {
@@ -155,9 +154,8 @@ class LevelEditorState {
       generatedPuzzle: generatedPuzzle != _invalidPuzzleState
           ? generatedPuzzle
           : this.generatedPuzzle,
-      puzzleError:
-          puzzleError != _invalidPuzzleError ? puzzleError : this.puzzleError,
       selectedTool: selectedTool ?? this.selectedTool,
+      snackbarMessage: snackbarMessage ?? this.snackbarMessage,
       isGridVisible: isGridVisible ?? this.isGridVisible,
     );
   }
@@ -165,15 +163,15 @@ class LevelEditorState {
   LevelEditorState withGeneratedPuzzle() {
     try {
       return copyWith(
-          generatedPuzzle: _generatePuzzleFromEditorObjects(),
-          puzzleError: null);
+        generatedPuzzle: _generatePuzzleFromEditorObjects(),
+      );
     } on EditorException catch (e) {
-      return copyWith(puzzleError: e.message);
+      return copyWith(snackbarMessage: SnackbarMessage.error(e.message));
     }
   }
 
   LevelEditorState withoutGeneratedPuzzle() {
-    return copyWith(generatedPuzzle: null, puzzleError: null);
+    return copyWith(generatedPuzzle: null);
   }
 
   LevelEditorState withSelectedObject(EditorObject? object) {
@@ -204,8 +202,6 @@ class LevelEditorState {
     ];
 
     newObjects[newObjects.indexOf(object)] = newObject;
-    // newObjects.remove(object);
-    // newObjects.add(newObject);
 
     return copyWith(
         objects: newObjects,
@@ -309,4 +305,20 @@ class LevelEditorState {
     );
     return state;
   }
+}
+
+enum SnackbarMessageType {
+  error,
+  info,
+}
+
+class SnackbarMessage {
+  const SnackbarMessage._(this.message, this.type);
+  const SnackbarMessage.error(String message)
+      : this._(message, SnackbarMessageType.error);
+  const SnackbarMessage.info(String message)
+      : this._(message, SnackbarMessageType.info);
+
+  final String message;
+  final SnackbarMessageType type;
 }

@@ -20,7 +20,8 @@ class ResizableFloor extends StatelessWidget {
     List<Segment> exits = context.select((LevelEditorBloc bloc) =>
         bloc.state.exits.map((e) => e.toSegment()).toList());
     return Resizable(
-      enabled: true,
+      enabled: context
+          .select((LevelEditorBloc bloc) => bloc.state.selectedObject == null),
       initialSize: Size(floor.width.toBoardSize(), floor.height.toBoardSize()),
       minHeight: 1.toBoardSize(),
       minWidth: 1.toBoardSize(),

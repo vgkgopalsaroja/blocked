@@ -15,15 +15,10 @@ class EditorShortcutListener extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    FocusScope.of(context).requestFocus(focusNode);
     return FocusableActionDetector(
       autofocus: true,
-      onFocusChange: (hasFocus) {
-        if (!hasFocus) {
-          if (FocusScope.of(context).focusedChild == null) {
-            FocusScope.of(context).requestFocus(focusNode);
-          }
-        }
-      },
+      descendantsAreFocusable: false,
       focusNode: focusNode,
       shortcuts: {
         LogicalKeySet(LogicalKeyboardKey.keyQ):
