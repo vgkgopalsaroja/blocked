@@ -1,15 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:slide/pages/generated_level_page.dart';
-import 'package:slide/pages/level_editor_page.dart';
-import 'package:slide/pages/level_page.dart';
-import 'package:slide/routing/app_route_path.dart';
-import 'package:slide/level/bloc/level_bloc.dart';
-import 'package:slide/pages/level_selection_page.dart';
-import 'package:slide/routing/navigator_cubit.dart';
-import 'package:slide/widgets/puzzle/board_colors.dart';
-import 'package:slide/widgets/puzzle/board_controls.dart';
+import 'package:slide/editor/editor.dart';
+import 'package:slide/level/level.dart';
+import 'package:slide/level_selection/level_selection.dart';
+import 'package:slide/models/models.dart';
+import 'package:slide/puzzle/puzzle.dart';
+import 'package:slide/routing/routing.dart';
 
 class AppRouterDelegate extends RouterDelegate<AppRoutePath>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {

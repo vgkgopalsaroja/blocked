@@ -1,10 +1,9 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:slide/puzzle/level_reader.dart';
-import 'package:slide/routing/app_route_parser.dart';
-import 'package:slide/routing/app_router_delegate.dart';
-import 'package:slide/level/bloc/level_bloc.dart';
+import 'package:slide/level/level.dart';
+import 'package:slide/models/models.dart';
+import 'package:slide/routing/routing.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

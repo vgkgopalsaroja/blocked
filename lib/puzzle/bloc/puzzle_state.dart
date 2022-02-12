@@ -116,7 +116,7 @@ class PuzzleState {
 
   PuzzleState withMoveAttempt(MoveAttempt move) {
     final movedBlock = controlledBlock;
-    final newPosition = movedBlock.position.move(move.direction);
+    final newPosition = movedBlock.position.shifted(move.direction);
     final newBlock = movedBlock.withPosition(newPosition);
     if (hasWallInDirection(movedBlock, move.direction)) {
       return this;
@@ -204,5 +204,20 @@ class PuzzleState {
   /// Convert the puzzle to a string representation parseable by [LevelReader].
   String toMapString() {
     return LevelReader.stateToMapString(this);
+  }
+}
+
+extension on Position {
+  Position shifted(MoveDirection direction) {
+    switch (direction) {
+      case MoveDirection.up:
+        return Position(x, y - 1);
+      case MoveDirection.down:
+        return Position(x, y + 1);
+      case MoveDirection.left:
+        return Position(x - 1, y);
+      case MoveDirection.right:
+        return Position(x + 1, y);
+    }
   }
 }

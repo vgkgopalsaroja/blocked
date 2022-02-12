@@ -1,14 +1,12 @@
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:slide/puzzle/level_reader.dart';
-import 'package:slide/puzzle/model/block.dart';
-import 'package:slide/puzzle/model/position.dart';
-import 'package:slide/puzzle/model/segment.dart';
-import '../model/move_direction.dart';
+import 'package:slide/level/level.dart';
+import 'package:slide/models/models.dart';
 
 part 'puzzle_state.dart';
+part 'puzzle_event.dart';
 
 class PuzzleBloc extends Bloc<PuzzleEvent, PuzzleState> {
   final PuzzleState initialState;
@@ -41,58 +39,5 @@ class PuzzleBloc extends Bloc<PuzzleEvent, PuzzleState> {
 
   void _onExit(PuzzleExited event, Emitter<PuzzleState> emit) {
     onExit.call();
-  }
-}
-
-abstract class PuzzleEvent {
-  const PuzzleEvent();
-}
-
-class PuzzleReset extends PuzzleEvent {
-  const PuzzleReset();
-}
-
-class PuzzleExited extends PuzzleEvent {
-  const PuzzleExited();
-}
-
-class NextPuzzle extends PuzzleEvent {
-  const NextPuzzle();
-}
-
-class MoveAttempt extends PuzzleEvent {
-  const MoveAttempt(this.direction);
-
-  final MoveDirection direction;
-
-  Move blocked(PlacedBlock block) {
-    return Move(block, direction, false);
-  }
-
-  Move moved(PlacedBlock block) {
-    return Move(block, direction, true);
-  }
-}
-
-class Move extends MoveAttempt {
-  const Move(this.block, MoveDirection direction, this.didMove)
-      : super(direction);
-
-  final PlacedBlock block;
-  final bool didMove;
-}
-
-extension MovePosition on Position {
-  Position move(MoveDirection direction) {
-    switch (direction) {
-      case MoveDirection.up:
-        return Position(x, y - 1);
-      case MoveDirection.down:
-        return Position(x, y + 1);
-      case MoveDirection.left:
-        return Position(x - 1, y);
-      case MoveDirection.right:
-        return Position(x + 1, y);
-    }
   }
 }

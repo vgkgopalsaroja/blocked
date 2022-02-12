@@ -1,7 +1,8 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:slide/routing/app_route_path.dart';
-import 'package:collection/collection.dart';
+
+import 'package:slide/routing/routing.dart';
 
 class AppRouteParser extends RouteInformationParser<AppRoutePath> {
   @override
