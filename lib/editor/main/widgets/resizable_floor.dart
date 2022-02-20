@@ -15,7 +15,7 @@ class ResizableFloor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Segment> exits = context.select((LevelEditorBloc bloc) =>
+    final exits = context.select((LevelEditorBloc bloc) =>
         bloc.state.exits.map((e) => e.toSegment()).toList());
     return Resizable(
       enabled: context
@@ -50,8 +50,8 @@ class ResizableFloor extends StatelessWidget {
         }
       },
       builder: (context, size) {
-        int boardWidth = size.width.boardSizeToBlockCount();
-        int boardHeight = size.height.boardSizeToBlockCount();
+        final boardWidth = size.width.boardSizeToBlockCount();
+        final boardHeight = size.height.boardSizeToBlockCount();
 
         final walls = [
           Segment.from(const Position(0, 0), Position(boardWidth, 0)),

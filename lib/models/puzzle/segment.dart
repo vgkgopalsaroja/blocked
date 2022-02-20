@@ -7,18 +7,6 @@ import 'package:slide/models/models.dart';
 class Segment {
   const Segment(this.start, this.end);
 
-  final Position start;
-  final Position end;
-
-  int get width => end.x - start.x;
-  int get height => end.y - start.y;
-  bool get isVertical => start.x == end.x;
-  bool get isHorizontal => start.y == end.y;
-
-  int get cross => isVertical ? start.x : start.y;
-  int get mainStart => isVertical ? start.y : start.x;
-  int get mainEnd => isVertical ? end.y : end.x;
-
   Segment.from(
     Position start,
     Position end,
@@ -50,6 +38,18 @@ class Segment {
         end + Position(dx, dy),
       );
 
+  final Position start;
+  final Position end;
+
+  int get width => end.x - start.x;
+  int get height => end.y - start.y;
+  bool get isVertical => start.x == end.x;
+  bool get isHorizontal => start.y == end.y;
+
+  int get cross => isVertical ? start.x : start.y;
+  int get mainStart => isVertical ? start.y : start.x;
+  int get mainEnd => isVertical ? end.y : end.x;
+
   Iterable<Segment> subtract(Segment? other) {
     if (other == null) {
       return [this];
@@ -59,40 +59,39 @@ class Segment {
     } else if (cross != other.cross) {
       return [this];
     }
-    // assert(isVertical == other.isVertical);
     if (isVertical) {
-      int x = cross;
+      final x = cross;
 
-      Segment intersection = Segment.vertical(
+      final intersection = Segment.vertical(
         x: x,
         start: max(start.y, other.start.y),
         end: min(end.y, other.end.y),
       );
 
       // Return the vertical segment that is not intersecting with the other segment.
-      int start1 = start.y;
-      int end1 = intersection.start.y;
-      int start2 = intersection.end.y;
-      int end2 = end.y;
+      final start1 = start.y;
+      final end1 = intersection.start.y;
+      final start2 = intersection.end.y;
+      final end2 = end.y;
 
       return [
         if (end1 > start1) Segment.vertical(x: x, start: start1, end: end1),
         if (end2 > start2) Segment.vertical(x: x, start: start2, end: end2),
       ];
     } else {
-      int y = cross;
+      final y = cross;
 
-      Segment intersection = Segment.horizontal(
+      final intersection = Segment.horizontal(
         y: y,
         start: max(start.x, other.start.x),
         end: min(end.x, other.end.x),
       );
 
       // Return the horizontal segment that is not intersecting with the other segment.
-      int start1 = start.x;
-      int end1 = intersection.start.x;
-      int start2 = intersection.end.x;
-      int end2 = end.x;
+      final start1 = start.x;
+      final end1 = intersection.start.x;
+      final start2 = intersection.end.x;
+      final end2 = end.x;
 
       return [
         if (end1 > start1) Segment.horizontal(y: y, start: start1, end: end1),

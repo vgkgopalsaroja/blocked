@@ -112,12 +112,12 @@ class ResizablePosition extends Equatable {
 
   ResizablePosition withSize(Size size,
       {required List<BoxSide> sidesToAdjust}) {
-    bool adjustTop = sidesToAdjust.contains(BoxSide.top);
-    bool adjustLeft = sidesToAdjust.contains(BoxSide.left);
-    double newTop = adjustTop ? bottom - size.height : top;
-    double newLeft = adjustLeft ? right - size.width : left;
-    double newBottom = adjustTop ? bottom : top + size.height;
-    double newRight = adjustLeft ? right : left + size.width;
+    final adjustTop = sidesToAdjust.contains(BoxSide.top);
+    final adjustLeft = sidesToAdjust.contains(BoxSide.left);
+    final newTop = adjustTop ? bottom - size.height : top;
+    final newLeft = adjustLeft ? right - size.width : left;
+    final newBottom = adjustTop ? bottom : top + size.height;
+    final newRight = adjustLeft ? right : left + size.width;
     return ResizablePosition(
       top: newTop,
       left: newLeft,

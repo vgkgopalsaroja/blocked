@@ -30,7 +30,7 @@ class NavigatorCubit extends Cubit<AppRoutePath> {
     if (state is LevelRoutePath) {
       emit(const LevelRoutePath.levelSelection());
     } else if (state is EditorRoutePath) {
-      EditorRoutePath editorRoutePath = state as EditorRoutePath;
+      final editorRoutePath = state as EditorRoutePath;
       if (editorRoutePath.isInPreview) {
         emit(EditorRoutePath.editor(editorRoutePath.mapString));
       } else {

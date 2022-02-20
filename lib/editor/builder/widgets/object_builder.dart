@@ -44,8 +44,8 @@ class ObjectBuilder extends StatelessWidget {
           return previous.start != current.start || previous.end != current.end;
         },
         builder: (context, state) {
-          final Position? start = state.start;
-          final Position? end = state.end;
+          final start = state.start;
+          final end = state.end;
 
           return Listener(
             onPointerHover: (event) {

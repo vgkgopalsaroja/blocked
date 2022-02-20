@@ -89,7 +89,7 @@ class LevelEditorBloc extends Bloc<LevelEditorEvent, LevelEditorState> {
   }
 
   void _onSegmentAdded(SegmentAdded event, Emitter<LevelEditorState> emit) {
-    EditorSegment newSegment = EditorSegment.initial(event.segment);
+    final newSegment = EditorSegment.initial(event.segment);
     emit(state.copyWith(
       objects: state.objects + [newSegment],
       selectedObject: state.selectedObject,
@@ -154,17 +154,19 @@ class _InvalidEditorObject extends EditorObject {
   int get width => throw UnimplementedError();
 }
 
-class _InvalidPuzzleState extends PuzzleState {
+class _InvalidPuzzleState extends LevelState {
   const _InvalidPuzzleState()
       : super(
-          0,
-          0,
-          walls: const [],
-          blocks: const [],
-          controlledBlock: const PlacedBlock(0, 0, Position(0, 0),
-              isMain: false,
-              canMoveHorizontally: false,
-              canMoveVertically: false),
+          const PuzzleState(
+            0,
+            0,
+            walls: [],
+            blocks: [],
+            controlledBlock: PlacedBlock(0, 0, Position(0, 0),
+                isMain: false,
+                canMoveHorizontally: false,
+                canMoveVertically: false),
+          ),
           latestMove: null,
           isCompleted: false,
         );

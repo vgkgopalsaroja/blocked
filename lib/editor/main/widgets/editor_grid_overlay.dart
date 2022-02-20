@@ -35,10 +35,10 @@ class _GridOverlayPainter extends CustomPainter {
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke;
 
-    for (double x = kHandleSize;
+    for (var x = kHandleSize;
         x + kWallWidth <= size.width;
         x += kBlockSizeInterval) {
-      for (double y = kHandleSize;
+      for (var y = kHandleSize;
           y + kWallWidth <= size.height;
           y += kBlockSizeInterval) {
         canvas.drawRRect(
@@ -47,10 +47,10 @@ class _GridOverlayPainter extends CustomPainter {
             paint);
       }
     }
-    for (double x = kHandleSize + kWallWidth + kBlockGap;
+    for (var x = kHandleSize + kWallWidth + kBlockGap;
         x + kBlockSize <= size.width;
         x += kBlockSizeInterval) {
-      for (double y = kHandleSize + kWallWidth + kBlockGap;
+      for (var y = kHandleSize + kWallWidth + kBlockGap;
           y + kBlockSize <= size.height;
           y += kBlockSizeInterval) {
         canvas.drawRRect(

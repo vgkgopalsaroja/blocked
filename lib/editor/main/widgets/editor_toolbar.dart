@@ -11,9 +11,9 @@ class EditorToolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final LevelEditorBloc levelEditorBloc =
+    final levelEditorBloc =
         context.select((LevelEditorBloc bloc) => bloc);
-    final EditorTool selectedTool =
+    final selectedTool =
         context.select((LevelEditorBloc bloc) => bloc.state.selectedTool);
 
     return RepaintBoundary(

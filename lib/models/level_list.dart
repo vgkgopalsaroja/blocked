@@ -2,9 +2,9 @@ import 'package:collection/collection.dart';
 import 'package:slide/level/level.dart';
 
 class LevelList {
-  final List<LevelData> levels;
-
   LevelList(this.levels);
+
+  final List<LevelData> levels;
 
   LevelData? getLevelWithId(String id) {
     return levels.where((level) => level.name == id).firstOrNull;

@@ -32,11 +32,11 @@ class EditorRoutePath extends AppRoutePath {
 }
 
 String encodeMapString(String mapString) {
-  var result = const ZLibEncoder().encode(utf8.encode(mapString));
-  return Uri.encodeComponent(base64.encode(result));
+  final zlibEncoded = const ZLibEncoder().encode(utf8.encode(mapString));
+  return Uri.encodeComponent(base64.encode(zlibEncoded));
 }
 
-String decodeMapString(String mapString) {
-  var result = base64.decode(Uri.decodeComponent(mapString));
-  return utf8.decode(const ZLibDecoder().decodeBytes(result));
+String decodeMapString(String encodedMapString) {
+  final zlibEncoded = base64.decode(Uri.decodeComponent(encodedMapString));
+  return utf8.decode(const ZLibDecoder().decodeBytes(zlibEncoded));
 }

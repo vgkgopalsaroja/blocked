@@ -25,7 +25,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    ColorScheme greenColorScheme = ColorScheme.fromSeed(
+    final greenColorScheme = ColorScheme.fromSeed(
         seedColor: Colors.green, brightness: Brightness.dark);
     return MaterialApp.router(
       title: 'slide',

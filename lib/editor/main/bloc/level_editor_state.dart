@@ -26,11 +26,11 @@ class LevelEditorState {
   });
 
   static const EditorObject _invalidObject = _InvalidEditorObject();
-  static const PuzzleState _invalidPuzzleState = _InvalidPuzzleState();
+  static const LevelState _invalidPuzzleState = _InvalidPuzzleState();
 
   final List<EditorObject> objects;
   final EditorObject? selectedObject;
-  final PuzzleState? generatedPuzzle;
+  final LevelState? generatedPuzzle;
   final SnackbarMessage? snackbarMessage;
   final EditorTool selectedTool;
   final bool isGridVisible;
@@ -86,15 +86,13 @@ class LevelEditorState {
       return null;
     }
 
-    String mapString = LevelReader.toMapString(
+    return LevelReader.toMapString(
       width: floor.width,
       height: floor.height,
       walls: walls,
       blocks: blocks,
       initialBlock: blocks.where((block) => block.isMain).firstOrNull,
     );
-
-    return mapString;
   }
 
   EditorBlock? get mainBlock => objects
@@ -108,20 +106,20 @@ class LevelEditorState {
       .firstOrNull;
 
   bool isExit(EditorSegment segment) {
-    int dx = -floor.left;
-    int dy = -floor.top;
-    Segment translatedSegment = segment.toSegment().translate(dx, dy);
+    final dx = -floor.left;
+    final dy = -floor.top;
+    final translatedSegment = segment.toSegment().translate(dx, dy);
     return _isSegmentOuterWall(floor.width, floor.height, translatedSegment);
   }
 
   static bool _isSegmentOuterWall(int width, int height, Segment segment) {
     if (segment.isVertical) {
-      bool isXValid = segment.start.x == 0 || segment.start.x == width;
-      bool isYValid = segment.start.y >= 0 && segment.end.y <= height;
+      final isXValid = segment.start.x == 0 || segment.start.x == width;
+      final isYValid = segment.start.y >= 0 && segment.end.y <= height;
       return isXValid && isYValid;
     } else {
-      bool isXValid = segment.start.x >= 0 && segment.end.x <= width;
-      bool isYValid = segment.start.y == 0 || segment.start.y == height;
+      final isXValid = segment.start.x >= 0 && segment.end.x <= width;
+      final isYValid = segment.start.y == 0 || segment.start.y == height;
       return isXValid && isYValid;
     }
   }
@@ -141,7 +139,7 @@ class LevelEditorState {
   LevelEditorState copyWith({
     List<EditorObject>? objects,
     EditorObject? selectedObject = _invalidObject,
-    PuzzleState? generatedPuzzle = _invalidPuzzleState,
+    LevelState? generatedPuzzle = _invalidPuzzleState,
     SnackbarMessage? snackbarMessage,
     EditorTool? selectedTool,
     bool? isGridVisible,
@@ -267,7 +265,7 @@ class LevelEditorState {
 
   static List<Segment> _generateOuterWallsWithout(
       int mapWidth, int mapHeight, Iterable<Segment> wallsToSubtract) {
-    var outerWalls = [
+    final outerWalls = [
       Segment.horizontal(y: 0, start: 0, end: mapWidth),
       Segment.horizontal(y: mapHeight, start: 0, end: mapWidth),
       Segment.vertical(x: 0, start: 0, end: mapHeight),
@@ -280,7 +278,7 @@ class LevelEditorState {
         .toList();
   }
 
-  PuzzleState _generatePuzzleFromEditorObjects() {
+  LevelState _generatePuzzleFromEditorObjects() {
     final initialBlock = this.initialBlock;
     if (initialBlock == null) {
       throw const EditorException('No initial block found');
@@ -295,13 +293,15 @@ class LevelEditorState {
     final dx = -floor.left;
     final dy = -floor.top;
 
-    PuzzleState state = PuzzleState.initial(
-      floor.width,
-      floor.height,
-      initialBlock: initialBlock.toBlock().translate(dx, dy),
-      otherBlocks:
-          otherBlocks.map((e) => e.toBlock().translate(dx, dy)).toList(),
-      walls: getGeneratedWalls(),
+    final state = LevelState.initial(
+      PuzzleState.initial(
+        floor.width,
+        floor.height,
+        initialBlock: initialBlock.toBlock().translate(dx, dy),
+        otherBlocks:
+            otherBlocks.map((e) => e.toBlock().translate(dx, dy)).toList(),
+        walls: getGeneratedWalls(),
+      ),
     );
     return state;
   }

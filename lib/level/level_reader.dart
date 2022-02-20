@@ -67,13 +67,13 @@ extension on int {
 
 class LevelReader {
   static Future<List<LevelData>> readLevels() async {
-    final List<LevelData> levels = [];
+    final levels = <LevelData>[];
     final data = await rootBundle.loadString('assets/levels.yaml');
     final mapData = loadYaml(data);
     for (YamlMap levelData in mapData) {
-      String name = levelData['name']!.toString();
-      String? hint = levelData['hint'];
-      String map = levelData['map']!.toString();
+      final name = levelData['name']!.toString();
+      final String? hint = levelData['hint'];
+      final map = levelData['map']!.toString();
       levels.add(LevelData(
         name: name.toString(),
         hint: hint?.toString(),
@@ -83,7 +83,7 @@ class LevelReader {
     return levels;
   }
 
-  static String stateToMapString(PuzzleState state) {
+  static String stateToMapString(LevelState state) {
     return toMapString(
         width: state.width,
         height: state.height,
@@ -111,7 +111,7 @@ class LevelReader {
     required Iterable<PlacedBlock> blocks,
     required PlacedBlock? initialBlock,
   }) {
-    final List<List<String>> map = List.generate(height.toTileCount() + 2, (y) {
+    final map = List<List<String>>.generate(height.toTileCount() + 2, (y) {
       return List.generate(width.toTileCount() + 2, (x) {
         if (x == 0 ||
             x == width.toTileCount() + 1 ||
@@ -124,25 +124,25 @@ class LevelReader {
     });
 
     for (final wall in walls) {
-      int wallTileWidth = wall.width.segmentToTileCount();
-      int wallTileHeight = wall.height.segmentToTileCount();
-      for (int dx = 0; dx < wallTileWidth; dx++) {
-        for (int dy = 0; dy < wallTileHeight; dy++) {
+      final wallTileWidth = wall.width.segmentToTileCount();
+      final wallTileHeight = wall.height.segmentToTileCount();
+      for (var dx = 0; dx < wallTileWidth; dx++) {
+        for (var dy = 0; dy < wallTileHeight; dy++) {
           map[wall.start.y * 2 + dy][wall.start.x * 2 + dx] = '*';
         }
       }
     }
 
     for (final block in blocks) {
-      int blockTileWidth = block.width.toTileCount();
-      int blockTileHeight = block.height.toTileCount();
-      String blockChar = block.isMain ? 'm' : 'x';
+      final blockTileWidth = block.width.toTileCount();
+      final blockTileHeight = block.height.toTileCount();
+      var blockChar = block.isMain ? 'm' : 'x';
       if (block == initialBlock) {
         blockChar = blockChar.toUpperCase();
       }
 
-      for (int dx = 0; dx < blockTileWidth; dx++) {
-        for (int dy = 0; dy < blockTileHeight; dy++) {
+      for (var dx = 0; dx < blockTileWidth; dx++) {
+        for (var dy = 0; dy < blockTileHeight; dy++) {
           map[block.top * 2 + 1 + dy][block.left * 2 + 1 + dx] = blockChar;
         }
       }
@@ -153,7 +153,7 @@ class LevelReader {
     }).join('\n');
   }
 
-  static PuzzleState parseLevel(String mapString) {
+  static LevelState parseLevel(String mapString) {
     return LevelReader._parseLevelFromTiles(
         LevelReader._parseTilesFromMap(mapString.split('\n')));
   }
@@ -173,7 +173,7 @@ class LevelReader {
         } else if (char == exit) {
           return TileType.exit;
         } else {
-          int baseBlock = char.toLowerCase() == block
+          var baseBlock = char.toLowerCase() == block
               ? TileType.block
               : TileType.block | TileType.main;
           if (char == char.toUpperCase()) {
@@ -186,9 +186,9 @@ class LevelReader {
   }
 
   static List<Segment> getSegmentsOfType(List<List<Tile>> map, Tile type) {
-    List<Segment> segments = [];
-    int width = map[0].length;
-    int height = map.length;
+    final segments = <Segment>[];
+    final width = map[0].length;
+    final height = map.length;
 
     bool isWall(int x, int y) {
       if (x >= 0 && x < width && y >= 0 && y < height) {
@@ -201,11 +201,11 @@ class LevelReader {
     // Get horizontal walls
     for (var row = 0; row < height; row++) {
       // int? wallStart;
-      var starts = Iterable.generate(width,
+      final starts = Iterable.generate(width,
               (col) => isWall(col, row) && !isWall(col - 1, row) ? col : -1)
           .where((index) => index != -1)
           .toList();
-      var ends = Iterable.generate(width,
+      final ends = Iterable.generate(width,
               (col) => isWall(col, row) && !isWall(col + 1, row) ? col : -1)
           .where((index) => index != -1)
           .toList();
@@ -215,7 +215,7 @@ class LevelReader {
       for (var i = 0; i < starts.length; i++) {
         // Only add isolated walls
         if (starts[i] == ends[i]) {
-          var x = starts[i];
+          final x = starts[i];
           if (!isWall(x, row - 1) && !isWall(x, row + 1)) {
             segments.add(Segment.point(x: x ~/ 2, y: row ~/ 2));
           }
@@ -228,11 +228,11 @@ class LevelReader {
 
     // Get vertical walls
     for (var col = 0; col < width; col++) {
-      var starts = Iterable.generate(height,
+      final starts = Iterable.generate(height,
               (row) => isWall(col, row) && !isWall(col, row - 1) ? row : -1)
           .where((index) => index != -1)
           .toList();
-      var ends = Iterable.generate(height,
+      final ends = Iterable.generate(height,
               (row) => isWall(col, row) && !isWall(col, row + 1) ? row : -1)
           .where((index) => index != -1)
           .toList();
@@ -275,24 +275,24 @@ class LevelReader {
     );
   }
 
-  static PuzzleState _parseLevelFromTiles(List<List<Tile>> map) {
+  static LevelState _parseLevelFromTiles(List<List<Tile>> map) {
     final spec = _parsePuzzleFromTiles(map);
 
     assert(spec.initialBlock != null);
-    return PuzzleState.initial(spec.width, spec.height,
+    return LevelState.initial(PuzzleState.initial(spec.width, spec.height,
         initialBlock: spec.initialBlock!,
         otherBlocks: spec.otherBlocks,
-        walls: spec.walls);
+        walls: spec.walls));
   }
 
   static List<_ParsedBlock> getBlocks(List<List<int>> map) {
-    List<_ParsedBlock> blocks = [];
+    final blocks = <_ParsedBlock>[];
 
-    List<Position> blockTopLefts = [];
-    List<Position> blockBottomRights = [];
+    final blockTopLefts = <Position>[];
+    final blockBottomRights = <Position>[];
 
-    int width = map[0].length;
-    int height = map.length;
+    final width = map[0].length;
+    final height = map.length;
 
     bool isBlock(int x, int y) {
       if (x >= 0 && x < width && y >= 0 && y < height) {
@@ -304,9 +304,9 @@ class LevelReader {
 
     for (var row = 0; row < height; row++) {
       for (var col = 0; col < width; col++) {
-        var isAboveBlock = isBlock(col, row - 1);
-        var isLeftBlock = isBlock(col - 1, row);
-        var isCurrentBlock = isBlock(col, row);
+        final isAboveBlock = isBlock(col, row - 1);
+        final isLeftBlock = isBlock(col - 1, row);
+        final isCurrentBlock = isBlock(col, row);
 
         if (isCurrentBlock && !isAboveBlock && !isLeftBlock) {
           blockTopLefts.add(Position(col, row));
@@ -335,13 +335,13 @@ class LevelReader {
     assert(blockTopLefts.length == blockBottomRights.length);
 
     for (var i = 0; i < blockTopLefts.length; i++) {
-      var position = blockTopLefts[i];
-      var actualPosition = Position(position.x ~/ 2, position.y ~/ 2);
-      var isMain = isTileType(map[position.y][position.x], TileType.main);
-      var isControlled =
+      final position = blockTopLefts[i];
+      final actualPosition = Position(position.x ~/ 2, position.y ~/ 2);
+      final isMain = isTileType(map[position.y][position.x], TileType.main);
+      final isControlled =
           isTileType(map[position.y][position.x], TileType.control);
-      var blockWidth = blockBottomRights[i].x - position.x + 1;
-      var blockHeight = blockBottomRights[i].y - position.y + 1;
+      final blockWidth = blockBottomRights[i].x - position.x + 1;
+      final blockHeight = blockBottomRights[i].y - position.y + 1;
 
       blocks.add(
         _ParsedBlock(

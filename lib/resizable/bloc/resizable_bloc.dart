@@ -118,7 +118,7 @@ class ResizableBloc extends Bloc<ResizeEvent, ResizableState> {
   }
 
   void _onPan(Pan event, Emitter<ResizableState> emit) {
-    Offset delta = event.delta;
+    final delta = event.delta;
     emit(state.copyWith(
       top: state.internalPosition.top + delta.dy,
       left: state.internalPosition.left + delta.dx,

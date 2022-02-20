@@ -28,7 +28,7 @@ class _PuzzleState extends State<Puzzle> with SingleTickerProviderStateMixin {
 
     return RepaintBoundary(
       child: FittedBox(
-        child: BlocListener<PuzzleBloc, PuzzleState>(
+        child: BlocListener<PuzzleBloc, LevelState>(
           listenWhen: (previous, current) =>
               previous.latestMove != current.latestMove,
           listener: (context, state) async {

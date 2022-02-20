@@ -32,7 +32,7 @@ class ResizableSegment extends StatelessWidget {
       initialSize: wall.size,
       snapSizeDelegate: SnapSizeDelegate((size) {
         // See which size is longer
-        Size snappedHorizontalSize = SnapSizeDelegate.interval(
+        final snappedHorizontalSize = SnapSizeDelegate.interval(
           width: kBlockSizeInterval,
           widthOffset: kWallWidth,
           minWidth: kWallWidth,
@@ -40,7 +40,7 @@ class ResizableSegment extends StatelessWidget {
           maxHeight: kWallWidth,
         ).sizeSnapper(size);
 
-        Size snappedVerticalSize = SnapSizeDelegate.interval(
+        final snappedVerticalSize = SnapSizeDelegate.interval(
           height: kBlockSizeInterval,
           heightOffset: kWallWidth,
           minHeight: kWallWidth,
@@ -48,11 +48,11 @@ class ResizableSegment extends StatelessWidget {
           maxWidth: kWallWidth,
         ).sizeSnapper(size);
 
-        double horizontalSnapDiff = Offset(
+        final horizontalSnapDiff = Offset(
                 snappedHorizontalSize.width - size.width,
                 snappedHorizontalSize.height - size.height)
             .distance;
-        double verticalSnapDiff = Offset(snappedVerticalSize.width - size.width,
+        final verticalSnapDiff = Offset(snappedVerticalSize.width - size.width,
                 snappedVerticalSize.height - size.height)
             .distance;
 

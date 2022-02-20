@@ -29,8 +29,8 @@ class LevelEditorPage extends StatelessWidget {
     return Portal(
       child: BlocProvider(
         create: (context) {
-          NavigatorCubit navigatorCubit = context.read<NavigatorCubit>();
-          PuzzleSpecifications? specs = tryParsePuzzleSpecs(
+          final navigatorCubit = context.read<NavigatorCubit>();
+          final specs = tryParsePuzzleSpecs(
               (navigatorCubit.state as EditorRoutePath).mapString);
           return LevelEditorBloc(navigatorCubit, specs);
         },
@@ -81,7 +81,7 @@ class LevelEditorPage extends StatelessWidget {
                     FloatingActionButtonLocation.centerFloat,
                 body: BlocConsumer<LevelEditorBloc, LevelEditorState>(
                   listener: (context, state) {
-                    SnackbarMessage? message = state.snackbarMessage;
+                    final message = state.snackbarMessage;
                     if (message != null) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text(message.message),
@@ -165,11 +165,11 @@ class LevelEditorPage extends StatelessWidget {
   Widget _buildSegmentBuilder(LevelEditorBloc levelEditorBloc) {
     return ObjectBuilder(
       onObjectPlaced: (start, end) {
-        Position snappedVerticalPosition = end.copyWith(x: start.x);
-        Position snappedHorizontalPosition = end.copyWith(y: start.y);
-        int verticalLength = (end.y - start.y).abs();
-        int horizontalLength = (end.x - start.x).abs();
-        Position snappedEndPosition = verticalLength > horizontalLength
+        final snappedVerticalPosition = end.copyWith(x: start.x);
+        final snappedHorizontalPosition = end.copyWith(y: start.y);
+        final verticalLength = (end.y - start.y).abs();
+        final horizontalLength = (end.x - start.x).abs();
+        final snappedEndPosition = verticalLength > horizontalLength
             ? snappedVerticalPosition
             : snappedHorizontalPosition;
 
@@ -197,15 +197,15 @@ class LevelEditorPage extends StatelessWidget {
       threshold: kWallWidth * 2,
       hintBuilder: (start, end) {
         if (start != null && end != null) {
-          Position snappedVerticalPosition = end.copyWith(x: start.x);
-          Position snappedHorizontalPosition = end.copyWith(y: start.y);
-          int verticalLength = (end.y - start.y).abs();
-          int horizontalLength = (end.x - start.x).abs();
-          Position snappedEndPosition = verticalLength > horizontalLength
+          final snappedVerticalPosition = end.copyWith(x: start.x);
+          final snappedHorizontalPosition = end.copyWith(y: start.y);
+          final verticalLength = (end.y - start.y).abs();
+          final horizontalLength = (end.x - start.x).abs();
+          final snappedEndPosition = verticalLength > horizontalLength
               ? snappedVerticalPosition
               : snappedHorizontalPosition;
 
-          final Segment segment = Segment.from(start, snappedEndPosition);
+          final segment = Segment.from(start, snappedEndPosition);
           return AnimatedPositioned(
             curve: Curves.easeOutCubic,
             duration: const Duration(milliseconds: 100),
@@ -273,7 +273,7 @@ class LevelEditorPage extends StatelessWidget {
       threshold: kBlockSize / 2,
       hintBuilder: (start, end) {
         if (start != null && end != null) {
-          final PlacedBlock block = PlacedBlock.from(start, end,
+          final block = PlacedBlock.from(start, end,
               isMain: false,
               canMoveHorizontally: true,
               canMoveVertically: true);

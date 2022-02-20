@@ -5,5 +5,5 @@ class Level {
 
   final String name;
   final String? hint;
-  final PuzzleState initialState;
+  final LevelState initialState;
 }

@@ -6,7 +6,7 @@ class BoardPainter extends CustomPainter {
   BoardPainter(this.context, this.board, this.controlledBlock)
       : boardColors = BoardColor.of(context);
 
-  final PuzzleState board;
+  final LevelState board;
   final BuildContext context;
   final PlacedBlock controlledBlock;
   final BoardColorData boardColors;

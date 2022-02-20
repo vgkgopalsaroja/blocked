@@ -5,10 +5,10 @@ typedef OffsetSnapper = Offset Function(Offset offset);
 
 double _snapToInterval(
     double value, double? interval, double offset, double min, double max) {
-  value -= offset;
+  final offsetValue = value - offset;
   final snappedValue = interval != null
-      ? ((value / interval).roundToDouble() * interval)
-      : value;
+      ? ((offsetValue / interval).roundToDouble() * interval)
+      : offsetValue;
   return (snappedValue + offset).clamp(min, max);
 }
 

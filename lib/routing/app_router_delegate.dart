@@ -63,7 +63,7 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
                         key: Key(levelList.getLevelWithId(path.levelId!)!.name),
                         onExit: () => navigatorCubit.navigateToLevelSelection(),
                         onNext: () {
-                          String? nextLevelId =
+                          final nextLevelId =
                               levelList.getLevelAfterId(path.levelId!)?.name;
                           if (nextLevelId != null) {
                             navigatorCubit.navigateToLevel(nextLevelId);

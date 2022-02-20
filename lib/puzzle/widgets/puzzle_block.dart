@@ -81,9 +81,9 @@ class StaticPuzzleBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme green = ColorScheme.fromSeed(
+    final green = ColorScheme.fromSeed(
         seedColor: Colors.green, brightness: Theme.of(context).brightness);
-    final ColorScheme grey = ColorScheme.fromSeed(
+    final grey = ColorScheme.fromSeed(
         seedColor: Colors.grey, brightness: Theme.of(context).brightness);
     return RepaintBoundary(
       child: Material(

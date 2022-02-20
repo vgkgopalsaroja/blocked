@@ -48,21 +48,20 @@ class BoardColorData {
     required this.floor,
   });
 
+  BoardColorData.fromColorScheme(ColorScheme colorScheme)
+      : this(
+          block: colorScheme.secondary.blend(colorScheme.background, 80),
+          blockOutline: colorScheme.secondary.blend(colorScheme.background, 40),
+          controlledBlock: colorScheme.primary.darken(50),
+          controlledBlockOutline: colorScheme.primary,
+          wall: colorScheme.secondary,
+          floor: colorScheme.secondary.blend(colorScheme.background, 95),
+        );
+
   final Color block;
   final Color blockOutline;
   final Color controlledBlock;
   final Color controlledBlockOutline;
   final Color wall;
   final Color floor;
-
-  static BoardColorData fromColorScheme(ColorScheme colorScheme) {
-    return BoardColorData(
-      block: colorScheme.secondary.blend(colorScheme.background, 80),
-      blockOutline: colorScheme.secondary.blend(colorScheme.background, 40),
-      controlledBlock: colorScheme.primary.darken(50),
-      controlledBlockOutline: colorScheme.primary,
-      wall: colorScheme.secondary,
-      floor: colorScheme.secondary.blend(colorScheme.background, 95),
-    );
-  }
 }

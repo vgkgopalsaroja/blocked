@@ -25,7 +25,7 @@ class LevelPage extends StatelessWidget {
       child: Builder(builder: (context) {
         return PuzzleShortcutListener(
           puzzleBloc: context.read<PuzzleBloc>(),
-          child: BlocBuilder<PuzzleBloc, PuzzleState>(
+          child: BlocBuilder<PuzzleBloc, LevelState>(
             buildWhen: (previous, current) {
               return previous.isCompleted != current.isCompleted;
             },
@@ -61,7 +61,7 @@ class LevelPage extends StatelessWidget {
                                     BuildContext fromHeroContext,
                                     BuildContext toHeroContext,
                                   ) {
-                                    final Hero toHero =
+                                    final toHero =
                                         toHeroContext.widget as Hero;
                                     return BlocProvider.value(
                                       value: context.read<PuzzleBloc>(),
@@ -86,7 +86,7 @@ class LevelPage extends StatelessWidget {
                               BuildContext fromHeroContext,
                               BuildContext toHeroContext,
                             ) {
-                              final Hero toHero = toHeroContext.widget as Hero;
+                              final toHero = toHeroContext.widget as Hero;
                               return BlocProvider.value(
                                 value: context.read<PuzzleBloc>(),
                                 child: Material(

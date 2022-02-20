@@ -1,8 +1,6 @@
 part of 'object_builder_bloc.dart';
 
 class ObjectBuilderState {
-  static const _invalidPosition = Position(-1, -1);
-
   const ObjectBuilderState.initial()
       : _start = null,
         _end = null,
@@ -11,6 +9,8 @@ class ObjectBuilderState {
       {Position? start, Position? end, this.hoveredPosition})
       : _start = start,
         _end = end;
+
+  static const _invalidPosition = Position(-1, -1);
 
   Position? get start => _start ?? hoveredPosition;
   Position? get end => _end ?? hoveredPosition;
