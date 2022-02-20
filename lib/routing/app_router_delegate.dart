@@ -45,13 +45,17 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
                   const MaterialPage(child: LevelEditorPage()),
                   if (path.isInPreview)
                     MaterialPage(
-                      key: ValueKey(path.mapString),
+                      name: path.location,
+                      key: ValueKey(path.location),
+                      arguments: path.location,
                       child: GeneratedLevelPage(
                           Uri.decodeComponent(path.mapString)),
                     ),
                 },
                 if (path is LevelRoutePath && path.levelId != null) ...{
                   MaterialPage(
+                    name: path.location,
+                    key: ValueKey(path.location),
                     child: Scaffold(
                       body: LevelPage(
                         levelList.getLevelWithId(path.levelId!)!.toLevel(),

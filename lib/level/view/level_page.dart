@@ -53,7 +53,7 @@ class LevelPage extends StatelessWidget {
                             child: Center(
                               child: FittedBox(
                                 child: Hero(
-                                  tag: level.name,
+                                  tag: 'puzzle',
                                   flightShuttleBuilder: (
                                     BuildContext flightContext,
                                     Animation<double> animation,
@@ -77,7 +77,26 @@ class LevelPage extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 32),
-                          boardControls,
+                          Hero(
+                            tag: 'puzzle_controls',
+                            flightShuttleBuilder: (
+                              BuildContext flightContext,
+                              Animation<double> animation,
+                              HeroFlightDirection flightDirection,
+                              BuildContext fromHeroContext,
+                              BuildContext toHeroContext,
+                            ) {
+                              final Hero toHero = toHeroContext.widget as Hero;
+                              return BlocProvider.value(
+                                value: context.read<PuzzleBloc>(),
+                                child: Material(
+                                  type: MaterialType.transparency,
+                                  child: toHero.child,
+                                ),
+                              );
+                            },
+                            child: boardControls,
+                          ),
                         ],
                       ),
                     ),

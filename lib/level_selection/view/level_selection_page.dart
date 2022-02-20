@@ -52,45 +52,54 @@ class LevelSelectionPage extends StatelessWidget {
                 (context, index) {
                   final level = levels[index];
                   final initialLevelState = level.initialState;
-                  return OutlinedButton(
-                    clipBehavior: Clip.antiAlias,
-                    onPressed: () {
-                      context
-                          .read<NavigatorCubit>()
-                          .navigateToLevel(level.name);
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      child: Center(
-                        child: Row(
-                          children: [
-                            AspectRatio(
-                              aspectRatio: 1,
-                              child: Center(
-                                child: FittedBox(
-                                  child: Hero(
-                                    tag: level.name,
-                                    child: BlocProvider(
-                                      create: (context) => PuzzleBloc(
-                                          initialLevelState,
-                                          onExit: () {},
-                                          onNext: () {}),
-                                      child: const StaticPuzzle(),
+                  return Builder(builder: (context) {
+                    return OutlinedButton(
+                      clipBehavior: Clip.antiAlias,
+                      onPressed: () {
+                        context
+                            .read<NavigatorCubit>()
+                            .navigateToLevel(level.name);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        child: Center(
+                          child: Row(
+                            children: [
+                              AspectRatio(
+                                aspectRatio: 1,
+                                child: Center(
+                                  child: FittedBox(
+                                    child: Hero(
+                                      tag: context
+                                          .select((NavigatorCubit cubit) {
+                                        final latestLevelName =
+                                            cubit.latestLevelId;
+                                        return latestLevelName == level.name
+                                            ? 'puzzle'
+                                            : level.name;
+                                      }),
+                                      child: BlocProvider(
+                                        create: (context) => PuzzleBloc(
+                                            initialLevelState,
+                                            onExit: () {},
+                                            onNext: () {}),
+                                        child: const StaticPuzzle(),
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(width: 32.0),
-                            Text(
-                              level.name,
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                          ],
+                              const SizedBox(width: 32.0),
+                              Text(
+                                level.name,
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
+                    );
+                  });
                 },
                 childCount: levels.length,
               ),
