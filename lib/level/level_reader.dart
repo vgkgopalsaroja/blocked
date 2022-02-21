@@ -35,26 +35,6 @@ bool isTileType(Tile tile, Tile type) {
   return (tile & type) == type;
 }
 
-class LevelData {
-  const LevelData({
-    required this.name,
-    this.hint,
-    required this.map,
-  });
-
-  final String name;
-  final String? hint;
-  final String map;
-
-  Level toLevel() {
-    return Level(
-      name,
-      hint: hint,
-      initialState: LevelReader.parseLevel(map),
-    );
-  }
-}
-
 extension on int {
   int segmentToTileCount() {
     return 1 + this * 2;
@@ -66,7 +46,8 @@ extension on int {
 }
 
 class LevelReader {
-  static Future<List<LevelData>> readLevels() async {
+  static Future<List<LevelChapter>> readLevels() async {
+    final chapters = <LevelChapter>[];
     final levels = <LevelData>[];
     final data = await rootBundle.loadString('assets/levels.yaml');
     final mapData = loadYaml(data);
@@ -80,7 +61,27 @@ class LevelReader {
         map: map,
       ));
     }
-    return levels;
+    final chapterMap = <String, List<LevelData>>{};
+
+    for (var level in levels) {
+      final chapter = level.name[0];
+      if (!chapterMap.containsKey(chapter)) {
+        chapterMap[chapter] = [];
+      }
+      chapterMap[chapter]!.add(level);
+    }
+
+    return chapterMap.entries.map((entry) {
+      final chapterName = entry.key;
+      final chapterLevels = entry.value;
+      final chapter = LevelChapter(
+        chapterName,
+        'level description',
+        chapterLevels,
+      );
+      chapters.add(chapter);
+      return chapter;
+    }).toList();
   }
 
   static String stateToMapString(LevelState state) {

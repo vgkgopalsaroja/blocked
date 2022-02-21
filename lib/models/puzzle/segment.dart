@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:slide/models/models.dart';
+import 'package:slide/puzzle/puzzle.dart';
 
 /// A line segment that can be placed in a [Puzzle].
 class Segment {

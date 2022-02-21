@@ -8,13 +8,13 @@ import 'package:slide/routing/routing.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final levels = await LevelReader.readLevels();
-  runApp(MyApp(levels: levels));
+  runApp(MyApp(chapters: levels));
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key, required this.levels}) : super(key: key);
+  const MyApp({Key? key, required this.chapters}) : super(key: key);
 
-  final List<LevelData> levels;
+  final List<LevelChapter> chapters;
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -47,7 +47,7 @@ class _MyAppState extends State<MyApp> {
         surfaceMode: FlexSurfaceMode.highBackgroundLowScaffold,
       ),
       routerDelegate: AppRouterDelegate(
-        levelList: LevelList(widget.levels),
+        chapters: widget.chapters,
         navigatorKey: navigatorKey,
       ),
       routeInformationParser: AppRouteParser(),

@@ -9,13 +9,17 @@ class AppRoutePath {
 }
 
 class LevelRoutePath extends AppRoutePath {
-  const LevelRoutePath.levelSelection()
-      : levelId = null,
+  const LevelRoutePath.chapterSelection()
+      : chapterId = null,
+        levelId = null,
         super('/levels');
-  const LevelRoutePath.level({required String id})
-      : levelId = id,
-        super('/levels/$id');
+  const LevelRoutePath.levelSelection({required this.chapterId})
+      : levelId = null,
+        super('/levels/$chapterId');
+  const LevelRoutePath.level({required this.chapterId, required this.levelId})
+      : super('/levels/$chapterId/$levelId');
 
+  final String? chapterId;
   final String? levelId;
 }
 

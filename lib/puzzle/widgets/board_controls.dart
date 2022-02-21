@@ -14,16 +14,16 @@ class BoardControls extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        IconButton(
+        TextButton.icon(
           icon: const Icon(Icons.arrow_back_rounded),
-          tooltip: 'Back to puzzle selection (Esc)',
+          label: const Text('Back'),
           onPressed: () {
             context.read<PuzzleBloc>().add(const PuzzleExited());
           },
         ),
-        IconButton(
+        TextButton.icon(
           icon: const Icon(Icons.refresh_rounded),
-          tooltip: 'Reset (R)',
+          label: const Text('Reset (R)'),
           onPressed: () {
             context.read<PuzzleBloc>().add(const PuzzleReset());
           },
@@ -57,12 +57,31 @@ class BoardControls extends StatelessWidget {
                       ),
                       itemCount: moves.length,
                     )
-                  : Text('No solution found'),
-              constraints: BoxConstraints(
+                  : const Text('No solution found'),
+              constraints: const BoxConstraints(
                 maxHeight: 48,
               ),
             );
           },
+        ),
+        TextButton(
+          onPressed: () async {
+            final moves =
+                PuzzleSolver(context.read<PuzzleBloc>().initialState.puzzle)
+                    .solve();
+
+            if (moves == null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('No solution found')));
+              return;
+            }
+
+            for (var move in moves) {
+              context.read<PuzzleBloc>().add(MoveAttempt(move));
+              await Future.delayed(const Duration(milliseconds: 200));
+            }
+          },
+          child: const Text('Play solution'),
         ),
         if (isCompleted) ...{
           const Spacer(),

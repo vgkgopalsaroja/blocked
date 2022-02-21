@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:slide/level/level.dart';
 import 'package:slide/models/models.dart';
 import 'package:slide/puzzle/puzzle.dart';
 import 'package:slide/routing/routing.dart';
@@ -16,16 +14,7 @@ class LevelSelectionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          context.read<NavigatorCubit>().navigateToEditor('');
-        },
-        label: const Text('Editor'),
-        icon: const Icon(MdiIcons.vectorSquareEdit),
-      ),
       body: CustomScrollView(
-        shrinkWrap: true,
-        primary: false,
         slivers: [
           SliverToBoxAdapter(
               child: Padding(

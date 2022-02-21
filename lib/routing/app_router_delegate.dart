@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slide/editor/editor.dart';
 import 'package:slide/level/level.dart';
 import 'package:slide/level_selection/level_selection.dart';
+import 'package:slide/level_selection/view/chapter_selection_page.dart';
 import 'package:slide/models/models.dart';
 import 'package:slide/puzzle/puzzle.dart';
 import 'package:slide/routing/routing.dart';
@@ -11,17 +12,17 @@ import 'package:slide/routing/routing.dart';
 class AppRouterDelegate extends RouterDelegate<AppRoutePath>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
   AppRouterDelegate({
-    required this.levelList,
+    required this.chapters,
     required GlobalKey<NavigatorState> navigatorKey,
   })  : _navigatorKey = navigatorKey,
         isLoaded = false;
 
   final GlobalKey<NavigatorState> _navigatorKey;
-  final LevelList levelList;
+  final List<LevelChapter> chapters;
 
   bool isLoaded;
   NavigatorCubit navigatorCubit =
-      NavigatorCubit(const LevelRoutePath.levelSelection());
+      NavigatorCubit(const LevelRoutePath.chapterSelection());
 
   @override
   Widget build(BuildContext context) {
@@ -35,12 +36,21 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
         },
         builder: (context, state) {
           final path = state;
+          final levels = (path is LevelRoutePath && path.chapterId != null)
+              ? chapters.firstWhere((c) => c.name == path.chapterId!).levels
+              : null;
+          final levelList = levels != null ? LevelList(levels) : null;
+          print(path);
           return BlocProvider(
             create: (context) => navigatorCubit,
             child: Navigator(
               key: _navigatorKey,
               pages: [
-                MaterialPage(child: LevelSelectionPage(levelList.levels)),
+                MaterialPage(child: ChapterSelectionPage(chapters)),
+                if (path is LevelRoutePath && path.chapterId != null)
+                  MaterialPage(
+                    child: LevelSelectionPage(levelList!.levels),
+                  ),
                 if (path is EditorRoutePath) ...{
                   const MaterialPage(child: LevelEditorPage()),
                   if (path.isInPreview)
@@ -52,7 +62,10 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
                           Uri.decodeComponent(path.mapString)),
                     ),
                 },
-                if (path is LevelRoutePath && path.levelId != null) ...{
+                if (path is LevelRoutePath &&
+                    path.chapterId != null &&
+                    path.levelId != null &&
+                    levelList != null) ...{
                   MaterialPage(
                     name: path.location,
                     key: ValueKey(path.location),
@@ -61,14 +74,16 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
                         levelList.getLevelWithId(path.levelId!)!.toLevel(),
                         boardControls: const BoardControls(),
                         key: Key(levelList.getLevelWithId(path.levelId!)!.name),
-                        onExit: () => navigatorCubit.navigateToLevelSelection(),
+                        onExit: () => navigatorCubit
+                            .navigateToLevelSelection(path.chapterId!),
                         onNext: () {
                           final nextLevelId =
                               levelList.getLevelAfterId(path.levelId!)?.name;
                           if (nextLevelId != null) {
                             navigatorCubit.navigateToLevel(nextLevelId);
                           } else {
-                            navigatorCubit.navigateToLevelSelection();
+                            navigatorCubit
+                                .navigateToLevelSelection(path.chapterId!);
                           }
                         },
                       ),
@@ -108,8 +123,11 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
     } else if (configuration is LevelRoutePath &&
         configuration.levelId != null) {
       navigatorCubit.navigateToLevel(configuration.levelId!);
+    } else if (configuration is LevelRoutePath &&
+        configuration.chapterId != null) {
+      navigatorCubit.navigateToLevelSelection(configuration.chapterId!);
     } else {
-      navigatorCubit.navigateToLevelSelection();
+      navigatorCubit.navigateToChapterSelection();
     }
 
     return SynchronousFuture(null);

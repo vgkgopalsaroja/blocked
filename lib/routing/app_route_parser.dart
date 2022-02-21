@@ -13,20 +13,22 @@ class AppRouteParser extends RouteInformationParser<AppRoutePath> {
 
   AppRoutePath _parseRouteInformationSync(RouteInformation routeInformation) {
     if (routeInformation.location == null) {
-      return const LevelRoutePath.levelSelection();
+      return const LevelRoutePath.chapterSelection();
     }
     final uri = Uri.parse(routeInformation.location!);
 
     if (uri.pathSegments.isEmpty) {
-      return const LevelRoutePath.levelSelection();
+      return const LevelRoutePath.chapterSelection();
     } else {
       final firstSegment = uri.pathSegments.first;
       if (firstSegment == 'levels') {
         if (uri.pathSegments.length == 1) {
-          return const LevelRoutePath.levelSelection();
-        } else if (uri.pathSegments.length == 2 &&
-            uri.pathSegments[1].isNotEmpty) {
-          return LevelRoutePath.level(id: uri.pathSegments[1]);
+          return const LevelRoutePath.chapterSelection();
+        } else if (uri.pathSegments.length == 2) {
+          return LevelRoutePath.levelSelection(chapterId: uri.pathSegments[1]);
+        } else if (uri.pathSegments.length == 3) {
+          return LevelRoutePath.level(
+              chapterId: uri.pathSegments[1], levelId: uri.pathSegments[2]);
         }
       } else if (firstSegment == 'editor') {
         final secondSegment = uri.pathSegments.skip(1).firstOrNull;
@@ -48,7 +50,7 @@ class AppRouteParser extends RouteInformationParser<AppRoutePath> {
         return EditorRoutePath.editor(mapString);
       }
     }
-    return const LevelRoutePath.levelSelection();
+    return const LevelRoutePath.chapterSelection();
   }
 
   @override

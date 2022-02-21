@@ -9,12 +9,16 @@ class NavigatorCubit extends Cubit<AppRoutePath> {
   /// determine which puzzle widgets to animate to.
   String? latestLevelId;
 
-  void navigateToLevelSelection() {
-    emit(const LevelRoutePath.levelSelection());
+  void navigateToChapterSelection() {
+    emit(const LevelRoutePath.chapterSelection());
+  }
+
+  void navigateToLevelSelection(String chapterId) {
+    emit(LevelRoutePath.levelSelection(chapterId: chapterId));
   }
 
   void navigateToLevel(String levelId) {
-    emit(LevelRoutePath.level(id: levelId));
+    emit(LevelRoutePath.level(chapterId: levelId[0], levelId: levelId));
     latestLevelId = levelId;
   }
 
@@ -28,13 +32,14 @@ class NavigatorCubit extends Cubit<AppRoutePath> {
 
   void navigateToPreviousPage() {
     if (state is LevelRoutePath) {
-      emit(const LevelRoutePath.levelSelection());
+      emit(const LevelRoutePath.chapterSelection());
+      // Handle level to chapter list navigation.
     } else if (state is EditorRoutePath) {
       final editorRoutePath = state as EditorRoutePath;
       if (editorRoutePath.isInPreview) {
         emit(EditorRoutePath.editor(editorRoutePath.mapString));
       } else {
-        emit(const LevelRoutePath.levelSelection());
+        emit(const LevelRoutePath.chapterSelection());
       }
     }
   }
