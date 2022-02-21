@@ -33,75 +33,81 @@ class LevelPage extends StatelessWidget {
               final levelName = level.name;
               final levelHint = level.hint;
 
-              return Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Center(
-                  child: IntrinsicHeight(
-                    child: IntrinsicWidth(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(levelName,
-                              style: Theme.of(context).textTheme.displaySmall),
-                          if (levelHint != null)
-                            Text(levelHint,
-                                style: Theme.of(context).textTheme.titleLarge),
-                          const SizedBox(height: 32),
-                          Expanded(
-                            child: Center(
-                              child: FittedBox(
-                                child: Hero(
-                                  tag: 'puzzle',
-                                  flightShuttleBuilder: (
-                                    BuildContext flightContext,
-                                    Animation<double> animation,
-                                    HeroFlightDirection flightDirection,
-                                    BuildContext fromHeroContext,
-                                    BuildContext toHeroContext,
-                                  ) {
-                                    final toHero =
-                                        toHeroContext.widget as Hero;
-                                    return BlocProvider.value(
-                                      value: context.read<PuzzleBloc>(),
-                                      child: Material(
-                                        type: MaterialType.transparency,
-                                        child: toHero.child,
-                                      ),
-                                    );
-                                  },
-                                  child: const Puzzle(),
+              return Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Center(
+                      child: IntrinsicHeight(
+                        child: IntrinsicWidth(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(levelName,
+                                  style:
+                                      Theme.of(context).textTheme.displaySmall),
+                              if (levelHint != null)
+                                Text(levelHint,
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge),
+                              const SizedBox(height: 32),
+                              Expanded(
+                                child: Center(
+                                  child: FittedBox(
+                                    child: Hero(
+                                      tag: 'puzzle',
+                                      flightShuttleBuilder: (
+                                        BuildContext flightContext,
+                                        Animation<double> animation,
+                                        HeroFlightDirection flightDirection,
+                                        BuildContext fromHeroContext,
+                                        BuildContext toHeroContext,
+                                      ) {
+                                        final toHero =
+                                            toHeroContext.widget as Hero;
+                                        return BlocProvider.value(
+                                          value: context.read<PuzzleBloc>(),
+                                          child: Material(
+                                            type: MaterialType.transparency,
+                                            child: toHero.child,
+                                          ),
+                                        );
+                                      },
+                                      child: const Puzzle(),
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
+                              const SizedBox(height: 32),
+                              Hero(
+                                tag: 'puzzle_controls',
+                                flightShuttleBuilder: (
+                                  BuildContext flightContext,
+                                  Animation<double> animation,
+                                  HeroFlightDirection flightDirection,
+                                  BuildContext fromHeroContext,
+                                  BuildContext toHeroContext,
+                                ) {
+                                  final toHero = toHeroContext.widget as Hero;
+                                  return BlocProvider.value(
+                                    value: context.read<PuzzleBloc>(),
+                                    child: Material(
+                                      type: MaterialType.transparency,
+                                      child: toHero.child,
+                                    ),
+                                  );
+                                },
+                                child: boardControls,
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 32),
-                          Hero(
-                            tag: 'puzzle_controls',
-                            flightShuttleBuilder: (
-                              BuildContext flightContext,
-                              Animation<double> animation,
-                              HeroFlightDirection flightDirection,
-                              BuildContext fromHeroContext,
-                              BuildContext toHeroContext,
-                            ) {
-                              final toHero = toHeroContext.widget as Hero;
-                              return BlocProvider.value(
-                                value: context.read<PuzzleBloc>(),
-                                child: Material(
-                                  type: MaterialType.transparency,
-                                  child: toHero.child,
-                                ),
-                              );
-                            },
-                            child: boardControls,
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
-                ),
+                ],
               );
             },
           ),

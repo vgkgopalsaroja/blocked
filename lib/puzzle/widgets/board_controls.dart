@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:slide/models/puzzle/puzzle.dart';
 import 'package:slide/puzzle/puzzle.dart';
 import 'package:slide/solver/solver.dart';
 
@@ -33,13 +34,32 @@ class BoardControls extends StatelessWidget {
             final moves =
                 PuzzleSolver(context.read<PuzzleBloc>().initialState.puzzle)
                     .solve();
-            ScaffoldMessenger.of(context).clearSnackBars();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: moves != null
-                    ? Text('${moves.map((e) => e.name)}')
-                    : const Text('No solution found'),
-                duration: const Duration(seconds: 60),
+
+            IconData directionToIcon(MoveDirection direction) {
+              switch (direction) {
+                case MoveDirection.up:
+                  return Icons.arrow_upward;
+                case MoveDirection.down:
+                  return Icons.arrow_downward;
+                case MoveDirection.left:
+                  return Icons.arrow_back;
+                case MoveDirection.right:
+                  return Icons.arrow_forward;
+              }
+            }
+
+            Scaffold.of(context).showBottomSheet(
+              (context) => moves != null
+                  ? ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) => Icon(
+                        directionToIcon(moves[index]),
+                      ),
+                      itemCount: moves.length,
+                    )
+                  : Text('No solution found'),
+              constraints: BoxConstraints(
+                maxHeight: 48,
               ),
             );
           },
@@ -51,7 +71,6 @@ class BoardControls extends StatelessWidget {
             icon: const Icon(Icons.arrow_forward),
             onPressed: () {
               context.read<PuzzleBloc>().add(const NextPuzzle());
-              ScaffoldMessenger.of(context).clearSnackBars();
             },
           ),
         }
