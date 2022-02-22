@@ -25,6 +25,8 @@ class _PuzzleState extends State<Puzzle> with SingleTickerProviderStateMixin {
         context.select((LevelBloc bloc) => bloc.state.latestMove);
     final controlledBlock =
         context.select((LevelBloc bloc) => bloc.state.controlledBlock);
+    final isCompleted =
+        context.select((LevelBloc bloc) => bloc.state.isCompleted);
 
     return RepaintBoundary(
       child: FittedBox(
@@ -77,6 +79,29 @@ class _PuzzleState extends State<Puzzle> with SingleTickerProviderStateMixin {
                     top: wall.start.y.toWallOffset(),
                     child: PuzzleWall(wall),
                   ),
+                Positioned.fill(
+                  child: AnimatedOpacity(
+                    opacity: isCompleted ? 1 : 0,
+                    duration: kSlideDuration,
+                    child: Container(
+                      color: Colors.black.withOpacity(0.5),
+                      child: AnimatedScale(
+                        scale: isCompleted ? 1 : 0,
+                        duration: kSlideDuration * 5,
+                        curve: const Interval(1 / 3, 1.0,
+                            curve: Curves.elasticOut),
+                        child: const FittedBox(
+                          child: Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Icon(
+                              Icons.check,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
