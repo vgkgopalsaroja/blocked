@@ -29,7 +29,7 @@ class ChapterSelectionPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('slide', style: Theme.of(context).textTheme.displayMedium),
+                Text('shift', style: Theme.of(context).textTheme.displayMedium),
                 const SizedBox(height: 32),
                 Text('chapters',
                     style: Theme.of(context).textTheme.displaySmall),

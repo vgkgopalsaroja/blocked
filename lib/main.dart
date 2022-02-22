@@ -28,7 +28,7 @@ class _MyAppState extends State<MyApp> {
     final greenColorScheme = ColorScheme.fromSeed(
         seedColor: Colors.green, brightness: Brightness.dark);
     return MaterialApp.router(
-      title: 'slide',
+      title: 'shift',
       themeMode: ThemeMode.system,
       theme: FlexThemeData.dark(
         colors: FlexSchemeColor.from(

@@ -22,12 +22,20 @@ class LevelPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final isVerticalLayout =
         MediaQuery.of(context).size.width < MediaQuery.of(context).size.height;
-    return Provider(
-      create: (context) => LevelNavigation(onExit: onExit, onNext: onNext),
-      child: BlocProvider(
-        create: (context) => LevelBloc(level.initialState),
-        child: Builder(builder: (context) {
-          return LevelShortcutListener(
+
+    return BlocProvider(
+      create: (context) => LevelBloc(level.initialState),
+      child: Builder(builder: (context) {
+        return Provider(
+          create: (context) => LevelNavigation(
+            onExit: onExit,
+            onNext: () {
+              if (context.read<LevelBloc>().state.isCompleted) {
+                onNext();
+              }
+            },
+          ),
+          child: LevelShortcutListener(
             levelBloc: context.read<LevelBloc>(),
             child: BlocBuilder<LevelBloc, LevelState>(
               buildWhen: (previous, current) {
@@ -128,9 +136,9 @@ class LevelPage extends StatelessWidget {
                 );
               },
             ),
-          );
-        }),
-      ),
+          ),
+        );
+      }),
     );
   }
 }

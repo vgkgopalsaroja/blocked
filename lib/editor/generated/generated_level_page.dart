@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:slide/editor/editor.dart';
 import 'package:slide/level/level.dart';
 import 'package:slide/models/models.dart';
+import 'package:slide/puzzle/puzzle.dart';
 import 'package:slide/routing/routing.dart';
 
 class GeneratedLevelPage extends StatelessWidget {
@@ -40,7 +40,7 @@ class GeneratedLevelPage extends StatelessWidget {
         onNext: () {
           Navigator.of(context).pop();
         },
-        boardControls: GeneratedBoardControls(mapString),
+        boardControls: BoardControls.generated(mapString),
       ),
     );
   }

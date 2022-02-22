@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:slide/models/puzzle/puzzle.dart';
 import 'package:slide/puzzle/puzzle.dart';
 import 'package:slide/solver/solver.dart';
 
 class BoardControls extends StatelessWidget {
-  const BoardControls({Key? key}) : super(key: key);
+  const BoardControls({Key? key})
+      : mapString = null,
+        super(key: key);
+  const BoardControls.generated(this.mapString, {Key? key}) : super(key: key);
+
+  final String? mapString;
 
   @override
   Widget build(BuildContext context) {
@@ -93,9 +100,27 @@ class BoardControls extends StatelessWidget {
               },
             ),
           ),
-          if (isCompleted) ...{
-            const Spacer(),
+          if (mapString != null)
             Tooltip(
+              message: 'Copy as YAML',
+              child: TextButton.icon(
+                icon: const Icon(MdiIcons.contentCopy),
+                label: const Text('YAML'),
+                onPressed: () {
+                  Clipboard.setData(
+                    ClipboardData(
+                        text: '- name: generated\n'
+                            '  map: |-\n'
+                            '${mapString!.split('\n').map((line) => '    $line').join('\n')}'),
+                  );
+                },
+              ),
+            ),
+          const Spacer(),
+          AnimatedOpacity(
+            opacity: isCompleted ? 1.0 : 0.0,
+            duration: kSlideDuration,
+            child: Tooltip(
               message: 'Next (Enter)',
               child: ElevatedButton.icon(
                 label: const Text('Next'),
@@ -104,8 +129,8 @@ class BoardControls extends StatelessWidget {
                   context.read<LevelNavigation>().onNext();
                 },
               ),
-            )
-          }
+            ),
+          ),
         ],
       ),
     );

@@ -5,7 +5,7 @@ import 'package:slide/models/models.dart';
 import 'package:slide/puzzle/puzzle.dart';
 
 class LevelShortcutListener extends StatelessWidget {
-  const LevelShortcutListener({
+  LevelShortcutListener({
     Key? key,
     required this.levelBloc,
     required this.child,
@@ -50,8 +50,11 @@ class LevelShortcutListener extends StatelessWidget {
     ...levelShortcuts,
   };
 
+  final FocusNode focusNode = FocusNode();
+
   @override
   Widget build(BuildContext context) {
+    FocusScope.of(context).requestFocus(focusNode);
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onHorizontalDragEnd: (details) {
@@ -69,6 +72,7 @@ class LevelShortcutListener extends StatelessWidget {
         }
       },
       child: FocusableActionDetector(
+        focusNode: focusNode,
         autofocus: true,
         shortcuts: shortcuts,
         actions: {
