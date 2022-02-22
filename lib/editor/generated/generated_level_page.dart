@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:slide/editor/editor.dart';
 import 'package:slide/level/level.dart';
 import 'package:slide/models/models.dart';
@@ -21,8 +20,13 @@ class GeneratedLevelPage extends StatelessWidget {
                 text:
                     'https://slide.jeffsieu.com/#/editor/generated/${encodeMapString(mapString)}'),
           );
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Copied link to clipboard'),
+            ),
+          );
         },
-        icon: const Icon(MdiIcons.contentCopy),
+        icon: const Icon(Icons.share),
         label: const Text('Copy link'),
       ),
       body: LevelPage(
