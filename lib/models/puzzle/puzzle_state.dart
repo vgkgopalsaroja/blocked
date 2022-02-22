@@ -42,10 +42,35 @@ class PuzzleState extends Equatable {
   PlacedBlock get mainBlock => blocks.firstWhere((block) => block.isMain);
   final PlacedBlock controlledBlock;
 
-  bool get isCompleted => !canFit(mainBlock);
+  bool get isCompleted => !_canFit(mainBlock);
 
-  PuzzleState withControlledBlock(PlacedBlock newControlledBlock) {
-    assert(blocks.contains(newControlledBlock));
+  PuzzleState withMoveAttempt(MoveAttempt move) {
+    final movedBlock = controlledBlock;
+    final newPosition = movedBlock.position.shifted(move.direction);
+    final newBlock = movedBlock.withPosition(newPosition);
+    if (_hasWallInDirection(movedBlock, move.direction)) {
+      return this;
+    }
+
+    final blocksAhead = _getBlocksAhead(movedBlock, move.direction);
+
+    if (blocksAhead.isNotEmpty) {
+      if (blocksAhead.length == 1) {
+        final newControlledBlock = blocksAhead.first;
+        return _withControlledBlock(newControlledBlock);
+      } else {
+        return this;
+      }
+    }
+
+    if (!_canFit(newBlock) && !newBlock.isMain) {
+      return this;
+    }
+
+    return _withMovedBlock(movedBlock, move.direction);
+  }
+
+  PuzzleState _withControlledBlock(PlacedBlock newControlledBlock) {
     return PuzzleState(
       width,
       height,
@@ -55,7 +80,7 @@ class PuzzleState extends Equatable {
     );
   }
 
-  PuzzleState withMovedBlock(PlacedBlock movedBlock, MoveDirection direction) {
+  PuzzleState _withMovedBlock(PlacedBlock movedBlock, MoveDirection direction) {
     final newPosition = movedBlock.position.shifted(direction);
     final newBlock = movedBlock.withPosition(newPosition);
     return PuzzleState(
@@ -70,47 +95,21 @@ class PuzzleState extends Equatable {
     );
   }
 
-  PuzzleState withMoveAttempt(MoveAttempt move) {
-    final movedBlock = controlledBlock;
-    final newPosition = movedBlock.position.shifted(move.direction);
-    final newBlock = movedBlock.withPosition(newPosition);
-    if (hasWallInDirection(movedBlock, move.direction)) {
-      return this;
-    }
-
-    final blocksAhead = _getBlocksAhead(movedBlock, move.direction);
-
-    if (blocksAhead.isNotEmpty) {
-      if (blocksAhead.length == 1) {
-        final newControlledBlock = blocksAhead.first;
-        return withControlledBlock(newControlledBlock);
-      } else {
-        return this;
-      }
-    }
-
-    if (!canFit(newBlock) && !newBlock.isMain) {
-      return this;
-    }
-
-    return withMovedBlock(movedBlock, move.direction);
-  }
-
   Iterable<PlacedBlock> _getBlocksAhead(
       PlacedBlock block, MoveDirection direction) {
     switch (direction) {
       case MoveDirection.up:
-        return getBlocksTop(block);
+        return _getBlocksTop(block);
       case MoveDirection.down:
-        return getBlocksBottom(block);
+        return _getBlocksBottom(block);
       case MoveDirection.left:
-        return getBlocksLeft(block);
+        return _getBlocksLeft(block);
       case MoveDirection.right:
-        return getBlocksRight(block);
+        return _getBlocksRight(block);
     }
   }
 
-  Iterable<PlacedBlock> getBlocksTop(PlacedBlock block) {
+  Iterable<PlacedBlock> _getBlocksTop(PlacedBlock block) {
     return blocks
         .where((b) => b != block)
         .where((b) => b.bottom == block.top - 1)
@@ -118,7 +117,7 @@ class PuzzleState extends Equatable {
             _isRangeIntersecting(block.left, block.right, b.left, b.right));
   }
 
-  Iterable<PlacedBlock> getBlocksBottom(PlacedBlock block) {
+  Iterable<PlacedBlock> _getBlocksBottom(PlacedBlock block) {
     return blocks
         .where((b) => b != block)
         .where((b) => b.top == block.bottom + 1)
@@ -126,7 +125,7 @@ class PuzzleState extends Equatable {
             _isRangeIntersecting(block.left, block.right, b.left, b.right));
   }
 
-  Iterable<PlacedBlock> getBlocksLeft(PlacedBlock block) {
+  Iterable<PlacedBlock> _getBlocksLeft(PlacedBlock block) {
     return blocks
         .where((b) => b != block)
         .where((b) => b.right == block.left - 1)
@@ -134,7 +133,7 @@ class PuzzleState extends Equatable {
             _isRangeIntersecting(block.top, block.bottom, b.top, b.bottom));
   }
 
-  Iterable<PlacedBlock> getBlocksRight(PlacedBlock block) {
+  Iterable<PlacedBlock> _getBlocksRight(PlacedBlock block) {
     return blocks
         .where((b) => b != block)
         .where((b) => b.left == block.right + 1)
@@ -142,14 +141,14 @@ class PuzzleState extends Equatable {
             _isRangeIntersecting(block.top, block.bottom, b.top, b.bottom));
   }
 
-  bool canFit(PlacedBlock block) {
+  bool _canFit(PlacedBlock block) {
     return block.top >= 0 &&
         block.left >= 0 &&
         block.bottom < height &&
         block.right < width;
   }
 
-  bool hasWallInDirection(PlacedBlock block, MoveDirection direction) {
+  bool _hasWallInDirection(PlacedBlock block, MoveDirection direction) {
     switch (direction) {
       case MoveDirection.up:
         return walls.any((wall) =>

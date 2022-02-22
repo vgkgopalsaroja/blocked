@@ -16,25 +16,27 @@ class AppRouteParser extends RouteInformationParser<AppRoutePath> {
       return const LevelRoutePath.chapterSelection();
     }
     final uri = Uri.parse(routeInformation.location!);
+    final pathSegments =
+        uri.pathSegments.where((segment) => segment.isNotEmpty).toList();
 
-    if (uri.pathSegments.isEmpty) {
+    if (pathSegments.isEmpty) {
       return const LevelRoutePath.chapterSelection();
     } else {
-      final firstSegment = uri.pathSegments.first;
+      final firstSegment = pathSegments.first;
       if (firstSegment == 'levels') {
-        if (uri.pathSegments.length == 1) {
+        if (pathSegments.length == 1) {
           return const LevelRoutePath.chapterSelection();
-        } else if (uri.pathSegments.length == 2) {
-          return LevelRoutePath.levelSelection(chapterName: uri.pathSegments[1]);
-        } else if (uri.pathSegments.length == 3) {
+        } else if (pathSegments.length == 2) {
+          return LevelRoutePath.levelSelection(chapterName: pathSegments[1]);
+        } else if (pathSegments.length == 3) {
           return LevelRoutePath.level(
-              chapterName: uri.pathSegments[1], levelName: uri.pathSegments[2]);
+              chapterName: pathSegments[1], levelName: pathSegments[2]);
         }
       } else if (firstSegment == 'editor') {
-        final secondSegment = uri.pathSegments.skip(1).firstOrNull;
+        final secondSegment = pathSegments.skip(1).firstOrNull;
         if (secondSegment == 'generated') {
           // Try to fetch map string
-          final thirdSegment = uri.pathSegments.skip(2).firstOrNull;
+          final thirdSegment = pathSegments.skip(2).firstOrNull;
           if (thirdSegment != null) {
             return EditorRoutePath.generatedLevel(
                 decodeMapString(thirdSegment));

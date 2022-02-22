@@ -37,7 +37,7 @@ class ObjectBuilder extends StatelessWidget {
         listener: (context, state) {
           final start = state.start;
           final end = state.end;
-          assert(start != null && end != null);
+          assert(start != null && end != null, 'object start and end must not be null');
           onObjectPlaced(start!, end!);
         },
         buildWhen: (previous, current) {

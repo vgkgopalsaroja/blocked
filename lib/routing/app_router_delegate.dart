@@ -48,7 +48,9 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
                 MaterialPage(child: ChapterSelectionPage(chapters)),
                 if (path is LevelRoutePath && path.chapterName != null)
                   MaterialPage(
-                    child: LevelSelectionPage(levelList!.levels),
+                    child: LevelSelectionPage(chapters.firstWhere(
+                      (c) => c.name == path.chapterName,
+                    )),
                   ),
                 if (path is EditorRoutePath) ...{
                   const MaterialPage(child: LevelEditorPage()),
@@ -72,14 +74,16 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
                       body: LevelPage(
                         levelList.getLevelWithId(path.levelName!)!.toLevel(),
                         boardControls: const BoardControls(),
-                        key: Key(levelList.getLevelWithId(path.levelName!)!.name),
+                        key: Key(
+                            levelList.getLevelWithId(path.levelName!)!.name),
                         onExit: () => navigatorCubit
                             .navigateToLevelSelection(path.chapterName!),
                         onNext: () {
                           final nextLevelName =
                               levelList.getLevelAfterId(path.levelName!)?.name;
                           if (nextLevelName != null) {
-                            navigatorCubit.navigateToLevel(nextLevelName);
+                            navigatorCubit.navigateToLevel(
+                                path.chapterName!, nextLevelName);
                           } else {
                             navigatorCubit
                                 .navigateToLevelSelection(path.chapterName!);
@@ -121,7 +125,8 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
       }
     } else if (configuration is LevelRoutePath &&
         configuration.levelName != null) {
-      navigatorCubit.navigateToLevel(configuration.levelName!);
+      navigatorCubit.navigateToLevel(
+          configuration.chapterName!, configuration.levelName!);
     } else if (configuration is LevelRoutePath &&
         configuration.chapterName != null) {
       navigatorCubit.navigateToLevelSelection(configuration.chapterName!);

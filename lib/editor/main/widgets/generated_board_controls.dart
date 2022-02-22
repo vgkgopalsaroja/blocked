@@ -17,16 +17,6 @@ class GeneratedBoardControls extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Tooltip(
-          message: 'Back to editor (Esc)',
-          child: TextButton.icon(
-            icon: const Icon(Icons.arrow_back_rounded),
-            label: const Text('Back'),
-            onPressed: () {
-              context.read<LevelNavigation>().onExit();
-            },
-          ),
-        ),
         TextButton.icon(
           onPressed: () {
             Clipboard.setData(

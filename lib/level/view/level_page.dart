@@ -44,34 +44,48 @@ class LevelPage extends StatelessWidget {
                       : MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(levelName,
-                        style: Theme.of(context).textTheme.displaySmall),
-                    if (levelHint != null)
-                      Text(levelHint,
-                          style: Theme.of(context).textTheme.titleLarge),
+                    const BackButton(),
+                    const SizedBox(height: 16),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text(
+                        levelName,
+                        style: Theme.of(context).textTheme.displaySmall,
+                      ),
+                    ),
+                    if (levelHint != null) ...{
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(levelHint,
+                            style: Theme.of(context).textTheme.titleLarge),
+                      ),
+                    },
                     const SizedBox(height: 32),
                     Expanded(
-                      child: Center(
-                        child: FittedBox(
-                          child: Hero(
-                            tag: 'puzzle',
-                            flightShuttleBuilder: (
-                              BuildContext flightContext,
-                              Animation<double> animation,
-                              HeroFlightDirection flightDirection,
-                              BuildContext fromHeroContext,
-                              BuildContext toHeroContext,
-                            ) {
-                              final toHero = toHeroContext.widget as Hero;
-                              return BlocProvider.value(
-                                value: context.read<LevelBloc>(),
-                                child: Material(
-                                  type: MaterialType.transparency,
-                                  child: toHero.child,
-                                ),
-                              );
-                            },
-                            child: const Puzzle(),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Center(
+                          child: FittedBox(
+                            child: Hero(
+                              tag: 'puzzle',
+                              flightShuttleBuilder: (
+                                BuildContext flightContext,
+                                Animation<double> animation,
+                                HeroFlightDirection flightDirection,
+                                BuildContext fromHeroContext,
+                                BuildContext toHeroContext,
+                              ) {
+                                final toHero = toHeroContext.widget as Hero;
+                                return BlocProvider.value(
+                                  value: context.read<LevelBloc>(),
+                                  child: Material(
+                                    type: MaterialType.transparency,
+                                    child: toHero.child,
+                                  ),
+                                );
+                              },
+                              child: const Puzzle(),
+                            ),
                           ),
                         ),
                       ),
@@ -99,21 +113,18 @@ class LevelPage extends StatelessWidget {
                     ),
                   ],
                 );
-                return Stack(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: isVerticalLayout
-                          ? column
-                          : Center(
-                              child: IntrinsicHeight(
-                                child: IntrinsicWidth(
-                                  child: column,
-                                ),
-                              ),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 16.0, horizontal: 8.0),
+                  child: isVerticalLayout
+                      ? column
+                      : Center(
+                          child: IntrinsicHeight(
+                            child: IntrinsicWidth(
+                              child: column,
                             ),
-                    ),
-                  ],
+                          ),
+                        ),
                 );
               },
             ),

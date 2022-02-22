@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slide/routing/routing.dart';
 
@@ -17,8 +18,8 @@ class NavigatorCubit extends Cubit<AppRoutePath> {
     emit(LevelRoutePath.levelSelection(chapterName: chapterName));
   }
 
-  void navigateToLevel(String levelName) {
-    emit(LevelRoutePath.level(chapterName: levelName[0], levelName: levelName));
+  void navigateToLevel(String chapterName, String levelName) {
+    emit(LevelRoutePath.level(chapterName: chapterName, levelName: levelName));
     latestLevelName = levelName;
   }
 
@@ -32,8 +33,15 @@ class NavigatorCubit extends Cubit<AppRoutePath> {
 
   void navigateToPreviousPage() {
     if (state is LevelRoutePath) {
-      emit(const LevelRoutePath.chapterSelection());
-      // Handle level to chapter list navigation.
+      final levelRoutePath = state as LevelRoutePath;
+      if (levelRoutePath.chapterName != null &&
+          levelRoutePath.levelName != null) {
+        // Currently in level page.
+        emit(LevelRoutePath.levelSelection(
+            chapterName: levelRoutePath.chapterName));
+      } else {
+        emit(const LevelRoutePath.chapterSelection());
+      }
     } else if (state is EditorRoutePath) {
       final editorRoutePath = state as EditorRoutePath;
       if (editorRoutePath.isInPreview) {

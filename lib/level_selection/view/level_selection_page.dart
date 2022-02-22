@@ -6,10 +6,11 @@ import 'package:slide/puzzle/puzzle.dart';
 import 'package:slide/routing/routing.dart';
 
 class LevelSelectionPage extends StatelessWidget {
-  LevelSelectionPage(Iterable<LevelData> levelData, {Key? key})
-      : levels = levelData.map((data) => data.toLevel()).toList(),
+  LevelSelectionPage(this.chapter, {Key? key})
+      : levels = chapter.levels.map((data) => data.toLevel()).toList(),
         super(key: key);
 
+  final LevelChapter chapter;
   final List<Level> levels;
 
   @override
@@ -24,6 +25,9 @@ class LevelSelectionPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const BackButton(),
+                Text('${chapter.name} - ${chapter.description}',
+                    style: Theme.of(context).textTheme.displayMedium),
+                const SizedBox(height: 32),
                 Text('levels', style: Theme.of(context).textTheme.displaySmall),
               ],
             ),
@@ -47,7 +51,7 @@ class LevelSelectionPage extends StatelessWidget {
                         onPressed: () {
                           context
                               .read<NavigatorCubit>()
-                              .navigateToLevel(level.name);
+                              .navigateToLevel(chapter.name, level.name);
                         },
                         puzzle: Hero(
                           tag: context.select((NavigatorCubit cubit) {

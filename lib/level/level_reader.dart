@@ -48,40 +48,28 @@ extension on int {
 class LevelReader {
   static Future<List<LevelChapter>> readLevels() async {
     final chapters = <LevelChapter>[];
-    final levels = <LevelData>[];
     final data = await rootBundle.loadString('assets/levels.yaml');
-    final mapData = loadYaml(data);
-    for (YamlMap levelData in mapData) {
-      final name = levelData['name']!.toString();
-      final String? hint = levelData['hint'];
-      final map = levelData['map']!.toString();
-      levels.add(LevelData(
-        name: name.toString(),
-        hint: hint?.toString(),
-        map: map,
-      ));
-    }
-    final chapterMap = <String, List<LevelData>>{};
+    final yamlData = loadYaml(data);
 
-    for (var level in levels) {
-      final chapter = level.name[0];
-      if (!chapterMap.containsKey(chapter)) {
-        chapterMap[chapter] = [];
+    for (YamlMap chapterData in yamlData) {
+      final name = chapterData['name'].toString();
+      final description = chapterData['description'].toString();
+      final levelsData = chapterData['levels'];
+
+      final levels = <LevelData>[];
+      for (YamlMap levelData in levelsData) {
+        final name = levelData['name']!.toString();
+        final String? hint = levelData['hint'];
+        final map = levelData['map']!.toString();
+        levels.add(LevelData(
+          name: name.toString(),
+          hint: hint?.toString(),
+          map: map,
+        ));
       }
-      chapterMap[chapter]!.add(level);
+      chapters.add(LevelChapter(name, description, levels));
     }
-
-    return chapterMap.entries.map((entry) {
-      final chapterName = entry.key;
-      final chapterLevels = entry.value;
-      final chapter = LevelChapter(
-        chapterName,
-        'level description',
-        chapterLevels,
-      );
-      chapters.add(chapter);
-      return chapter;
-    }).toList();
+    return chapters;
   }
 
   static String stateToMapString(LevelState state) {
