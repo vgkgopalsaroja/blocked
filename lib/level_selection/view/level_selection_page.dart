@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:slide/level_selection/level_selection.dart';
 import 'package:slide/models/models.dart';
 import 'package:slide/puzzle/puzzle.dart';
 import 'package:slide/routing/routing.dart';
@@ -22,8 +23,7 @@ class LevelSelectionPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('slide', style: Theme.of(context).textTheme.displayMedium),
-                const SizedBox(height: 32),
+                const BackButton(),
                 Text('levels', style: Theme.of(context).textTheme.displaySmall),
               ],
             ),
@@ -32,8 +32,8 @@ class LevelSelectionPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             sliver: SliverGrid(
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 300,
-                childAspectRatio: 2,
+                maxCrossAxisExtent: 200,
+                childAspectRatio: 1,
                 mainAxisSpacing: 16,
                 crossAxisSpacing: 16,
               ),
@@ -41,54 +41,33 @@ class LevelSelectionPage extends StatelessWidget {
                 (context, index) {
                   final level = levels[index];
                   final initialLevelState = level.initialState;
-                  return Builder(builder: (context) {
-                    return OutlinedButton(
-                      clipBehavior: Clip.antiAlias,
-                      onPressed: () {
-                        context
-                            .read<NavigatorCubit>()
-                            .navigateToLevel(level.name);
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        child: Center(
-                          child: Row(
-                            children: [
-                              AspectRatio(
-                                aspectRatio: 1,
-                                child: Center(
-                                  child: FittedBox(
-                                    child: Hero(
-                                      tag: context
-                                          .select((NavigatorCubit cubit) {
-                                        final latestLevelName =
-                                            cubit.latestLevelId;
-                                        return latestLevelName == level.name
-                                            ? 'puzzle'
-                                            : level.name;
-                                      }),
-                                      child: BlocProvider(
-                                        create: (context) => PuzzleBloc(
-                                            initialLevelState,
-                                            onExit: () {},
-                                            onNext: () {}),
-                                        child: const StaticPuzzle(),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 32.0),
-                              Text(
-                                level.name,
-                                style: Theme.of(context).textTheme.titleLarge,
-                              ),
-                            ],
+                  return Builder(
+                    builder: (context) {
+                      return LabeledPuzzleButton(
+                        onPressed: () {
+                          context
+                              .read<NavigatorCubit>()
+                              .navigateToLevel(level.name);
+                        },
+                        puzzle: Hero(
+                          tag: context.select((NavigatorCubit cubit) {
+                            final latestLevelName = cubit.latestLevelName;
+                            return latestLevelName == level.name
+                                ? 'puzzle'
+                                : level.name;
+                          }),
+                          child: BlocProvider(
+                            create: (context) => LevelBloc(initialLevelState),
+                            child: const StaticPuzzle(),
                           ),
                         ),
-                      ),
-                    );
-                  });
+                        label: Text(
+                          level.name,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      );
+                    },
+                  );
                 },
                 childCount: levels.length,
               ),

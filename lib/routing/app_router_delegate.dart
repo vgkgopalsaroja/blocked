@@ -36,18 +36,17 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
         },
         builder: (context, state) {
           final path = state;
-          final levels = (path is LevelRoutePath && path.chapterId != null)
-              ? chapters.firstWhere((c) => c.name == path.chapterId!).levels
+          final levels = (path is LevelRoutePath && path.chapterName != null)
+              ? chapters.firstWhere((c) => c.name == path.chapterName!).levels
               : null;
           final levelList = levels != null ? LevelList(levels) : null;
-          print(path);
           return BlocProvider(
             create: (context) => navigatorCubit,
             child: Navigator(
               key: _navigatorKey,
               pages: [
                 MaterialPage(child: ChapterSelectionPage(chapters)),
-                if (path is LevelRoutePath && path.chapterId != null)
+                if (path is LevelRoutePath && path.chapterName != null)
                   MaterialPage(
                     child: LevelSelectionPage(levelList!.levels),
                   ),
@@ -63,27 +62,27 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
                     ),
                 },
                 if (path is LevelRoutePath &&
-                    path.chapterId != null &&
-                    path.levelId != null &&
+                    path.chapterName != null &&
+                    path.levelName != null &&
                     levelList != null) ...{
                   MaterialPage(
                     name: path.location,
                     key: ValueKey(path.location),
                     child: Scaffold(
                       body: LevelPage(
-                        levelList.getLevelWithId(path.levelId!)!.toLevel(),
+                        levelList.getLevelWithId(path.levelName!)!.toLevel(),
                         boardControls: const BoardControls(),
-                        key: Key(levelList.getLevelWithId(path.levelId!)!.name),
+                        key: Key(levelList.getLevelWithId(path.levelName!)!.name),
                         onExit: () => navigatorCubit
-                            .navigateToLevelSelection(path.chapterId!),
+                            .navigateToLevelSelection(path.chapterName!),
                         onNext: () {
-                          final nextLevelId =
-                              levelList.getLevelAfterId(path.levelId!)?.name;
-                          if (nextLevelId != null) {
-                            navigatorCubit.navigateToLevel(nextLevelId);
+                          final nextLevelName =
+                              levelList.getLevelAfterId(path.levelName!)?.name;
+                          if (nextLevelName != null) {
+                            navigatorCubit.navigateToLevel(nextLevelName);
                           } else {
                             navigatorCubit
-                                .navigateToLevelSelection(path.chapterId!);
+                                .navigateToLevelSelection(path.chapterName!);
                           }
                         },
                       ),
@@ -121,11 +120,11 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
         navigatorCubit.navigateToEditor(configuration.mapString);
       }
     } else if (configuration is LevelRoutePath &&
-        configuration.levelId != null) {
-      navigatorCubit.navigateToLevel(configuration.levelId!);
+        configuration.levelName != null) {
+      navigatorCubit.navigateToLevel(configuration.levelName!);
     } else if (configuration is LevelRoutePath &&
-        configuration.chapterId != null) {
-      navigatorCubit.navigateToLevelSelection(configuration.chapterId!);
+        configuration.chapterName != null) {
+      navigatorCubit.navigateToLevelSelection(configuration.chapterName!);
     } else {
       navigatorCubit.navigateToChapterSelection();
     }

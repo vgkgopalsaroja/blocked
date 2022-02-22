@@ -1,22 +1,14 @@
-part of 'puzzle_bloc.dart';
+part of 'level_bloc.dart';
 
-abstract class PuzzleEvent {
-  const PuzzleEvent();
+abstract class LevelEvent {
+  const LevelEvent();
 }
 
-class PuzzleReset extends PuzzleEvent {
-  const PuzzleReset();
+class LevelReset extends LevelEvent {
+  const LevelReset();
 }
 
-class PuzzleExited extends PuzzleEvent {
-  const PuzzleExited();
-}
-
-class NextPuzzle extends PuzzleEvent {
-  const NextPuzzle();
-}
-
-class MoveAttempt extends PuzzleEvent {
+class MoveAttempt extends LevelEvent {
   const MoveAttempt(this.direction);
 
   final MoveDirection direction;

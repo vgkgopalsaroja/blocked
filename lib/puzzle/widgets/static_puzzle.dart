@@ -7,9 +7,9 @@ class StaticPuzzle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final board = context.select((PuzzleBloc bloc) => bloc.state);
+    final board = context.select((LevelBloc bloc) => bloc.state);
     final controlledBlock =
-        context.select((PuzzleBloc bloc) => bloc.state.controlledBlock);
+        context.select((LevelBloc bloc) => bloc.state.controlledBlock);
 
     return FittedBox(
       child: CustomPaint(

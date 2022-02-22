@@ -7,19 +7,19 @@ class NavigatorCubit extends Cubit<AppRoutePath> {
   /// The id of the latest level that was visited.
   /// Used by the [Hero] widgets in level selection and level pages to
   /// determine which puzzle widgets to animate to.
-  String? latestLevelId;
+  String? latestLevelName;
 
   void navigateToChapterSelection() {
     emit(const LevelRoutePath.chapterSelection());
   }
 
-  void navigateToLevelSelection(String chapterId) {
-    emit(LevelRoutePath.levelSelection(chapterId: chapterId));
+  void navigateToLevelSelection(String chapterName) {
+    emit(LevelRoutePath.levelSelection(chapterName: chapterName));
   }
 
-  void navigateToLevel(String levelId) {
-    emit(LevelRoutePath.level(chapterId: levelId[0], levelId: levelId));
-    latestLevelId = levelId;
+  void navigateToLevel(String levelName) {
+    emit(LevelRoutePath.level(chapterName: levelName[0], levelName: levelName));
+    latestLevelName = levelName;
   }
 
   void navigateToEditor(String mapString) {

@@ -23,7 +23,7 @@ class GeneratedBoardControls extends StatelessWidget {
             icon: const Icon(Icons.arrow_back_rounded),
             label: const Text('Back'),
             onPressed: () {
-              context.read<PuzzleBloc>().add(const PuzzleExited());
+              context.read<LevelNavigation>().onExit();
             },
           ),
         ),
@@ -47,7 +47,7 @@ class GeneratedBoardControls extends StatelessWidget {
           child: ElevatedButton.icon(
             icon: const Icon(Icons.refresh_rounded),
             onPressed: () {
-              context.read<PuzzleBloc>().add(const PuzzleReset());
+              context.read<LevelBloc>().add(const LevelReset());
             },
             label: const Text('Reset'),
           ),
@@ -56,7 +56,7 @@ class GeneratedBoardControls extends StatelessWidget {
           child: const Text('Solve'),
           onPressed: () {
             final moves =
-                PuzzleSolver(context.read<PuzzleBloc>().initialState.puzzle)
+                PuzzleSolver(context.read<LevelBloc>().initialState.puzzle)
                     .solve();
 
             IconData directionToIcon(MoveDirection direction) {
@@ -91,7 +91,7 @@ class GeneratedBoardControls extends StatelessWidget {
         TextButton(
           onPressed: () async {
             final moves =
-                PuzzleSolver(context.read<PuzzleBloc>().initialState.puzzle)
+                PuzzleSolver(context.read<LevelBloc>().initialState.puzzle)
                     .solve();
 
             if (moves == null) {
@@ -101,7 +101,7 @@ class GeneratedBoardControls extends StatelessWidget {
             }
 
             for (var move in moves) {
-              context.read<PuzzleBloc>().add(MoveAttempt(move));
+              context.read<LevelBloc>().add(MoveAttempt(move));
               await Future.delayed(const Duration(milliseconds: 200));
             }
           },

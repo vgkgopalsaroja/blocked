@@ -20,15 +20,15 @@ class _PuzzleState extends State<Puzzle> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final board = context.select((PuzzleBloc bloc) => bloc.state);
+    final board = context.select((LevelBloc bloc) => bloc.state);
     final latestMove =
-        context.select((PuzzleBloc bloc) => bloc.state.latestMove);
+        context.select((LevelBloc bloc) => bloc.state.latestMove);
     final controlledBlock =
-        context.select((PuzzleBloc bloc) => bloc.state.controlledBlock);
+        context.select((LevelBloc bloc) => bloc.state.controlledBlock);
 
     return RepaintBoundary(
       child: FittedBox(
-        child: BlocListener<PuzzleBloc, LevelState>(
+        child: BlocListener<LevelBloc, LevelState>(
           listenWhen: (previous, current) =>
               previous.latestMove != current.latestMove,
           listener: (context, state) async {

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:slide/level_selection/level_selection.dart';
 import 'package:slide/models/models.dart';
+import 'package:slide/puzzle/puzzle.dart';
 import 'package:slide/routing/navigator_cubit.dart';
 
 class ChapterSelectionPage extends StatelessWidget {
@@ -34,20 +36,40 @@ class ChapterSelectionPage extends StatelessWidget {
               ],
             ),
           )),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final chapter = chapters[index];
-                return ListTile(
-                  title: Text(chapter.name),
-                  onTap: () {
-                    context
-                        .read<NavigatorCubit>()
-                        .navigateToLevelSelection(chapter.name);
-                  },
-                );
-              },
-              childCount: chapters.length,
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            sliver: SliverGrid(
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 256,
+                childAspectRatio: 1,
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  final chapter = chapters[index];
+                  return LabeledPuzzleButton(
+                    label: Text(
+                      chapter.name,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    puzzle: Hero(
+                      tag: chapter.levels.first.name,
+                      child: BlocProvider(
+                        create: (context) => LevelBloc(
+                            chapter.levels.first.toLevel().initialState),
+                        child: const StaticPuzzle(),
+                      ),
+                    ),
+                    onPressed: () {
+                      context
+                          .read<NavigatorCubit>()
+                          .navigateToLevelSelection(chapter.name);
+                    },
+                  );
+                },
+                childCount: chapters.length,
+              ),
             ),
           ),
         ],

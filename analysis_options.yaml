@@ -28,7 +28,7 @@ linter:
     # prefer_expression_function_bodies: true
     prefer_final_locals: true
     prefer_interpolation_to_compose_strings: true
-    prefer_mixin: true
+    # prefer_mixin: true
     prefer_single_quotes: true
     sort_constructors_first: true
     omit_local_variable_types: true

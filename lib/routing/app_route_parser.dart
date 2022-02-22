@@ -25,10 +25,10 @@ class AppRouteParser extends RouteInformationParser<AppRoutePath> {
         if (uri.pathSegments.length == 1) {
           return const LevelRoutePath.chapterSelection();
         } else if (uri.pathSegments.length == 2) {
-          return LevelRoutePath.levelSelection(chapterId: uri.pathSegments[1]);
+          return LevelRoutePath.levelSelection(chapterName: uri.pathSegments[1]);
         } else if (uri.pathSegments.length == 3) {
           return LevelRoutePath.level(
-              chapterId: uri.pathSegments[1], levelId: uri.pathSegments[2]);
+              chapterName: uri.pathSegments[1], levelName: uri.pathSegments[2]);
         }
       } else if (firstSegment == 'editor') {
         final secondSegment = uri.pathSegments.skip(1).firstOrNull;
