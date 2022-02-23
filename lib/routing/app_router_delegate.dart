@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -85,8 +86,17 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
                             navigatorCubit.navigateToLevel(
                                 path.chapterName!, nextLevelName);
                           } else {
-                            navigatorCubit
-                                .navigateToLevelSelection(path.chapterName!);
+                            final nextChapter = chapters
+                                .skipWhile((c) => c.name != path.chapterName!)
+                                .skip(1)
+                                .firstOrNull;
+                            if (nextChapter != null) {
+                              navigatorCubit.navigateToLevel(nextChapter.name,
+                                  nextChapter.levels.first.name);
+                            } else {
+                              navigatorCubit
+                                  .navigateToLevelSelection(path.chapterName!);
+                            }
                           }
                         },
                       ),

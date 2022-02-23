@@ -41,6 +41,8 @@ class EditorShortcutListener extends StatelessWidget {
             const EditorActionIntent(TestMapPressed()),
         LogicalKeySet(LogicalKeyboardKey.space):
             const EditorActionIntent(TestMapPressed()),
+        LogicalKeySet(LogicalKeyboardKey.escape):
+            const EditorActionIntent(EscapePressed()),
       },
       actions: {
         EditorActionIntent:

@@ -36,6 +36,7 @@ class LevelEditorBloc extends Bloc<LevelEditorEvent, LevelEditorState> {
     on<GridToggled>(_onGridToggled);
     on<MapCleared>(_onMapCleared);
     on<SavePressed>(_onSavePressed);
+    on<EscapePressed>(_onEscapePressed);
   }
 
   final NavigatorCubit navigatorCubit;
@@ -49,6 +50,14 @@ class LevelEditorBloc extends Bloc<LevelEditorEvent, LevelEditorState> {
   void _onEditorObjectSelected(
       EditorObjectSelected event, Emitter<LevelEditorState> emit) {
     emit(state.withSelectedObject(event.object));
+  }
+
+  void _onEscapePressed(EscapePressed event, Emitter<LevelEditorState> emit) {
+    if (state.selectedTool != EditorTool.move) {
+      emit(state.copyWith(selectedTool: EditorTool.move));
+    } else {
+      emit(state.withSelectedObject(null));
+    }
   }
 
   void _onTestMapPressed(TestMapPressed event, Emitter<LevelEditorState> emit) {
@@ -110,7 +119,7 @@ class LevelEditorBloc extends Bloc<LevelEditorEvent, LevelEditorState> {
 
   void _onEditorToolSelected(
       EditorToolSelected event, Emitter<LevelEditorState> emit) {
-    emit(state.copyWith(selectedTool: event.tool));
+    emit(state.withSelectedObject(null).copyWith(selectedTool: event.tool));
   }
 
   void _onGridToggled(GridToggled event, Emitter<LevelEditorState> emit) {

@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:slide/editor/editor.dart';
 import 'package:slide/models/puzzle/puzzle.dart';
 import 'package:slide/puzzle/puzzle.dart';
+import 'package:slide/routing/routing.dart';
 import 'package:slide/solver/solver.dart';
 
 class BoardControls extends StatefulWidget {
@@ -129,10 +131,11 @@ class _BoardControlsState extends State<BoardControls> {
                     },
                   ),
                 ),
-                if (widget.mapString != null)
+                const Spacer(),
+                if (widget.mapString != null) ...{
                   Tooltip(
                     message: 'Copy as YAML',
-                    child: TextButton.icon(
+                    child: AdaptiveTextButton(
                       icon: const Icon(MdiIcons.contentCopy),
                       label: const Text('YAML'),
                       onPressed: () {
@@ -140,26 +143,46 @@ class _BoardControlsState extends State<BoardControls> {
                           ClipboardData(
                               text: '- name: generated\n'
                                   '  map: |-\n'
-                                  '//${widget.mapString!.split('\n').map((line) => '    ').join('\n')}'),
+                                  '${widget.mapString!.split('\n').map((line) => '    $line').join('\n')}'),
                         );
                       },
                     ),
                   ),
-                const Spacer(),
-                AnimatedOpacity(
-                  opacity: isCompleted ? 1.0 : 0.0,
-                  duration: kSlideDuration,
-                  child: Tooltip(
-                    message: 'Next (Enter)',
-                    child: ElevatedButton.icon(
-                      label: const Text('Next'),
-                      icon: const Icon(Icons.arrow_forward),
+                  Tooltip(
+                    message: 'Copy shareable link',
+                    child: AdaptiveTextButton(
                       onPressed: () {
-                        context.read<LevelNavigation>().onNext();
+                        Clipboard.setData(
+                          ClipboardData(
+                              text:
+                                  'https://slide.jeffsieu.com/#/editor/generated/${encodeMapString(widget.mapString!)}'),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Copied link to clipboard'),
+                          ),
+                        );
                       },
+                      icon: const Icon(Icons.share),
+                      label: const Text('Copy link'),
                     ),
                   ),
-                ),
+                },
+                if (widget.mapString == null)
+                  AnimatedOpacity(
+                    opacity: isCompleted ? 1.0 : 0.0,
+                    duration: kSlideDuration,
+                    child: Tooltip(
+                      message: 'Next (Enter)',
+                      child: ElevatedButton.icon(
+                        label: const Text('Next'),
+                        icon: const Icon(Icons.arrow_forward),
+                        onPressed: () {
+                          context.read<LevelNavigation>().onNext();
+                        },
+                      ),
+                    ),
+                  ),
               ],
             ),
           );

@@ -71,3 +71,7 @@ class MapCleared extends LevelEditorEvent {
 class SavePressed extends LevelEditorEvent {
   const SavePressed();
 }
+
+class EscapePressed extends LevelEditorEvent {
+  const EscapePressed();
+}
