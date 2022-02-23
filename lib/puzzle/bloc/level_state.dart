@@ -25,13 +25,16 @@ class LevelState {
     final movedBlock = puzzle.controlledBlock;
     final newPuzzle = puzzle.withMoveAttempt(move);
 
-    final isMoveBlockedByWall = newPuzzle == puzzle;
+    final isMoveBlocked = puzzle == newPuzzle;
+    final isMoveBlockedByWall =
+        puzzle.hasWallInDirection(movedBlock, move.direction);
+    final isMoveFailedControlShift = isMoveBlocked && !isMoveBlockedByWall;
     final isMoveBlockedByControlShift =
         newPuzzle.controlledBlock != puzzle.controlledBlock;
 
     if (isMoveBlockedByWall) {
       return this;
-    } else if (isMoveBlockedByControlShift) {
+    } else if (isMoveBlockedByControlShift || isMoveFailedControlShift) {
       return LevelState(
         newPuzzle,
         isCompleted: newPuzzle.isCompleted,

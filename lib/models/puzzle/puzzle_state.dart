@@ -48,7 +48,7 @@ class PuzzleState extends Equatable {
     final movedBlock = controlledBlock;
     final newPosition = movedBlock.position.shifted(move.direction);
     final newBlock = movedBlock.withPosition(newPosition);
-    if (_hasWallInDirection(movedBlock, move.direction)) {
+    if (hasWallInDirection(movedBlock, move.direction)) {
       return this;
     }
 
@@ -148,7 +148,7 @@ class PuzzleState extends Equatable {
         block.right < width;
   }
 
-  bool _hasWallInDirection(PlacedBlock block, MoveDirection direction) {
+  bool hasWallInDirection(PlacedBlock block, MoveDirection direction) {
     switch (direction) {
       case MoveDirection.up:
         return walls.any((wall) =>
