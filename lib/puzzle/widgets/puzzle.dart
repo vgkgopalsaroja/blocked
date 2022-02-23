@@ -54,22 +54,28 @@ class _PuzzleState extends State<Puzzle> with SingleTickerProviderStateMixin {
                     curve: Curves.easeInOutCubic,
                     left: block.left.toBlockOffset(),
                     top: block.top.toBlockOffset(),
-                    child: SlideTransition(
-                      position: (block == latestMove?.block
-                              ? controller
-                              : const AlwaysStoppedAnimation(0.0))
-                          .drive(CurveTween(curve: Curves.easeInOutCubic))
-                          .drive(Tween(
-                              begin: Offset.zero,
-                              end: Offset.fromDirection(
-                                  latestMove?.direction.toRadians() ?? 0,
-                                  ((2 * kBlockGap + kWallWidth) / kBlockSize) /
-                                      (latestMove?.direction.isVertical ?? false
-                                          ? block.height
-                                          : block.width)))),
-                      child: PuzzleBlock(
-                        block,
-                        isControlled: block == controlledBlock,
+                    child: AnimatedOpacity(
+                      opacity: board.isCompleted && block.isMain ? 0 : 1,
+                      duration: kSlideDuration,
+                      child: SlideTransition(
+                        position: (block == latestMove?.block
+                                ? controller
+                                : const AlwaysStoppedAnimation(0.0))
+                            .drive(CurveTween(curve: Curves.easeInOutCubic))
+                            .drive(Tween(
+                                begin: Offset.zero,
+                                end: Offset.fromDirection(
+                                    latestMove?.direction.toRadians() ?? 0,
+                                    ((2 * kBlockGap + kWallWidth) /
+                                            kBlockSize) /
+                                        (latestMove?.direction.isVertical ??
+                                                false
+                                            ? block.height
+                                            : block.width)))),
+                        child: PuzzleBlock(
+                          block,
+                          isControlled: block == controlledBlock,
+                        ),
                       ),
                     ),
                   ),
