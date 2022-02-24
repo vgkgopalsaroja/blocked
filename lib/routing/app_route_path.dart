@@ -4,7 +4,7 @@ import 'package:archive/archive.dart';
 
 class AppRoutePath {
   const AppRoutePath(this.location);
-  const AppRoutePath.home() : this('');
+  const AppRoutePath.home() : this('/');
 
   final String location;
 }

@@ -56,6 +56,8 @@ class NavigatorCubit extends Cubit<AppRoutePath> {
       } else {
         emit(const AppRoutePath.home());
       }
+    } else {
+      emit(const AppRoutePath.home());
     }
   }
 }

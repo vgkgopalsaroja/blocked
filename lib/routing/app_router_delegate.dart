@@ -138,15 +138,17 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
       } else {
         navigatorCubit.navigateToEditor(configuration.mapString);
       }
-    } else if (configuration is LevelRoutePath &&
-        configuration.levelName != null) {
-      navigatorCubit.navigateToLevel(
-          configuration.chapterName!, configuration.levelName!);
-    } else if (configuration is LevelRoutePath &&
-        configuration.chapterName != null) {
-      navigatorCubit.navigateToLevelSelection(configuration.chapterName!);
+    } else if (configuration is LevelRoutePath) {
+      if (configuration.levelName != null) {
+        navigatorCubit.navigateToLevel(
+            configuration.chapterName!, configuration.levelName!);
+      } else if (configuration.chapterName != null) {
+        navigatorCubit.navigateToLevelSelection(configuration.chapterName!);
+      } else {
+        navigatorCubit.navigateToChapterSelection();
+      }
     } else {
-      navigatorCubit.navigateToChapterSelection();
+      navigatorCubit.navigateToHome();
     }
 
     return SynchronousFuture(null);
