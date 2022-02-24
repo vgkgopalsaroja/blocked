@@ -1,5 +1,6 @@
 import 'package:blocked/level_selection/level_selection.dart';
 import 'package:blocked/models/models.dart';
+import 'package:blocked/progress/util/progress_saver.dart';
 import 'package:blocked/puzzle/puzzle.dart';
 import 'package:blocked/routing/navigator_cubit.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,23 @@ class ChapterSelectionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          PopupMenuButton(
+            onSelected: ((value) {
+              if (value == 'clear_progress') {
+                clearData();
+              }
+            }),
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'clear_progress',
+                child: Text('Clear progress'),
+              ),
+            ],
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           context.read<NavigatorCubit>().navigateToEditor('');

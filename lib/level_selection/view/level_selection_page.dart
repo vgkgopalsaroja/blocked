@@ -1,5 +1,6 @@
 import 'package:blocked/level_selection/level_selection.dart';
 import 'package:blocked/models/models.dart';
+import 'package:blocked/progress/util/progress_saver.dart';
 import 'package:blocked/puzzle/puzzle.dart';
 import 'package:blocked/routing/routing.dart';
 import 'package:flutter/material.dart';
@@ -45,14 +46,17 @@ class LevelSelectionPage extends StatelessWidget {
                 (context, index) {
                   final level = levels[index];
                   final initialLevelState = level.initialState;
-                  return Builder(
-                    builder: (context) {
+                  return FutureBuilder<bool>(
+                    initialData: false,
+                    future: isLevelCompleted(level.name),
+                    builder: (context, snapshot) {
                       return LabeledPuzzleButton(
                         onPressed: () {
                           context
                               .read<NavigatorCubit>()
                               .navigateToLevel(chapter.name, level.name);
                         },
+                        isCompleted: snapshot.data ?? false,
                         puzzle: Hero(
                           tag: context.select((NavigatorCubit cubit) {
                             final latestLevelName = cubit.latestLevelName;

@@ -12,17 +12,18 @@ dependencies:
   flutter:
     sdk: flutter
 
+  archive: ^3.1.11
+  async: ^2.8.2
   cupertino_icons: ^1.0.2
   equatable: ^2.0.3
+  flex_color_scheme: ^4.2.0
   flutter_bloc: ^8.0.1
   flutter_portal: ^0.4.0
   google_fonts: ^2.3.1
   material_design_icons_flutter: ^5.0.6595
+  shared_preferences: ^2.0.13
   url_strategy: ^0.2.0
   yaml: ^3.1.0
-  archive: ^3.1.11
-  flex_color_scheme: ^4.2.0
-  async: ^2.8.2
 
 dev_dependencies:
   flutter_test:

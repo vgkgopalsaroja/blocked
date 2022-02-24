@@ -71,34 +71,37 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
                   MaterialPage(
                     name: path.location,
                     key: ValueKey(path.location),
-                    child: Scaffold(
-                      body: LevelPage(
-                        levelList.getLevelWithId(path.levelName!)!.toLevel(),
-                        boardControls: const BoardControls(),
-                        key: Key(
-                            levelList.getLevelWithId(path.levelName!)!.name),
-                        onExit: () => navigatorCubit
-                            .navigateToLevelSelection(path.chapterName!),
-                        onNext: () {
-                          final nextLevelName =
-                              levelList.getLevelAfterId(path.levelName!)?.name;
-                          if (nextLevelName != null) {
-                            navigatorCubit.navigateToLevel(
-                                path.chapterName!, nextLevelName);
-                          } else {
-                            final nextChapter = chapters
-                                .skipWhile((c) => c.name != path.chapterName!)
-                                .skip(1)
-                                .firstOrNull;
-                            if (nextChapter != null) {
-                              navigatorCubit.navigateToLevel(nextChapter.name,
-                                  nextChapter.levels.first.name);
+                    child: ScaffoldMessenger(
+                      child: Scaffold(
+                        body: LevelPage(
+                          levelList.getLevelWithId(path.levelName!)!.toLevel(),
+                          boardControls: const BoardControls(),
+                          key: Key(
+                              levelList.getLevelWithId(path.levelName!)!.name),
+                          onExit: () => navigatorCubit
+                              .navigateToLevelSelection(path.chapterName!),
+                          onNext: () {
+                            final nextLevelName = levelList
+                                .getLevelAfterId(path.levelName!)
+                                ?.name;
+                            if (nextLevelName != null) {
+                              navigatorCubit.navigateToLevel(
+                                  path.chapterName!, nextLevelName);
                             } else {
-                              navigatorCubit
-                                  .navigateToLevelSelection(path.chapterName!);
+                              final nextChapter = chapters
+                                  .skipWhile((c) => c.name != path.chapterName!)
+                                  .skip(1)
+                                  .firstOrNull;
+                              if (nextChapter != null) {
+                                navigatorCubit.navigateToLevel(nextChapter.name,
+                                    nextChapter.levels.first.name);
+                              } else {
+                                navigatorCubit.navigateToLevelSelection(
+                                    path.chapterName!);
+                              }
                             }
-                          }
-                        },
+                          },
+                        ),
                       ),
                     ),
                   ),
