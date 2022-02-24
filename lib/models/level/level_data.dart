@@ -16,7 +16,7 @@ class LevelData {
     return Level(
       name,
       hint: hint,
-      initialState: LevelReader.parseLevel(map),
+      initialState: parseLevel(map),
     );
   }
 }

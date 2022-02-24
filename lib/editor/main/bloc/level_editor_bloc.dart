@@ -77,8 +77,8 @@ class LevelEditorBloc extends Bloc<LevelEditorEvent, LevelEditorState> {
       ));
     } else {
       emit(state.copyWith(
-        snackbarMessage:
-            const SnackbarMessage.error('Cannot save invalid puzzle'),
+        snackbarMessage: const SnackbarMessage.error(
+            'Cannot save invalid puzzle: overlapping blocks found'),
       ));
     }
   }

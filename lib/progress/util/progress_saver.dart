@@ -19,7 +19,7 @@ Future<bool> clearData() async {
 Future<List<String>> getFirstUncompletedLevel() async {
   final sharedPreferences = await SharedPreferences.getInstance();
   final keys = sharedPreferences.getKeys();
-  final chapters = await LevelReader.readLevels();
+  final chapters = await readLevelsFromYaml();
   for (final chapter in chapters) {
     for (final level in chapter.levels) {
       if (!keys.contains(level.name)) {

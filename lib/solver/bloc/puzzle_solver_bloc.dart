@@ -20,7 +20,7 @@ class PuzzleSolverBloc extends Bloc<PuzzleSolverEvent, PuzzleSolverState> {
       SolutionViewed event, Emitter<PuzzleSolverState> emit) {
     emit(state
         .copyWithSolutionFor(levelBloc.initialState.puzzle)
-        .copyWithSolutionViewed(true));
+        .copyWithSolutionViewed(viewed: true));
   }
 
   void _onSolutionPlayed(
@@ -50,7 +50,7 @@ class PuzzleSolverBloc extends Bloc<PuzzleSolverEvent, PuzzleSolverState> {
 
   void _onSolutionHidden(
       SolutionHidden event, Emitter<PuzzleSolverState> emit) {
-    emit(state.copyWithSolutionViewed(false));
+    emit(state.copyWithSolutionViewed(viewed: false));
   }
 
   @override

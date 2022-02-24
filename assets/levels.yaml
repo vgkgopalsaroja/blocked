@@ -11,7 +11,7 @@
         *******
 
     - name: 1-2
-      hint: Move into blocks to transfer control.
+      hint: Knock into blocks to transfer control.
       map: |-
         *******
         *M.xxxe

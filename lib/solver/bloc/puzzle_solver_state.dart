@@ -39,7 +39,7 @@ class PuzzleSolverState {
         solutionPlayback: solutionPlayback);
   }
 
-  PuzzleSolverState copyWithSolutionViewed(bool viewed) {
+  PuzzleSolverState copyWithSolutionViewed({required bool viewed}) {
     return PuzzleSolverState(
         solution: solution,
         hasSolutionResult: hasSolutionResult,

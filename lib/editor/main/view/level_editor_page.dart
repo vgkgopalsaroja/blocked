@@ -12,7 +12,7 @@ import 'package:flutter_portal/flutter_portal.dart';
 
 PuzzleSpecifications? tryParsePuzzleSpecs(String mapString) {
   try {
-    return LevelReader.parsePuzzleSpecs(mapString);
+    return parsePuzzleSpecs(mapString);
   } on Object {
     return null;
   }

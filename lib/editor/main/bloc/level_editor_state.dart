@@ -46,6 +46,16 @@ class LevelEditorState {
   Iterable<EditorSegment> get exits =>
       segments.where((segment) => isExit(segment));
 
+  EditorBlock? get mainBlock => objects
+      .whereType<EditorBlock>()
+      .where((block) => block.isMain)
+      .firstOrNull;
+
+  EditorBlock? get initialBlock => objects
+      .whereType<EditorBlock>()
+      .where((block) => block.hasControl)
+      .firstOrNull;
+
   static bool hasBlockIntersection(
       int width, int height, Iterable<PlacedBlock> blocks) {
     final visited = List.generate(height, (i) => List.filled(width, false));
@@ -60,25 +70,25 @@ class LevelEditorState {
     return false;
   }
 
+  bool segmentFits(Segment segment) {
+    return segment.start.x >= 0 &&
+        segment.start.x <= floor.width &&
+        segment.start.y >= 0 &&
+        segment.start.y <= floor.height &&
+        segment.end.x >= 0 &&
+        segment.end.x <= floor.width &&
+        segment.end.y >= 0 &&
+        segment.end.y <= floor.height;
+  }
+
+  bool blockFits(PlacedBlock block) {
+    return block.left >= 0 &&
+        block.right < floor.width &&
+        block.top >= 0 &&
+        block.bottom < floor.height;
+  }
+
   String? getMapString() {
-    bool segmentFits(Segment segment) {
-      return segment.start.x >= 0 &&
-          segment.start.x <= floor.width &&
-          segment.start.y >= 0 &&
-          segment.start.y <= floor.height &&
-          segment.end.x >= 0 &&
-          segment.end.x <= floor.width &&
-          segment.end.y >= 0 &&
-          segment.end.y <= floor.height;
-    }
-
-    bool blockFits(PlacedBlock block) {
-      return block.left >= 0 &&
-          block.right < floor.width &&
-          block.top >= 0 &&
-          block.bottom < floor.height;
-    }
-
     final blocks = getGeneratedBlocks().where((block) => blockFits(block));
     final walls = getGeneratedWalls().where((wall) => segmentFits(wall));
 
@@ -86,7 +96,7 @@ class LevelEditorState {
       return null;
     }
 
-    return LevelReader.toMapString(
+    return toMapString(
       width: floor.width,
       height: floor.height,
       walls: walls,
@@ -94,16 +104,6 @@ class LevelEditorState {
       initialBlock: blocks.where((block) => block.isMain).firstOrNull,
     );
   }
-
-  EditorBlock? get mainBlock => objects
-      .whereType<EditorBlock>()
-      .where((block) => block.isMain)
-      .firstOrNull;
-
-  EditorBlock? get initialBlock => objects
-      .whereType<EditorBlock>()
-      .where((block) => block.hasControl)
-      .firstOrNull;
 
   bool isExit(EditorSegment segment) {
     final dx = -floor.left;
@@ -279,28 +279,36 @@ class LevelEditorState {
   }
 
   LevelState _generatePuzzleFromEditorObjects() {
-    final initialBlock = this.initialBlock;
-    if (initialBlock == null) {
+    final dx = -floor.left;
+    final dy = -floor.top;
+
+    final generatedBlocks =
+        getGeneratedBlocks().where((block) => blockFits(block));
+    final generatedInitialBlock = initialBlock?.toBlock().translate(dx, dy);
+
+    if (hasBlockIntersection(floor.width, floor.height, generatedBlocks)) {
+      throw const EditorException('Overlapping blocks found');
+    } else if (generatedInitialBlock == null) {
       throw const EditorException('No initial block found');
+    } else if (!blockFits(generatedInitialBlock)) {
+      throw const EditorException('Initial block does not fit in puzzle');
     } else if (mainBlock == null) {
       throw const EditorException('No main block found');
     } else if (exits.isEmpty) {
       throw const EditorException('Puzzle has no exits');
     }
-
-    final otherBlocks = blocks.where((block) => block != initialBlock);
-
-    final dx = -floor.left;
-    final dy = -floor.top;
+    final generatedWalls =
+        getGeneratedWalls().where((wall) => segmentFits(wall)).toList();
+    final otherGeneratedBlocks =
+        generatedBlocks.where((block) => block != generatedInitialBlock);
 
     final state = LevelState.initial(
       PuzzleState.initial(
         floor.width,
         floor.height,
-        initialBlock: initialBlock.toBlock().translate(dx, dy),
-        otherBlocks:
-            otherBlocks.map((e) => e.toBlock().translate(dx, dy)).toList(),
-        walls: getGeneratedWalls(),
+        initialBlock: generatedInitialBlock,
+        otherBlocks: otherGeneratedBlocks,
+        walls: generatedWalls,
       ),
     );
     return state;

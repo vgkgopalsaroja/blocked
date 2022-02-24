@@ -49,8 +49,8 @@ class LevelState {
     }
   }
 
-  /// Convert the puzzle to a string representation parseable by [LevelReader].
+  /// Convert the puzzle to a string representation parseable by the level reader.
   String toMapString() {
-    return LevelReader.stateToMapString(this);
+    return stateToMapString(this);
   }
 }

@@ -14,7 +14,7 @@ class GeneratedLevelPage extends StatelessWidget {
       body: LevelPage(
         Level(
           'Generated level',
-          initialState: LevelReader.parseLevel(mapString),
+          initialState: parseLevel(mapString),
         ),
         onExit: () {
           Navigator.of(context).pop();

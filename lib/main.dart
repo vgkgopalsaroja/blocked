@@ -7,7 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final levels = await LevelReader.readLevels();
+  final levels = await readLevelsFromYaml();
   runApp(MyApp(chapters: levels));
 }
 
@@ -37,7 +37,7 @@ class _MyAppState extends State<MyApp> {
         ),
         useSubThemes: true,
         blendLevel: 16,
-        fontFamily: GoogleFonts.poppins().fontFamily,
+        fontFamily: GoogleFonts.dmSans().fontFamily,
         subThemesData: const FlexSubThemesData(
           buttonPadding: EdgeInsets.all(16),
           textButtonRadius: 8,
