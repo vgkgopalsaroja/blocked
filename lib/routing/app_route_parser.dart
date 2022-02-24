@@ -12,14 +12,14 @@ class AppRouteParser extends RouteInformationParser<AppRoutePath> {
 
   AppRoutePath _parseRouteInformationSync(RouteInformation routeInformation) {
     if (routeInformation.location == null) {
-      return const LevelRoutePath.chapterSelection();
+      return const AppRoutePath.home();
     }
     final uri = Uri.parse(routeInformation.location!);
     final pathSegments =
         uri.pathSegments.where((segment) => segment.isNotEmpty).toList();
 
     if (pathSegments.isEmpty) {
-      return const LevelRoutePath.chapterSelection();
+      return const AppRoutePath.home();
     } else {
       final firstSegment = pathSegments.first;
       if (firstSegment == 'levels') {
@@ -51,7 +51,7 @@ class AppRouteParser extends RouteInformationParser<AppRoutePath> {
         return EditorRoutePath.editor(mapString);
       }
     }
-    return const LevelRoutePath.chapterSelection();
+    return const AppRoutePath.home();
   }
 
   @override

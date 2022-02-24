@@ -2,6 +2,7 @@ import 'package:blocked/editor/editor.dart';
 import 'package:blocked/level/level.dart';
 import 'package:blocked/level_selection/level_selection.dart';
 import 'package:blocked/level_selection/view/chapter_selection_page.dart';
+import 'package:blocked/level_selection/view/home_page.dart';
 import 'package:blocked/models/models.dart';
 import 'package:blocked/puzzle/puzzle.dart';
 import 'package:blocked/routing/routing.dart';
@@ -22,8 +23,7 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
   final List<LevelChapter> chapters;
 
   bool isLoaded;
-  NavigatorCubit navigatorCubit =
-      NavigatorCubit(const LevelRoutePath.chapterSelection());
+  NavigatorCubit navigatorCubit = NavigatorCubit(const AppRoutePath.home());
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,9 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
             child: Navigator(
               key: _navigatorKey,
               pages: [
-                MaterialPage(child: ChapterSelectionPage(chapters)),
+                const MaterialPage(child: HomePage()),
+                if (path is LevelRoutePath)
+                  MaterialPage(child: ChapterSelectionPage(chapters)),
                 if (path is LevelRoutePath && path.chapterName != null)
                   MaterialPage(
                     child: LevelSelectionPage(chapters.firstWhere(

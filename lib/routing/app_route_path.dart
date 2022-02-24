@@ -4,6 +4,7 @@ import 'package:archive/archive.dart';
 
 class AppRoutePath {
   const AppRoutePath(this.location);
+  const AppRoutePath.home() : this('');
 
   final String location;
 }
@@ -16,7 +17,8 @@ class LevelRoutePath extends AppRoutePath {
   const LevelRoutePath.levelSelection({required this.chapterName})
       : levelName = null,
         super('/levels/$chapterName');
-  const LevelRoutePath.level({required this.chapterName, required this.levelName})
+  const LevelRoutePath.level(
+      {required this.chapterName, required this.levelName})
       : super('/levels/$chapterName/$levelName');
 
   final String? chapterName;

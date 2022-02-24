@@ -19,13 +19,15 @@ class LevelSelectionPage extends StatelessWidget {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
+          const SliverAppBar(
+            pinned: true,
+          ),
           SliverToBoxAdapter(
               child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const BackButton(),
                 Text('${chapter.name} - ${chapter.description}',
                     style: Theme.of(context).textTheme.displayMedium),
                 const SizedBox(height: 32),

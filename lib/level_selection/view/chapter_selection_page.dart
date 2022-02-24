@@ -5,7 +5,6 @@ import 'package:blocked/puzzle/puzzle.dart';
 import 'package:blocked/routing/navigator_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class ChapterSelectionPage extends StatelessWidget {
   const ChapterSelectionPage(this.chapters, {Key? key}) : super(key: key);
@@ -15,32 +14,26 @@ class ChapterSelectionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          PopupMenuButton(
-            onSelected: ((value) {
-              if (value == 'clear_progress') {
-                clearData();
-              }
-            }),
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'clear_progress',
-                child: Text('Clear progress'),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            backgroundColor: Colors.transparent,
+            actions: [
+              PopupMenuButton(
+                onSelected: ((value) {
+                  if (value == 'clear_progress') {
+                    clearData();
+                  }
+                }),
+                itemBuilder: (context) => [
+                  const PopupMenuItem(
+                    value: 'clear_progress',
+                    child: Text('Clear progress'),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          context.read<NavigatorCubit>().navigateToEditor('');
-        },
-        label: const Text('Editor'),
-        icon: const Icon(MdiIcons.vectorSquareEdit),
-      ),
-      body: CustomScrollView(
-        slivers: [
           SliverToBoxAdapter(
               child: Padding(
             padding: const EdgeInsets.all(16.0),
