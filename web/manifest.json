@@ -3,7 +3,7 @@
     "short_name": "blocked",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#00530F",
+    "background_color": "#151815",
     "theme_color": "#00530F",
     "description": "A creative spin on the classic sliding puzzle game.",
     "orientation": "portrait-primary",
