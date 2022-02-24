@@ -1,7 +1,6 @@
+import 'package:blocked/resizable/resizable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:slide/resizable/resizable.dart';
 
 typedef ResizableWidgetBuilder = Widget Function(
     BuildContext context, Size size);

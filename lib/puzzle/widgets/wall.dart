@@ -1,6 +1,6 @@
+import 'package:blocked/models/puzzle/puzzle.dart';
+import 'package:blocked/puzzle/puzzle.dart';
 import 'package:flutter/material.dart';
-import 'package:slide/models/puzzle/puzzle.dart';
-import 'package:slide/puzzle/puzzle.dart';
 
 class PuzzleWall extends StatelessWidget {
   const PuzzleWall(

@@ -1,5 +1,5 @@
-import 'package:slide/level/level.dart';
-import 'package:slide/models/models.dart';
+import 'package:blocked/level/level.dart';
+import 'package:blocked/models/models.dart';
 
 class LevelData {
   const LevelData({

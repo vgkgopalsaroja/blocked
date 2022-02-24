@@ -1,10 +1,10 @@
+import 'package:blocked/level_selection/level_selection.dart';
+import 'package:blocked/models/models.dart';
+import 'package:blocked/puzzle/puzzle.dart';
+import 'package:blocked/routing/navigator_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:slide/level_selection/level_selection.dart';
-import 'package:slide/models/models.dart';
-import 'package:slide/puzzle/puzzle.dart';
-import 'package:slide/routing/navigator_cubit.dart';
 
 class ChapterSelectionPage extends StatelessWidget {
   const ChapterSelectionPage(this.chapters, {Key? key}) : super(key: key);
@@ -29,7 +29,8 @@ class ChapterSelectionPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('shift', style: Theme.of(context).textTheme.displayMedium),
+                Text('blocked',
+                    style: Theme.of(context).textTheme.displayMedium),
                 const SizedBox(height: 32),
                 Text('chapters',
                     style: Theme.of(context).textTheme.displaySmall),

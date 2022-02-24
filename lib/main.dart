@@ -1,9 +1,9 @@
+import 'package:blocked/level/level.dart';
+import 'package:blocked/models/models.dart';
+import 'package:blocked/routing/routing.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:slide/level/level.dart';
-import 'package:slide/models/models.dart';
-import 'package:slide/routing/routing.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +28,7 @@ class _MyAppState extends State<MyApp> {
     final greenColorScheme = ColorScheme.fromSeed(
         seedColor: Colors.green, brightness: Brightness.dark);
     return MaterialApp.router(
-      title: 'shift',
+      title: 'blocked',
       themeMode: ThemeMode.system,
       theme: FlexThemeData.dark(
         colors: FlexSchemeColor.from(

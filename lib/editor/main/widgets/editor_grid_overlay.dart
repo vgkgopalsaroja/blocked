@@ -1,7 +1,7 @@
+import 'package:blocked/puzzle/board_constants.dart';
+import 'package:blocked/resizable/resizable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:slide/puzzle/board_constants.dart';
-import 'package:slide/resizable/resizable.dart';
 
 class EditorGridOverlay extends StatelessWidget {
   const EditorGridOverlay(

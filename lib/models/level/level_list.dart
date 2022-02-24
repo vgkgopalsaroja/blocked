@@ -1,5 +1,5 @@
+import 'package:blocked/models/models.dart';
 import 'package:collection/collection.dart';
-import 'package:slide/models/models.dart';
 
 class LevelList {
   LevelList(this.levels);

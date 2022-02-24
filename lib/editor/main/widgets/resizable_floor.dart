@@ -1,11 +1,10 @@
+import 'package:blocked/editor/editor.dart';
+import 'package:blocked/models/models.dart';
+import 'package:blocked/puzzle/puzzle.dart';
+import 'package:blocked/resizable/resizable.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:slide/editor/editor.dart';
-import 'package:slide/models/models.dart';
-import 'package:slide/puzzle/puzzle.dart';
-import 'package:slide/resizable/resizable.dart';
 
 class ResizableFloor extends StatelessWidget {
   const ResizableFloor(this.floor, this.exits, {Key? key}) : super(key: key);

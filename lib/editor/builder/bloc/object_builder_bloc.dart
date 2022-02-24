@@ -1,5 +1,5 @@
+import 'package:blocked/models/models.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:slide/models/models.dart';
 
 part 'object_builder_event.dart';
 part 'object_builder_state.dart';

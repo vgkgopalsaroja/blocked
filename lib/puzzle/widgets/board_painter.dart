@@ -1,6 +1,6 @@
+import 'package:blocked/models/models.dart';
+import 'package:blocked/puzzle/puzzle.dart';
 import 'package:flutter/material.dart';
-import 'package:slide/models/models.dart';
-import 'package:slide/puzzle/puzzle.dart';
 
 class BoardPainter extends CustomPainter {
   BoardPainter(this.context, this.board, this.controlledBlock)

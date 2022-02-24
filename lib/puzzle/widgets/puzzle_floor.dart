@@ -1,5 +1,5 @@
+import 'package:blocked/puzzle/puzzle.dart';
 import 'package:flutter/material.dart';
-import 'package:slide/puzzle/puzzle.dart';
 
 class PuzzleFloor extends StatelessWidget {
   const PuzzleFloor.container({

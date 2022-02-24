@@ -1,13 +1,13 @@
 import 'package:async/async.dart';
+import 'package:blocked/editor/editor.dart';
+import 'package:blocked/models/puzzle/puzzle.dart';
+import 'package:blocked/puzzle/puzzle.dart';
+import 'package:blocked/routing/routing.dart';
+import 'package:blocked/solver/solver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:slide/editor/editor.dart';
-import 'package:slide/models/puzzle/puzzle.dart';
-import 'package:slide/puzzle/puzzle.dart';
-import 'package:slide/routing/routing.dart';
-import 'package:slide/solver/solver.dart';
 
 class BoardControls extends StatefulWidget {
   const BoardControls({Key? key})

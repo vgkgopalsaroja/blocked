@@ -1,6 +1,6 @@
+import 'package:blocked/routing/routing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:slide/routing/routing.dart';
 
 class NavigatorCubit extends Cubit<AppRoutePath> {
   NavigatorCubit(AppRoutePath initialPath) : super(initialPath);

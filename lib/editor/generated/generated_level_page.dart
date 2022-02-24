@@ -1,7 +1,7 @@
+import 'package:blocked/level/level.dart';
+import 'package:blocked/models/models.dart';
+import 'package:blocked/puzzle/puzzle.dart';
 import 'package:flutter/material.dart';
-import 'package:slide/level/level.dart';
-import 'package:slide/models/models.dart';
-import 'package:slide/puzzle/puzzle.dart';
 
 class GeneratedLevelPage extends StatelessWidget {
   const GeneratedLevelPage(this.mapString, {Key? key}) : super(key: key);

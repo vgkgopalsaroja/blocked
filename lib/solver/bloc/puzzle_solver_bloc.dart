@@ -1,8 +1,8 @@
 import 'package:async/async.dart';
+import 'package:blocked/models/models.dart';
+import 'package:blocked/puzzle/puzzle.dart';
+import 'package:blocked/solver/solver.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:slide/models/models.dart';
-import 'package:slide/puzzle/puzzle.dart';
-import 'package:slide/solver/solver.dart';
 
 part 'puzzle_solver_event.dart';
 part 'puzzle_solver_state.dart';

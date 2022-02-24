@@ -1,9 +1,9 @@
 import 'dart:math';
 
+import 'package:blocked/models/models.dart';
+import 'package:blocked/puzzle/puzzle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:slide/models/models.dart';
-import 'package:slide/puzzle/puzzle.dart';
 
 class Puzzle extends StatefulWidget {
   const Puzzle({Key? key}) : super(key: key);

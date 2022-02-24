@@ -1,11 +1,10 @@
 import 'dart:math';
 
+import 'package:blocked/editor/editor.dart';
+import 'package:blocked/models/models.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:slide/editor/editor.dart';
-import 'package:slide/models/models.dart';
 
 class ObjectBuilder extends StatelessWidget {
   const ObjectBuilder({
@@ -37,7 +36,8 @@ class ObjectBuilder extends StatelessWidget {
         listener: (context, state) {
           final start = state.start;
           final end = state.end;
-          assert(start != null && end != null, 'object start and end must not be null');
+          assert(start != null && end != null,
+              'object start and end must not be null');
           onObjectPlaced(start!, end!);
         },
         buildWhen: (previous, current) {

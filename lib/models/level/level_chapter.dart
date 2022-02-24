@@ -1,4 +1,4 @@
-import 'package:slide/models/models.dart';
+import 'package:blocked/models/models.dart';
 
 class LevelChapter {
   LevelChapter(this.name, this.description, this.levels);

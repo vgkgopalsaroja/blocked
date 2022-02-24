@@ -1,6 +1,6 @@
+import 'package:blocked/puzzle/puzzle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:slide/puzzle/puzzle.dart';
 
 class StaticPuzzle extends StatelessWidget {
   const StaticPuzzle({Key? key}) : super(key: key);

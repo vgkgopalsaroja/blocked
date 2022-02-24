@@ -1,13 +1,12 @@
+import 'package:blocked/level/level.dart';
+import 'package:blocked/models/models.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:slide/level/level.dart';
-import 'package:slide/models/models.dart';
 
-part 'level_state.dart';
 part 'level_event.dart';
+part 'level_state.dart';
 
 class LevelBloc extends Bloc<LevelEvent, LevelState> {
-  LevelBloc(this.initialState)
-      : super(initialState) {
+  LevelBloc(this.initialState) : super(initialState) {
     on<MoveAttempt>(_onMove);
     on<LevelReset>(_onReset);
   }

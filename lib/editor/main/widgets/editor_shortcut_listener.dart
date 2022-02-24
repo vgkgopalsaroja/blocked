@@ -1,6 +1,6 @@
+import 'package:blocked/editor/editor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:slide/editor/editor.dart';
 
 class EditorShortcutListener extends StatelessWidget {
   EditorShortcutListener({

@@ -1,7 +1,7 @@
+import 'package:blocked/models/models.dart';
+import 'package:blocked/puzzle/puzzle.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
-import 'package:slide/models/models.dart';
-import 'package:slide/puzzle/puzzle.dart';
 import 'package:yaml/yaml.dart';
 
 const String wall = '*';

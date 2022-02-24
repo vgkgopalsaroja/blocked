@@ -1,8 +1,7 @@
 import 'dart:math';
 
+import 'package:blocked/models/models.dart';
 import 'package:equatable/equatable.dart';
-
-import 'package:slide/models/models.dart';
 
 part 'placed_block.dart';
 

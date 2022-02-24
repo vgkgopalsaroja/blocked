@@ -1,4 +1,4 @@
-import 'package:slide/puzzle/puzzle.dart';
+import 'package:blocked/puzzle/puzzle.dart';
 
 export 'level_chapter.dart';
 export 'level_data.dart';

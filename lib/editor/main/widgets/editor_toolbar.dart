@@ -1,8 +1,7 @@
+import 'package:blocked/editor/editor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-
-import 'package:slide/editor/editor.dart';
 
 class EditorToolbar extends StatelessWidget {
   const EditorToolbar({
@@ -11,8 +10,7 @@ class EditorToolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final levelEditorBloc =
-        context.select((LevelEditorBloc bloc) => bloc);
+    final levelEditorBloc = context.select((LevelEditorBloc bloc) => bloc);
     final selectedTool =
         context.select((LevelEditorBloc bloc) => bloc.state.selectedTool);
 

@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.slide">
+    package="com.jeffsieu.blocked">
    <application
-        android:label="slide"
+        android:label="blocked"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

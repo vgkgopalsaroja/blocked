@@ -1,9 +1,9 @@
+import 'package:blocked/level_selection/level_selection.dart';
+import 'package:blocked/models/models.dart';
+import 'package:blocked/puzzle/puzzle.dart';
+import 'package:blocked/routing/routing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:slide/level_selection/level_selection.dart';
-import 'package:slide/models/models.dart';
-import 'package:slide/puzzle/puzzle.dart';
-import 'package:slide/routing/routing.dart';
 
 class LevelSelectionPage extends StatelessWidget {
   LevelSelectionPage(this.chapter, {Key? key})

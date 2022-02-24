@@ -1,11 +1,10 @@
+import 'package:blocked/editor/editor.dart';
+import 'package:blocked/models/models.dart';
+import 'package:blocked/puzzle/puzzle.dart';
+import 'package:blocked/resizable/resizable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_portal/flutter_portal.dart';
-
-import 'package:slide/editor/editor.dart';
-import 'package:slide/models/models.dart';
-import 'package:slide/puzzle/puzzle.dart';
-import 'package:slide/resizable/resizable.dart';
 
 class ResizableSegment extends StatelessWidget {
   const ResizableSegment(this.wall, {Key? key}) : super(key: key);
