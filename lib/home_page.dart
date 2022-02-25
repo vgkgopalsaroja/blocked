@@ -24,8 +24,8 @@ class HomePage extends StatelessWidget {
                     Text('blocked',
                         style: Theme.of(context).textTheme.displayMedium),
                     const SizedBox(height: 32),
-                    FutureBuilder<bool>(
-                      future: hasProgress(),
+                    StreamBuilder<bool>(
+                      stream: hasProgressStream(),
                       builder: (context, snapshot) {
                         final hasProgress = snapshot.data ?? false;
                         return ElevatedButton.icon(
@@ -57,6 +57,14 @@ class HomePage extends StatelessWidget {
                         context.read<NavigatorCubit>().navigateToEditor('');
                       },
                       label: const Text('Editor'),
+                    ),
+                    const SizedBox(height: 8),
+                    OutlinedButton.icon(
+                      icon: const Icon(Icons.settings),
+                      onPressed: () {
+                        context.read<NavigatorCubit>().navigateToSettings();
+                      },
+                      label: const Text('Settings'),
                     ),
                   ],
                 ),

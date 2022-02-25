@@ -1,11 +1,11 @@
 import 'package:blocked/editor/editor.dart';
+import 'package:blocked/home_page.dart';
 import 'package:blocked/level/level.dart';
 import 'package:blocked/level_selection/level_selection.dart';
-import 'package:blocked/level_selection/view/chapter_selection_page.dart';
-import 'package:blocked/level_selection/view/home_page.dart';
 import 'package:blocked/models/models.dart';
 import 'package:blocked/puzzle/puzzle.dart';
 import 'package:blocked/routing/routing.dart';
+import 'package:blocked/settings/view/settings_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -16,14 +16,15 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
   AppRouterDelegate({
     required this.chapters,
     required GlobalKey<NavigatorState> navigatorKey,
+    required this.navigatorCubit,
   })  : _navigatorKey = navigatorKey,
         isLoaded = false;
 
   final GlobalKey<NavigatorState> _navigatorKey;
   final List<LevelChapter> chapters;
+  final NavigatorCubit navigatorCubit;
 
   bool isLoaded;
-  NavigatorCubit navigatorCubit = NavigatorCubit(const AppRoutePath.home());
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +48,9 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
               key: _navigatorKey,
               pages: [
                 const MaterialPage(child: HomePage()),
+                if (path.isSettings)
+                  const MaterialPage(
+                      child: ScaffoldMessenger(child: SettingsPage())),
                 if (path is LevelRoutePath)
                   MaterialPage(child: ChapterSelectionPage(chapters)),
                 if (path is LevelRoutePath && path.chapterName != null)
@@ -125,7 +129,9 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
 
   @override
   Future<void> setInitialRoutePath(AppRoutePath configuration) {
-    navigatorCubit = NavigatorCubit(configuration);
+    // navigatorCubit = NavigatorCubit(configuration);
+    // navigatorCubit.
+    setNewRoutePath(configuration);
     isLoaded = true;
     return SynchronousFuture(null);
   }
@@ -148,7 +154,11 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
         navigatorCubit.navigateToChapterSelection();
       }
     } else {
-      navigatorCubit.navigateToHome();
+      if (configuration.isSettings) {
+        navigatorCubit.navigateToSettings();
+      } else {
+        navigatorCubit.navigateToHome();
+      }
     }
 
     return SynchronousFuture(null);

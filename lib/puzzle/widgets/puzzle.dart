@@ -96,12 +96,11 @@ class _PuzzleState extends State<Puzzle> with SingleTickerProviderStateMixin {
                         duration: kSlideDuration * 5,
                         curve: const Interval(1 / 3, 1.0,
                             curve: Curves.elasticOut),
-                        child: const FittedBox(
+                        child: FittedBox(
                           child: Padding(
-                            padding: EdgeInsets.all(16.0),
-                            child: Icon(
-                              Icons.check,
-                            ),
+                            padding: const EdgeInsets.all(16.0),
+                            child: Icon(Icons.check,
+                                color: BoardColor.of(context).checkmark),
                           ),
                         ),
                       ),

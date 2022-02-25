@@ -46,17 +46,23 @@ class BoardColorData {
     required this.controlledBlockOutline,
     required this.wall,
     required this.floor,
+    required this.checkmark,
   });
 
   BoardColorData.fromColorScheme(ColorScheme colorScheme)
       : this(
-          block: colorScheme.secondary.blend(colorScheme.background, 80),
-          blockOutline: colorScheme.secondary.blend(colorScheme.background, 40),
-          controlledBlock: colorScheme.primary.darken(50),
-          controlledBlockOutline: colorScheme.primary,
-          wall: colorScheme.secondary,
-          floor: colorScheme.secondary.blend(colorScheme.background, 95),
-        );
+            block: colorScheme.secondary.blend(colorScheme.background, 80),
+            blockOutline:
+                colorScheme.secondary.blend(colorScheme.background, 40),
+            controlledBlock: colorScheme.brightness == Brightness.dark
+                ? colorScheme.primary.darken(50)
+                : colorScheme.primary.brighten(75),
+            controlledBlockOutline: colorScheme.primary,
+            wall: colorScheme.secondary,
+            floor: colorScheme.secondary.blend(colorScheme.background, 95),
+            checkmark: colorScheme.brightness == Brightness.dark
+                ? colorScheme.primary
+                : colorScheme.primary.brighten(50));
 
   final Color block;
   final Color blockOutline;
@@ -64,4 +70,5 @@ class BoardColorData {
   final Color controlledBlockOutline;
   final Color wall;
   final Color floor;
+  final Color checkmark;
 }

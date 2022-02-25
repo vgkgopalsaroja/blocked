@@ -19,7 +19,7 @@ class BoardPainter extends CustomPainter {
             Rect.fromLTWH(
                 0, 0, board.width.toBoardSize(), board.height.toBoardSize()),
             const Radius.circular(2)),
-        Paint()..color = Theme.of(context).colorScheme.surface);
+        Paint()..color = boardColors.floor);
 
     for (var wall in board.walls) {
       final wallPaint = Paint()..color = boardColors.wall;

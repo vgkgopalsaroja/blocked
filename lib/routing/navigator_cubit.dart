@@ -14,6 +14,10 @@ class NavigatorCubit extends Cubit<AppRoutePath> {
     emit(const AppRoutePath.home());
   }
 
+  void navigateToSettings() {
+    emit(const AppRoutePath.settings());
+  }
+
   void navigateToChapterSelection() {
     emit(const LevelRoutePath.chapterSelection());
   }

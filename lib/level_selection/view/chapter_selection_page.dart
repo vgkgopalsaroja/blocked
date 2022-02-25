@@ -1,8 +1,7 @@
 import 'package:blocked/level_selection/level_selection.dart';
 import 'package:blocked/models/models.dart';
-import 'package:blocked/progress/util/progress_saver.dart';
 import 'package:blocked/puzzle/puzzle.dart';
-import 'package:blocked/routing/navigator_cubit.dart';
+import 'package:blocked/routing/routing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,24 +15,7 @@ class ChapterSelectionPage extends StatelessWidget {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(
-            backgroundColor: Colors.transparent,
-            actions: [
-              PopupMenuButton(
-                onSelected: ((value) {
-                  if (value == 'clear_progress') {
-                    clearData();
-                  }
-                }),
-                itemBuilder: (context) => [
-                  const PopupMenuItem(
-                    value: 'clear_progress',
-                    child: Text('Clear progress'),
-                  ),
-                ],
-              ),
-            ],
-          ),
+          const SliverAppBar(),
           SliverToBoxAdapter(
               child: Padding(
             padding: const EdgeInsets.all(16.0),

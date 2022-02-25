@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:blocked/level/level.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> markLevelAsCompleted(String levelName) async {
   final sharedPreferences = await SharedPreferences.getInstance();
   await sharedPreferences.setBool(levelName, true);
+  _hasProgressStreamController.add(true);
 }
 
 Future<bool> isLevelCompleted(String levelName) async {
@@ -13,6 +16,7 @@ Future<bool> isLevelCompleted(String levelName) async {
 
 Future<bool> clearData() async {
   final sharedPreferences = await SharedPreferences.getInstance();
+  _hasProgressStreamController.add(false);
   return await sharedPreferences.clear();
 }
 
@@ -35,3 +39,8 @@ Future<bool> hasProgress() async {
   final keys = sharedPreferences.getKeys();
   return keys.isNotEmpty;
 }
+
+StreamController<bool> _hasProgressStreamController =
+    StreamController.broadcast();
+
+Stream<bool> hasProgressStream() => _hasProgressStreamController.stream;
