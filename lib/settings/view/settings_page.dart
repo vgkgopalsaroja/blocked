@@ -193,29 +193,37 @@ class _ColorOption extends StatelessWidget {
         children: [
           Positioned.fill(
             child: FittedBox(
-              child: Row(
-                children: [
-                  Ink(
-                    width: 3 / 4 * 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: primary,
-                      borderRadius: const BorderRadius.horizontal(
-                        left: Radius.circular(16),
+              child: SizedBox(
+                width: 100,
+                height: 100,
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: Ink(
+                        height: 100,
+                        decoration: BoxDecoration(
+                          color: primary,
+                          borderRadius: const BorderRadius.horizontal(
+                            left: Radius.circular(16),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                  Ink(
-                    width: 1 / 4 * 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: secondary,
-                      borderRadius: const BorderRadius.horizontal(
-                        right: Radius.circular(16),
+                    Expanded(
+                      flex: 1,
+                      child: Ink(
+                        height: 100,
+                        decoration: BoxDecoration(
+                          color: secondary,
+                          borderRadius: const BorderRadius.horizontal(
+                            right: Radius.circular(16),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
