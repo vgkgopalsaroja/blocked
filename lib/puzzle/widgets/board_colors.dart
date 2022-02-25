@@ -55,8 +55,14 @@ class BoardColorData {
             blockOutline:
                 colorScheme.secondary.blend(colorScheme.background, 40),
             controlledBlock: colorScheme.brightness == Brightness.dark
-                ? colorScheme.primary.darken(50)
-                : colorScheme.primary.brighten(75),
+                ? HSVColor.fromColor(colorScheme.primary)
+                    .withSaturation(0.2)
+                    .withValue(0.2)
+                    .toColor()
+                : HSVColor.fromColor(colorScheme.primary)
+                    .withSaturation(0.2)
+                    .withValue(0.9)
+                    .toColor(),
             controlledBlockOutline: colorScheme.primary,
             wall: colorScheme.secondary,
             floor: colorScheme.secondary.blend(colorScheme.background, 95),
