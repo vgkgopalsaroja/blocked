@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:blocked/level/level.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,10 +15,15 @@ Future<bool> isLevelCompleted(String levelName) async {
   return sharedPreferences.getBool(levelName) ?? false;
 }
 
-Future<bool> clearData() async {
+Future<void> clearData() async {
   final sharedPreferences = await SharedPreferences.getInstance();
   _hasProgressStreamController.add(false);
-  return await sharedPreferences.clear();
+
+  for (final key in sharedPreferences.getKeys()) {
+    if (key != AdaptiveTheme.prefKey) {
+      await sharedPreferences.remove(key);
+    }
+  }
 }
 
 Future<List<String>> getFirstUncompletedLevel() async {
@@ -37,6 +43,7 @@ Future<List<String>> getFirstUncompletedLevel() async {
 Future<bool> hasProgress() async {
   final sharedPreferences = await SharedPreferences.getInstance();
   final keys = sharedPreferences.getKeys();
+  keys.remove(AdaptiveTheme.prefKey);
   return keys.isNotEmpty;
 }
 
