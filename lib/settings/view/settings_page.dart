@@ -23,6 +23,7 @@ class SettingsPage extends StatelessWidget {
     final settingsContext = context;
     final themeColor =
         context.select((ThemeColorBloc bloc) => bloc.state.color);
+    final brightness = Theme.of(context).brightness;
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: SingleChildScrollView(
@@ -91,8 +92,26 @@ class SettingsPage extends StatelessWidget {
                           ),
                           itemCount: colors.length,
                           itemBuilder: (context, index) {
+                            final colorScheme = ColorScheme.fromSeed(
+                                seedColor: colors[index],
+                                brightness: brightness);
+                            final flexColorScheme =
+                                brightness == Brightness.light
+                                    ? FlexThemeData.light(
+                                        colors: FlexSchemeColor.from(
+                                          primary: colorScheme.primary,
+                                          secondary: colorScheme.tertiary,
+                                        ),
+                                      ).colorScheme
+                                    : FlexThemeData.dark(
+                                        colors: FlexSchemeColor.from(
+                                          primary: colorScheme.primary,
+                                          secondary: colorScheme.tertiary,
+                                        ),
+                                      ).colorScheme;
                             return _ColorOption(
-                              color: colors[index],
+                              primary: flexColorScheme.primary,
+                              secondary: flexColorScheme.secondary,
                               isSelected: themeColor == colors[index],
                               onTap: () {
                                 context
@@ -153,12 +172,14 @@ class SettingsPage extends StatelessWidget {
 class _ColorOption extends StatelessWidget {
   const _ColorOption({
     Key? key,
-    required this.color,
+    required this.primary,
+    required this.secondary,
     required this.isSelected,
     required this.onTap,
   }) : super(key: key);
 
-  final Color color;
+  final Color primary;
+  final Color secondary;
   final bool isSelected;
   final VoidCallback onTap;
 
@@ -166,16 +187,43 @@ class _ColorOption extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
+      splashColor: primary.darken(5).withOpacity(0.5),
       borderRadius: BorderRadius.circular(16),
-      child: Ink(
-        width: 100,
-        height: 100,
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Center(
-            child: isSelected ? Icon(Icons.check, color: color.onColor) : null),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: FittedBox(
+              child: Row(
+                children: [
+                  Ink(
+                    width: 3 / 4 * 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: primary,
+                      borderRadius: const BorderRadius.horizontal(
+                        left: Radius.circular(16),
+                      ),
+                    ),
+                  ),
+                  Ink(
+                    width: 1 / 4 * 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: secondary,
+                      borderRadius: const BorderRadius.horizontal(
+                        right: Radius.circular(16),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Center(
+            child:
+                isSelected ? Icon(Icons.check, color: primary.onColor) : null,
+          )
+        ],
       ),
     );
   }
