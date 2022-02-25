@@ -298,10 +298,6 @@ List<_ParsedBlock> getBlocks(List<List<int>> map) {
       if (isCurrentBlock && !isAboveBlock && !isLeftBlock) {
         blockTopLefts.add(Position(col, row));
       }
-
-      // if (isCurrentBlock && !isBelowBlock && !isRightBlock) {
-      //   blockBottomRights.add(Position(col, row));
-      // }
     }
   }
 

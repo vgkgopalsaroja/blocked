@@ -17,16 +17,26 @@ class PuzzleSolverBloc extends Bloc<PuzzleSolverEvent, PuzzleSolverState> {
   final LevelBloc levelBloc;
 
   void _onSolutionViewed(
-      SolutionViewed event, Emitter<PuzzleSolverState> emit) {
-    emit(state
-        .copyWithSolutionFor(levelBloc.initialState.puzzle)
-        .copyWithSolutionViewed(viewed: true));
+      SolutionViewed event, Emitter<PuzzleSolverState> emit) async {
+    final requestedState = state.copyWithSolutionRequested();
+    emit(requestedState);
+
+    final viewedState = await requestedState
+        .copyWithSolutionViewed(viewed: true)
+        .copyWithSolutionFor(levelBloc.initialState.puzzle);
+    emit(viewedState);
   }
 
   void _onSolutionPlayed(
-      SolutionPlayed event, Emitter<PuzzleSolverState> emit) {
-    final newState = state.copyWithSolutionFor(levelBloc.initialState.puzzle);
+      SolutionPlayed event, Emitter<PuzzleSolverState> emit) async {
+    final requestedState = state.copyWithSolutionRequested();
+    emit(requestedState);
+
+    final newState =
+        await requestedState.copyWithSolutionFor(levelBloc.initialState.puzzle);
     final moves = newState.solution!;
+
+    emit(newState);
 
     Future<void> runSolution() async {
       final isInitialState =
@@ -43,7 +53,6 @@ class PuzzleSolverBloc extends Bloc<PuzzleSolverEvent, PuzzleSolverState> {
       }
     }
 
-    // Create cancellable operation
     final solutionPlayback = CancelableOperation.fromFuture(runSolution());
     emit(newState.copyWithSolutionPlaying(solutionPlayback));
   }

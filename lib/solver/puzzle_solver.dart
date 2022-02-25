@@ -4,53 +4,74 @@ import 'package:blocked/models/models.dart';
 import 'package:blocked/puzzle/puzzle.dart';
 import 'package:collection/collection.dart';
 
-class PuzzleSolver {
-  PuzzleSolver(this.initialState);
+Future<List<MoveDirection>?> solve(PuzzleState initialState) async {
+  final frontier = PriorityQueue<_PuzzleNode>();
+  final visited = <int>{};
+  final exits =
+      _getExits(initialState.width, initialState.height, initialState.walls);
+  frontier
+      .add(_PuzzleNode(initialState, null, null, 0, h(initialState, exits)));
 
-  final PuzzleState initialState;
-
-  List<MoveDirection>? solve() {
-    final frontier = PriorityQueue<_PuzzleNode>();
-    final visitedStates = <PuzzleState>{};
-    frontier.add(_PuzzleNode(initialState, null, null, 0, h(initialState)));
-    visitedStates.add(initialState);
-    if (initialState.isCompleted) {
-      return [];
+  var count = 0;
+  while (frontier.isNotEmpty) {
+    count++;
+    final current = frontier.removeFirst();
+    if (count == 100) {
+      /// A workaround to prevent the UI from stalling.
+      await Future.delayed(Duration.zero);
+      count = 0;
     }
-    while (frontier.isNotEmpty) {
-      final current = frontier.removeFirst();
-      for (var moveDirection in MoveDirection.values) {
-        final nextState =
-            current.state.withMoveAttempt(MoveAttempt(moveDirection));
-        if (nextState.isCompleted) {
-          return current.moves + [moveDirection];
-        }
-        if (!visitedStates.contains(nextState)) {
-          visitedStates.add(nextState);
-          frontier.add(_PuzzleNode(nextState, current, moveDirection,
-              current.moveCount + 1, h(nextState)));
-        }
+    if (current.state.isCompleted) {
+      return current.moves;
+    }
+    visited.add(current.state.hashCode);
+
+    for (var moveDirection in MoveDirection.values) {
+      final nextState =
+          current.state.withMoveAttempt(MoveAttempt(moveDirection));
+      if (!visited.contains(nextState.hashCode)) {
+        frontier.add(_PuzzleNode(nextState, current, moveDirection,
+            current.moveCount + 1, h(nextState, exits)));
       }
     }
-    return null;
   }
+  return null;
+}
 
-  int h(PuzzleState state) {
-    final mainBlock = state.mainBlock;
-    final controlledBlock = state.controlledBlock;
-    final distanceToControlledBlock =
-        getManhattanDistance(mainBlock.position, controlledBlock.position);
-    final minDistanceX = min(mainBlock.left + 1, state.width - mainBlock.right);
-    final minDistanceY =
-        min(mainBlock.top + 1, state.height - mainBlock.bottom);
-    final mainBlockMinDistanceToWall = min(minDistanceX, minDistanceY);
-    return distanceToControlledBlock + mainBlockMinDistanceToWall;
-  }
+int h(PuzzleState state, List<Segment> exits) {
+  final mainBlock = state.mainBlock;
+  final controlledBlock = state.controlledBlock;
+  final distanceToControlledBlock =
+      getManhattanDistance(mainBlock.position, controlledBlock.position);
+  final mainBlockMinDistanceToWall = exits
+      .map((e) => getManhattanDistanceToWall(mainBlock.position, e))
+      .reduce(min);
+  return distanceToControlledBlock + mainBlockMinDistanceToWall;
+}
 
-  int getManhattanDistance(Position position1, Position position2) {
-    return (position1.x - position2.x).abs() +
-        (position1.y - position2.y).abs();
-  }
+int getManhattanDistanceToWall(Position blockPosition, Segment segment) {
+  final segmentX = segment.start.x;
+  final segmentY = segment.start.y;
+  return getManhattanDistance(blockPosition, Position(segmentX, segmentY));
+}
+
+List<Segment> _getExits(
+    int mapWidth, int mapHeight, Iterable<Segment> wallsToSubtract) {
+  final outerWalls = [
+    Segment.horizontal(y: 0, start: 0, end: mapWidth),
+    Segment.horizontal(y: mapHeight, start: 0, end: mapWidth),
+    Segment.vertical(x: 0, start: 0, end: mapHeight),
+    Segment.vertical(x: mapWidth, start: 0, end: mapHeight),
+  ];
+
+  return outerWalls
+      .map((wall) => wall.subtractAll(wallsToSubtract))
+      .flattened
+      .toList();
+}
+
+int getManhattanDistance(Position position1, Position position2) {
+  return (position1.x - position2.x).abs() + (position1.y - position2.y).abs();
 }
 
 class _PuzzleNode extends Comparable<_PuzzleNode> {

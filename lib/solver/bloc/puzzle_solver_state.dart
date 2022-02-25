@@ -4,29 +4,33 @@ class PuzzleSolverState {
   const PuzzleSolverState.initial()
       : solution = null,
         hasSolutionResult = false,
-        isSolutionViewed = false,
+        isSolutionVisible = false,
+        isSolutionRequested = false,
         solutionPlayback = null;
   const PuzzleSolverState({
     required this.solution,
     required this.hasSolutionResult,
-    required this.isSolutionViewed,
+    required this.isSolutionVisible,
+    required this.isSolutionRequested,
     required this.solutionPlayback,
   });
 
   final List<MoveDirection>? solution;
   final bool hasSolutionResult;
-  final bool isSolutionViewed;
+  final bool isSolutionVisible;
+  final bool isSolutionRequested;
   final CancelableOperation? solutionPlayback;
 
-  PuzzleSolverState copyWithSolutionFor(PuzzleState puzzleState) {
+  Future<PuzzleSolverState> copyWithSolutionFor(PuzzleState puzzleState) async {
     if (hasSolutionResult) {
       return this;
     }
-    final puzzleSolver = PuzzleSolver(puzzleState);
+
     return PuzzleSolverState(
-        solution: puzzleSolver.solve(),
+        solution: await solve(puzzleState),
         hasSolutionResult: true,
-        isSolutionViewed: isSolutionViewed,
+        isSolutionRequested: isSolutionRequested,
+        isSolutionVisible: isSolutionVisible,
         solutionPlayback: null);
   }
 
@@ -35,7 +39,8 @@ class PuzzleSolverState {
     return PuzzleSolverState(
         solution: solution,
         hasSolutionResult: hasSolutionResult,
-        isSolutionViewed: isSolutionViewed,
+        isSolutionRequested: isSolutionRequested,
+        isSolutionVisible: isSolutionVisible,
         solutionPlayback: solutionPlayback);
   }
 
@@ -43,7 +48,17 @@ class PuzzleSolverState {
     return PuzzleSolverState(
         solution: solution,
         hasSolutionResult: hasSolutionResult,
-        isSolutionViewed: viewed,
+        isSolutionRequested: isSolutionRequested,
+        isSolutionVisible: viewed,
+        solutionPlayback: solutionPlayback);
+  }
+
+  PuzzleSolverState copyWithSolutionRequested() {
+    return PuzzleSolverState(
+        solution: solution,
+        hasSolutionResult: hasSolutionResult,
+        isSolutionRequested: true,
+        isSolutionVisible: isSolutionVisible,
         solutionPlayback: solutionPlayback);
   }
 }

@@ -38,32 +38,48 @@ class _BoardControlsState extends State<BoardControls> {
       listeners: [
         BlocListener<PuzzleSolverBloc, PuzzleSolverState>(
           listenWhen: (previous, current) =>
-              !previous.hasSolutionResult && current.hasSolutionResult,
+              previous.isSolutionRequested != current.isSolutionRequested ||
+              (!previous.hasSolutionResult && current.hasSolutionResult),
           listener: (context, state) {
-            final moves = state.solution;
-
-            if (moves == null) {
+            if (state.isSolutionRequested && !state.hasSolutionResult) {
               ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('No solution found')));
-              return;
-            }
-
-            ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
-                content:
-                    const Text('Solution viewed. Reload level to save progress.'),
-                actions: [
-                  TextButton(
-                    child: const Text('OK'),
-                    onPressed: () => ScaffoldMessenger.of(context)
-                        .hideCurrentMaterialBanner(
-                            reason: MaterialBannerClosedReason.hide),
+                const SnackBar(
+                  content: Text(
+                    'Calculating solution...',
                   ),
-                ]));
+                ),
+              );
+            }
+            if (state.hasSolutionResult) {
+              ScaffoldMessenger.of(context).clearSnackBars();
+              final moves = state.solution;
+
+              if (moves == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('No solution found')));
+                return;
+              }
+
+              ScaffoldMessenger.of(context).showMaterialBanner(
+                MaterialBanner(
+                  content: const Text(
+                      'Solution viewed. Reload level to save progress.'),
+                  actions: [
+                    TextButton(
+                      child: const Text('OK'),
+                      onPressed: () => ScaffoldMessenger.of(context)
+                          .hideCurrentMaterialBanner(
+                              reason: MaterialBannerClosedReason.hide),
+                    ),
+                  ],
+                ),
+              );
+            }
           },
         ),
         BlocListener<PuzzleSolverBloc, PuzzleSolverState>(
           listenWhen: (previous, current) =>
-              !previous.isSolutionViewed && current.isSolutionViewed,
+              !previous.isSolutionVisible && current.isSolutionVisible,
           listener: (context, state) {
             final moves = state.solution;
             if (moves == null) {
@@ -119,7 +135,7 @@ class _BoardControlsState extends State<BoardControls> {
                     child: Text('Play solution'),
                   ),
                 ],
-                onSelected: (String value) async {
+                onSelected: (String value) {
                   switch (value) {
                     case 'show_steps':
                       context.read<PuzzleSolverBloc>().add(SolutionViewed());
