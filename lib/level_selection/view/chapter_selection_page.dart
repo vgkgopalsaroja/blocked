@@ -15,7 +15,9 @@ class ChapterSelectionPage extends StatelessWidget {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          const SliverAppBar(),
+          const SliverAppBar(
+            pinned: true,
+          ),
           SliverToBoxAdapter(
               child: Padding(
             padding: const EdgeInsets.all(16.0),

@@ -1,14 +1,15 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:blocked/main.dart';
 import 'package:blocked/progress/progress.dart';
+import 'package:blocked/puzzle/puzzle.dart';
 import 'package:blocked/settings/settings.dart';
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({Key? key}) : super(key: key);
 
-  static const colors = [
+  static const List<Color> colors = [
     Colors.red,
     Colors.orange,
     Colors.yellow,
@@ -21,9 +22,6 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final settingsContext = context;
-    final themeColor =
-        context.select((ThemeColorBloc bloc) => bloc.state.color);
-    final brightness = Theme.of(context).brightness;
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: SingleChildScrollView(
@@ -70,62 +68,74 @@ class SettingsPage extends StatelessWidget {
                 );
               },
             ),
-            ListTile(
-              title: const Text('Color'),
-              leading: const Icon(Icons.palette_rounded),
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('Color'),
-                    content: SingleChildScrollView(
-                      child: SizedBox(
-                        width: 128 * 4,
-                        child: GridView.builder(
-                          shrinkWrap: true,
-                          gridDelegate:
-                              const SliverGridDelegateWithMaxCrossAxisExtent(
-                            maxCrossAxisExtent: 128,
-                            childAspectRatio: 1,
-                            mainAxisSpacing: 16,
-                            crossAxisSpacing: 16,
-                          ),
-                          itemCount: colors.length,
-                          itemBuilder: (context, index) {
-                            final colorScheme = ColorScheme.fromSeed(
-                                seedColor: colors[index],
-                                brightness: brightness);
-                            final flexColorScheme =
-                                brightness == Brightness.light
-                                    ? FlexThemeData.light(
-                                        colors: FlexSchemeColor.from(
-                                          primary: colorScheme.primary,
-                                          secondary: colorScheme.tertiary,
-                                        ),
-                                      ).colorScheme
-                                    : FlexThemeData.dark(
-                                        colors: FlexSchemeColor.from(
-                                          primary: colorScheme.primary,
-                                          secondary: colorScheme.tertiary,
-                                        ),
-                                      ).colorScheme;
-                            return _ColorOption(
-                              primary: flexColorScheme.primary,
-                              secondary: flexColorScheme.secondary,
-                              isSelected: themeColor == colors[index],
-                              onTap: () {
-                                context
-                                    .read<ThemeColorBloc>()
-                                    .add(ThemeColorChanged(colors[index]));
-                                Navigator.pop(context);
-                              },
-                            );
-                          },
-                        ),
-                      ),
+            const ListTile(
+              title: Text('Color'),
+              leading: Icon(Icons.palette_rounded),
+            ),
+            GridView.builder(
+              padding:
+                  const EdgeInsetsDirectional.fromSTEB(64.0, 16.0, 16.0, 16.0),
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 256,
+                childAspectRatio: 3 / 2,
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
+              ),
+              itemCount: colors.length,
+              itemBuilder: (context, index) {
+                final color = colors[index];
+
+                return Builder(builder: (context) {
+                  final isSelected = context.select((ThemeColorBloc bloc) =>
+                      bloc.state.color.value == color.value);
+                  return OutlinedButton(
+                    onPressed: () {
+                      context
+                          .read<ThemeColorBloc>()
+                          .add(ThemeColorChanged(colors[index]));
+                    },
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16.0, horizontal: 8.0),
                     ),
-                  ),
-                );
+                    child: Stack(
+                      alignment: AlignmentDirectional.bottomEnd,
+                      children: [
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: BoardColor(
+                              data: BoardColorData.fromColorScheme(
+                                  createThemeWithBrightness(
+                                          color, Theme.of(context).brightness)
+                                      .colorScheme),
+                              child: const ThemeColorPreview(),
+                            ),
+                          ),
+                        ),
+                        if (isSelected)
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Theme.of(context).colorScheme.primary,
+                                width: 2.0,
+                              ),
+                              color: Theme.of(context).colorScheme.surface,
+                              borderRadius: BorderRadius.circular(16.0),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Icon(
+                                Icons.check,
+                                size: 32.0,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  );
+                });
               },
             ),
             const Divider(),
@@ -164,74 +174,6 @@ class SettingsPage extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _ColorOption extends StatelessWidget {
-  const _ColorOption({
-    Key? key,
-    required this.primary,
-    required this.secondary,
-    required this.isSelected,
-    required this.onTap,
-  }) : super(key: key);
-
-  final Color primary;
-  final Color secondary;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      splashColor: primary.darken(5).withOpacity(0.5),
-      borderRadius: BorderRadius.circular(16),
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: FittedBox(
-              child: SizedBox(
-                width: 100,
-                height: 100,
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: Ink(
-                        height: 100,
-                        decoration: BoxDecoration(
-                          color: primary,
-                          borderRadius: const BorderRadius.horizontal(
-                            left: Radius.circular(16),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Ink(
-                        height: 100,
-                        decoration: BoxDecoration(
-                          color: secondary,
-                          borderRadius: const BorderRadius.horizontal(
-                            right: Radius.circular(16),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Center(
-            child:
-                isSelected ? Icon(Icons.check, color: primary.onColor) : null,
-          )
-        ],
       ),
     );
   }

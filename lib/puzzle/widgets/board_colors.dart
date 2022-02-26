@@ -51,24 +51,26 @@ class BoardColorData {
 
   BoardColorData.fromColorScheme(ColorScheme colorScheme)
       : this(
-            block: colorScheme.secondary.blend(colorScheme.background, 80),
-            blockOutline:
-                colorScheme.secondary.blend(colorScheme.background, 40),
-            controlledBlock: colorScheme.brightness == Brightness.dark
-                ? HSVColor.fromColor(colorScheme.primary)
-                    .withSaturation(0.2)
-                    .withValue(0.2)
-                    .toColor()
-                : HSVColor.fromColor(colorScheme.primary)
-                    .withSaturation(0.2)
-                    .withValue(0.9)
-                    .toColor(),
-            controlledBlockOutline: colorScheme.primary,
-            wall: colorScheme.secondary,
-            floor: colorScheme.secondary.blend(colorScheme.background, 95),
-            checkmark: colorScheme.brightness == Brightness.dark
-                ? colorScheme.primary
-                : colorScheme.primary.brighten(50));
+          block: colorScheme.secondary.blend(colorScheme.background, 80),
+          blockOutline: colorScheme.secondary.blend(colorScheme.background, 40),
+          controlledBlock: colorScheme.brightness == Brightness.dark
+              ? HSVColor.fromColor(colorScheme.primary)
+                  .withSaturation(0.2)
+                  .withValue(0.2)
+                  .toColor()
+              : HSVColor.fromColor(colorScheme.primary)
+                  .withSaturation(0.2)
+                  .withValue(0.9)
+                  .toColor(),
+          controlledBlockOutline: colorScheme.primary,
+          wall: colorScheme.brightness == Brightness.dark
+              ? colorScheme.secondary
+              : colorScheme.secondary.brighten(10),
+          floor: colorScheme.secondary.blend(colorScheme.background, 95),
+          checkmark: colorScheme.brightness == Brightness.dark
+              ? colorScheme.primary
+              : colorScheme.primary.brighten(50),
+        );
 
   final Color block;
   final Color blockOutline;
