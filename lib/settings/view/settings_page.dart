@@ -74,8 +74,9 @@ class SettingsPage extends StatelessWidget {
             ),
             GridView.builder(
               padding:
-                  const EdgeInsetsDirectional.fromSTEB(64.0, 16.0, 16.0, 16.0),
+                  const EdgeInsetsDirectional.fromSTEB(68.0, 16.0, 16.0, 16.0),
               shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: 256,
                 childAspectRatio: 3 / 2,
