@@ -48,6 +48,8 @@ Future<bool> hasProgress() async {
 }
 
 StreamController<bool> _hasProgressStreamController =
-    StreamController.broadcast();
+    StreamController.broadcast(onListen: () async {
+  _hasProgressStreamController.add(await hasProgress());
+});
 
 Stream<bool> hasProgressStream() => _hasProgressStreamController.stream;
