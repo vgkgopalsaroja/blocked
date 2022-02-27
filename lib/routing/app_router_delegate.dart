@@ -1,3 +1,4 @@
+import 'package:blocked/background/background.dart';
 import 'package:blocked/editor/editor.dart';
 import 'package:blocked/home_page.dart';
 import 'package:blocked/level/level.dart';
@@ -5,7 +6,7 @@ import 'package:blocked/level_selection/level_selection.dart';
 import 'package:blocked/models/models.dart';
 import 'package:blocked/puzzle/puzzle.dart';
 import 'package:blocked/routing/routing.dart';
-import 'package:blocked/settings/view/settings_page.dart';
+import 'package:blocked/settings/settings.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -30,99 +31,101 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
   Widget build(BuildContext context) {
     return BoardColor(
       data: BoardColorData.fromColorScheme(Theme.of(context).colorScheme),
-      child: BlocConsumer<NavigatorCubit, AppRoutePath>(
-        bloc: navigatorCubit,
-        listenWhen: (previous, current) => true,
-        listener: (context, state) {
-          notifyListeners();
-        },
-        builder: (context, state) {
-          final path = state;
-          final levels = (path is LevelRoutePath && path.chapterName != null)
-              ? chapters.firstWhere((c) => c.name == path.chapterName!).levels
-              : null;
-          final levelList = levels != null ? LevelList(levels) : null;
-          return BlocProvider(
-            create: (context) => navigatorCubit,
-            child: Navigator(
-              key: _navigatorKey,
-              pages: [
-                const MaterialPage(child: HomePage()),
-                if (path.isSettings)
-                  const MaterialPage(
-                      child: ScaffoldMessenger(child: SettingsPage())),
-                if (path is LevelRoutePath)
-                  MaterialPage(child: ChapterSelectionPage(chapters)),
-                if (path is LevelRoutePath && path.chapterName != null)
-                  MaterialPage(
-                    child: LevelSelectionPage(chapters.firstWhere(
-                      (c) => c.name == path.chapterName,
-                    )),
-                  ),
-                if (path is EditorRoutePath) ...{
-                  const MaterialPage(child: LevelEditorPage()),
-                  if (path.isInPreview)
+      child: BackgroundPuzzleController(
+        child: BlocConsumer<NavigatorCubit, AppRoutePath>(
+          bloc: navigatorCubit,
+          listenWhen: (previous, current) => true,
+          listener: (context, state) {
+            notifyListeners();
+          },
+          builder: (context, state) {
+            final path = state;
+            final levels = (path is LevelRoutePath && path.chapterName != null)
+                ? chapters.firstWhere((c) => c.name == path.chapterName!).levels
+                : null;
+            final levelList = levels != null ? LevelList(levels) : null;
+            return BlocProvider(
+              create: (context) => navigatorCubit,
+              child: Navigator(
+                key: _navigatorKey,
+                pages: [
+                  const MaterialPage(child: HomePage()),
+                  if (path.isSettings)
+                    const MaterialPage(
+                        child: ScaffoldMessenger(child: SettingsPage())),
+                  if (path is LevelRoutePath)
+                    MaterialPage(child: ChapterSelectionPage(chapters)),
+                  if (path is LevelRoutePath && path.chapterName != null)
+                    MaterialPage(
+                      child: LevelSelectionPage(chapters.firstWhere(
+                        (c) => c.name == path.chapterName,
+                      )),
+                    ),
+                  if (path is EditorRoutePath) ...{
+                    const MaterialPage(child: LevelEditorPage()),
+                    if (path.isInPreview)
+                      MaterialPage(
+                        name: path.location,
+                        key: ValueKey(path.location),
+                        arguments: path.location,
+                        child: GeneratedLevelPage(
+                            Uri.decodeComponent(path.mapString)),
+                      ),
+                  },
+                  if (path is LevelRoutePath &&
+                      path.chapterName != null &&
+                      path.levelName != null &&
+                      levelList != null) ...{
                     MaterialPage(
                       name: path.location,
                       key: ValueKey(path.location),
-                      arguments: path.location,
-                      child: GeneratedLevelPage(
-                          Uri.decodeComponent(path.mapString)),
-                    ),
-                },
-                if (path is LevelRoutePath &&
-                    path.chapterName != null &&
-                    path.levelName != null &&
-                    levelList != null) ...{
-                  MaterialPage(
-                    name: path.location,
-                    key: ValueKey(path.location),
-                    child: ScaffoldMessenger(
-                      child: Scaffold(
-                        body: LevelPage(
-                          levelList.getLevelWithId(path.levelName!)!.toLevel(),
-                          boardControls: const BoardControls(),
-                          key: Key(
-                              levelList.getLevelWithId(path.levelName!)!.name),
-                          onExit: () => navigatorCubit
-                              .navigateToLevelSelection(path.chapterName!),
-                          onNext: () {
-                            final nextLevelName = levelList
-                                .getLevelAfterId(path.levelName!)
-                                ?.name;
-                            if (nextLevelName != null) {
-                              navigatorCubit.navigateToLevel(
-                                  path.chapterName!, nextLevelName);
-                            } else {
-                              final nextChapter = chapters
-                                  .skipWhile((c) => c.name != path.chapterName!)
-                                  .skip(1)
-                                  .firstOrNull;
-                              if (nextChapter != null) {
-                                navigatorCubit.navigateToLevel(nextChapter.name,
-                                    nextChapter.levels.first.name);
+                      child: ScaffoldMessenger(
+                        child: Scaffold(
+                          body: LevelPage(
+                            levelList.getLevelWithId(path.levelName!)!.toLevel(),
+                            boardControls: const BoardControls(),
+                            key: Key(
+                                levelList.getLevelWithId(path.levelName!)!.name),
+                            onExit: () => navigatorCubit
+                                .navigateToLevelSelection(path.chapterName!),
+                            onNext: () {
+                              final nextLevelName = levelList
+                                  .getLevelAfterId(path.levelName!)
+                                  ?.name;
+                              if (nextLevelName != null) {
+                                navigatorCubit.navigateToLevel(
+                                    path.chapterName!, nextLevelName);
                               } else {
-                                navigatorCubit.navigateToLevelSelection(
-                                    path.chapterName!);
+                                final nextChapter = chapters
+                                    .skipWhile((c) => c.name != path.chapterName!)
+                                    .skip(1)
+                                    .firstOrNull;
+                                if (nextChapter != null) {
+                                  navigatorCubit.navigateToLevel(nextChapter.name,
+                                      nextChapter.levels.first.name);
+                                } else {
+                                  navigatorCubit.navigateToLevelSelection(
+                                      path.chapterName!);
+                                }
                               }
-                            }
-                          },
+                            },
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                }
-              ],
-              onPopPage: (route, result) {
-                if (!route.didPop(result)) {
-                  return false;
-                }
-                navigatorCubit.navigateToPreviousPage();
-                return true;
-              },
-            ),
-          );
-        },
+                  }
+                ],
+                onPopPage: (route, result) {
+                  if (!route.didPop(result)) {
+                    return false;
+                  }
+                  navigatorCubit.navigateToPreviousPage();
+                  return true;
+                },
+              ),
+            );
+          },
+        ),
       ),
     );
   }
