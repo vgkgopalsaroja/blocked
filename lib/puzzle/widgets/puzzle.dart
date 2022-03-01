@@ -83,7 +83,19 @@ class _PuzzleState extends State<Puzzle> with SingleTickerProviderStateMixin {
                   Positioned(
                     left: wall.start.x.toWallOffset(),
                     top: wall.start.y.toWallOffset(),
-                    child: PuzzleWall(wall),
+                    child: PuzzleWall(
+                      wall,
+                      isSharp: false,
+                    ),
+                  ),
+                for (var wall in board.sharpWalls)
+                  Positioned(
+                    left: wall.start.x.toWallOffset(),
+                    top: wall.start.y.toWallOffset(),
+                    child: PuzzleWall(
+                      wall,
+                      isSharp: true,
+                    ),
                   ),
                 Positioned.fill(
                   child: AnimatedOpacity(

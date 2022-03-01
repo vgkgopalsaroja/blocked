@@ -19,6 +19,7 @@ class LevelState {
   int get height => puzzle.height;
   List<PlacedBlock> get blocks => puzzle.blocks;
   List<Segment> get walls => puzzle.walls;
+  List<Segment> get sharpWalls => puzzle.sharpWalls;
   PlacedBlock get controlledBlock => puzzle.controlledBlock;
 
   LevelState withMoveAttempt(MoveAttempt move) {
@@ -28,11 +29,14 @@ class LevelState {
     final isMoveBlocked = puzzle == newPuzzle;
     final isMoveBlockedByWall =
         puzzle.hasWallInDirection(movedBlock, move.direction);
+    final cannotBeCut =
+        puzzle.willBeCutInDirection(movedBlock, move.direction) &&
+            puzzle.getBlocksAhead(movedBlock, move.direction).isNotEmpty;
     final isMoveFailedControlShift = isMoveBlocked && !isMoveBlockedByWall;
     final isMoveBlockedByControlShift =
         newPuzzle.controlledBlock != puzzle.controlledBlock;
 
-    if (isMoveBlockedByWall) {
+    if (isMoveBlockedByWall || cannotBeCut) {
       return this;
     } else if (isMoveBlockedByControlShift || isMoveFailedControlShift) {
       return LevelState(

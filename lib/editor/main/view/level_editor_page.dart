@@ -213,6 +213,7 @@ class LevelEditorPage extends StatelessWidget {
             top: kHandleSize + segment.start.y.toWallOffset(),
             child: PuzzleWall(
               segment,
+              isSharp: false,
               curve: Curves.easeOutCubic,
               duration: const Duration(milliseconds: 100),
             ),

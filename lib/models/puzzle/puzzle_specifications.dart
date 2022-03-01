@@ -7,6 +7,7 @@ class PuzzleSpecifications {
     required this.otherBlocks,
     required this.initialBlock,
     required this.walls,
+    required this.sharpWalls,
   });
 
   final int width;
@@ -14,4 +15,5 @@ class PuzzleSpecifications {
   final List<PlacedBlock> otherBlocks;
   final PlacedBlock? initialBlock;
   final List<Segment> walls;
+  final List<Segment> sharpWalls;
 }

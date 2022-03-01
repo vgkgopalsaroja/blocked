@@ -6,9 +6,8 @@ import 'package:equatable/equatable.dart';
 part 'placed_block.dart';
 
 class Block with EquatableMixin {
-  const Block(this.width, this.height)
-      : isMain = false,
-        canMoveHorizontally = true,
+  const Block(this.width, this.height, { this.isMain = false})
+      : canMoveHorizontally = true,
         canMoveVertically = true;
   const Block.main(this.width, this.height)
       : isMain = true,

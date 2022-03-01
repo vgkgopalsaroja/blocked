@@ -30,6 +30,7 @@ class LevelEditorBloc extends Bloc<LevelEditorEvent, LevelEditorState> {
     on<TestMapPressed>(_onTestMapPressed);
     on<MainEditorBlockSet>(_onMainEditorBlockSet);
     on<InitialEditorBlockSet>(_onControlledEditorBlockSet);
+    on<EditorSegmentTypeSet>(_onEditorSegmentTypeSet);
     on<TestMapExited>(_onTestMapExited);
     on<EditorToolSelected>(_onEditorToolSelected);
     on<GridToggled>(_onGridToggled);
@@ -116,6 +117,11 @@ class LevelEditorBloc extends Bloc<LevelEditorEvent, LevelEditorState> {
     emit(state.withControlBlock(event.block));
   }
 
+  void _onEditorSegmentTypeSet(
+      EditorSegmentTypeSet event, Emitter<LevelEditorState> emit) {
+    emit(state.withSegmentWithType(event.segment, event.type));
+  }
+
   void _onEditorToolSelected(
       EditorToolSelected event, Emitter<LevelEditorState> emit) {
     emit(state.withSelectedObject(null).copyWith(selectedTool: event.tool));
@@ -169,6 +175,7 @@ class _InvalidPuzzleState extends LevelState {
             0,
             0,
             walls: [],
+            sharpWalls: [],
             blocks: [],
             controlledBlock: PlacedBlock(0, 0, Position(0, 0),
                 isMain: false,
@@ -239,18 +246,27 @@ class EditorBlock extends EditorObject {
   }
 }
 
+enum SegmentType {
+  wall,
+  sharp,
+}
+
 class EditorSegment extends EditorObject {
   const EditorSegment(
     Size size,
     Offset offset, {
     required Key key,
+    required this.type,
   }) : super(key, size, offset);
   EditorSegment.initial(Segment segment)
-      : super(
+      : type = SegmentType.wall,
+        super(
             UniqueKey(),
             Size(segment.width.toWallSize(), segment.height.toWallSize()),
             Offset(segment.start.x.toWallOffset(),
                 segment.start.y.toWallOffset()));
+
+  final SegmentType type;
 
   @override
   int get width => size.width.boardSizeToBlockCount();
@@ -261,11 +277,6 @@ class EditorSegment extends EditorObject {
   int get top => offset.dy.wallOffsetToBlockCount();
   int get left => offset.dx.wallOffsetToBlockCount();
 
-  // bool get isVertical => _isVertical;
-  // bool get isHorizontal => !_isVertical;
-
-  // final bool _isVertical;
-
   Segment toSegment() {
     return Segment.from(
       Position(left, top),
@@ -274,8 +285,13 @@ class EditorSegment extends EditorObject {
   }
 
   @override
-  EditorSegment copyWith({Size? size, Offset? offset}) {
-    return EditorSegment(size ?? this.size, offset ?? this.offset, key: key);
+  EditorSegment copyWith({Size? size, Offset? offset, SegmentType? type}) {
+    return EditorSegment(
+      size ?? this.size,
+      offset ?? this.offset,
+      type: type ?? this.type,
+      key: key,
+    );
   }
 }
 

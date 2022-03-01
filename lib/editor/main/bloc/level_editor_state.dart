@@ -41,6 +41,12 @@ class LevelEditorState {
 
   Iterable<EditorSegment> get segments => objects.whereType<EditorSegment>();
 
+  Iterable<EditorSegment> get walls =>
+      segments.where((segment) => segment.type == SegmentType.wall);
+
+  Iterable<EditorSegment> get sharpWalls =>
+      segments.where((segment) => segment.type == SegmentType.sharp);
+
   Iterable<EditorBlock> get blocks => objects.whereType<EditorBlock>();
 
   Iterable<EditorSegment> get exits =>
@@ -91,6 +97,8 @@ class LevelEditorState {
   String? getMapString() {
     final blocks = getGeneratedBlocks().where((block) => blockFits(block));
     final walls = getGeneratedWalls().where((wall) => segmentFits(wall));
+    final sharpWalls =
+        getGeneratedSharpWalls().where((wall) => segmentFits(wall));
 
     if (hasBlockIntersection(floor.width, floor.height, blocks)) {
       return null;
@@ -100,6 +108,7 @@ class LevelEditorState {
       width: floor.width,
       height: floor.height,
       walls: walls,
+      sharpWalls: sharpWalls,
       blocks: blocks,
       initialBlock: blocks.where((block) => block.isMain).firstOrNull,
     );
@@ -240,6 +249,17 @@ class LevelEditorState {
     return state.withUpdatedObject(block, newBlock);
   }
 
+  LevelEditorState withSegmentWithType(
+      EditorSegment editorSegment, SegmentType type) {
+    assert(objects.contains(editorSegment),
+        'Editor segment is not in list of known editor objects');
+
+    final newSegment = editorSegment.copyWith(
+      type: type,
+    );
+    return withUpdatedObject(editorSegment, newSegment);
+  }
+
   List<PlacedBlock> getGeneratedBlocks() {
     final dx = -floor.left;
     final dy = -floor.top;
@@ -255,12 +275,25 @@ class LevelEditorState {
     final outerWalls =
         _generateOuterWallsWithout(floor.width, floor.height, exitSegments);
 
-    final innerWalls = segments
-        .whereNot((segment) => isExit(segment))
-        .map((w) => w.toSegment().translate(dx, dy))
+    final innerWalls = walls
+        .whereNot((wall) => isExit(wall))
+        .map((wall) => wall.toSegment().translate(dx, dy))
         .toList();
 
     return outerWalls + innerWalls;
+  }
+
+  List<Segment> getGeneratedSharpWalls() {
+    final dx = -floor.left;
+    final dy = -floor.top;
+
+    final sharpWalls = this
+        .sharpWalls
+        .whereNot((wall) => isExit(wall))
+        .map((wall) => wall.toSegment().translate(dx, dy))
+        .toList();
+
+    return sharpWalls;
   }
 
   static List<Segment> _generateOuterWallsWithout(
@@ -299,6 +332,9 @@ class LevelEditorState {
     }
     final generatedWalls =
         getGeneratedWalls().where((wall) => segmentFits(wall)).toList();
+    final generatedSharpWalls =
+        getGeneratedSharpWalls().where((wall) => segmentFits(wall)).toList();
+
     final otherGeneratedBlocks =
         generatedBlocks.where((block) => block != generatedInitialBlock);
 
@@ -309,6 +345,7 @@ class LevelEditorState {
         initialBlock: generatedInitialBlock,
         otherBlocks: otherGeneratedBlocks,
         walls: generatedWalls,
+        sharpWalls: generatedSharpWalls,
       ),
     );
     return state;

@@ -92,6 +92,7 @@ class _BackgroundPuzzleControllerState extends State<BackgroundPuzzleController>
                 Segment.horizontal(y: 3, start: 0, end: 3),
                 Segment.vertical(x: 3, start: 0, end: 3),
               ],
+              sharpWalls: const [],
             ),
           ),
         )..add(MoveAttempt(moves[moveIndex++]));

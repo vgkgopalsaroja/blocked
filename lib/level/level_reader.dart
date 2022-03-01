@@ -9,6 +9,7 @@ const String empty = '.';
 const String block = 'x';
 const String mainBlock = 'm';
 const String exit = 'e';
+const String sharpWall = '~';
 
 typedef Tile = int;
 
@@ -19,6 +20,7 @@ class TileType {
   static const main = 8;
   static const exit = 16;
   static const control = 32;
+  static const sharpWall = 64;
 }
 
 const defaultMap = [
@@ -76,6 +78,7 @@ String stateToMapString(LevelState state) {
       width: state.width,
       height: state.height,
       walls: state.walls,
+      sharpWalls: state.sharpWalls,
       blocks: state.blocks,
       initialBlock: state.controlledBlock);
 }
@@ -85,6 +88,7 @@ String specsToMapString(PuzzleSpecifications state) {
       width: state.width,
       height: state.height,
       walls: state.walls,
+      sharpWalls: state.sharpWalls,
       blocks: [
         ...state.otherBlocks,
         if (state.initialBlock != null) state.initialBlock!,
@@ -96,6 +100,7 @@ String toMapString({
   required int width,
   required int height,
   required Iterable<Segment> walls,
+  required Iterable<Segment> sharpWalls,
   required Iterable<PlacedBlock> blocks,
   required PlacedBlock? initialBlock,
 }) {
@@ -117,6 +122,16 @@ String toMapString({
     for (var dx = 0; dx < wallTileWidth; dx++) {
       for (var dy = 0; dy < wallTileHeight; dy++) {
         map[wall.start.y * 2 + dy][wall.start.x * 2 + dx] = '*';
+      }
+    }
+  }
+
+  for (final sharpWall in sharpWalls) {
+    final wallTileWidth = sharpWall.width.segmentToTileCount();
+    final wallTileHeight = sharpWall.height.segmentToTileCount();
+    for (var dx = 0; dx < wallTileWidth; dx++) {
+      for (var dy = 0; dy < wallTileHeight; dy++) {
+        map[sharpWall.start.y * 2 + dy][sharpWall.start.x * 2 + dx] = '~';
       }
     }
   }
@@ -154,6 +169,8 @@ List<List<Tile>> _parseTilesFromMap(Iterable<String> rawMap) {
     return line.split('').map((char) {
       if (char == wall) {
         return TileType.wall;
+      } else if (char == sharpWall) {
+        return TileType.sharpWall;
       } else if (char == empty) {
         return TileType.empty;
       } else if (char == exit) {
@@ -245,6 +262,7 @@ PuzzleSpecifications _parsePuzzleFromTiles(List<List<Tile>> map) {
   assert(width % 2 == 1 && height % 2 == 1, 'Map must be odd-sized');
 
   final walls = _getSegmentsOfType(map, TileType.wall);
+  final sharpWalls = _getSegmentsOfType(map, TileType.sharpWall);
   final parsedBlocks = getBlocks(map);
   final blocks = parsedBlocks
       .where((block) => !block.isControlled)
@@ -257,6 +275,7 @@ PuzzleSpecifications _parsePuzzleFromTiles(List<List<Tile>> map) {
     width: width ~/ 2,
     height: height ~/ 2,
     walls: walls,
+    sharpWalls: sharpWalls,
     otherBlocks: blocks,
     initialBlock: controlledBlock,
   );
@@ -266,10 +285,16 @@ LevelState _parseLevelFromTiles(List<List<Tile>> map) {
   final spec = _parsePuzzleFromTiles(map);
 
   assert(spec.initialBlock != null, 'Initial block missing from map');
-  return LevelState.initial(PuzzleState.initial(spec.width, spec.height,
+  return LevelState.initial(
+    PuzzleState.initial(
+      spec.width,
+      spec.height,
       initialBlock: spec.initialBlock!,
       otherBlocks: spec.otherBlocks,
-      walls: spec.walls));
+      walls: spec.walls,
+      sharpWalls: spec.sharpWalls,
+    ),
+  );
 }
 
 List<_ParsedBlock> getBlocks(List<List<int>> map) {

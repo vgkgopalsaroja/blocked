@@ -5,6 +5,7 @@ import 'package:blocked/resizable/resizable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_portal/flutter_portal.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class ResizableSegment extends StatelessWidget {
   const ResizableSegment(this.wall, {Key? key}) : super(key: key);
@@ -20,6 +21,8 @@ class ResizableSegment extends StatelessWidget {
     final isExit = context.select(
       (LevelEditorBloc bloc) => bloc.state.isExit(wall),
     );
+
+    final isSharp = wall.type == SegmentType.sharp;
 
     return Resizable.custom(
       enabled: isSelected,
@@ -92,16 +95,36 @@ class ResizableSegment extends StatelessWidget {
           portalAnchor: Alignment.topLeft,
           portal: Padding(
             padding: const EdgeInsets.only(left: kHandleSize),
-            child: ElevatedButton(
-              onPressed: () {
-                context
-                    .read<LevelEditorBloc>()
-                    .add(const SelectedEditorObjectDeleted());
-              },
-              child: const Icon(Icons.clear),
-              style: ElevatedButton.styleFrom(
-                primary: Theme.of(context).colorScheme.error,
-              ),
+            child: Column(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    context
+                        .read<LevelEditorBloc>()
+                        .add(const SelectedEditorObjectDeleted());
+                  },
+                  child: const Icon(Icons.clear),
+                  style: ElevatedButton.styleFrom(
+                    primary: Theme.of(context).colorScheme.error,
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    context.read<LevelEditorBloc>().add(EditorSegmentTypeSet(
+                        wall,
+                        wall.type == SegmentType.wall
+                            ? SegmentType.sharp
+                            : SegmentType.wall));
+                  },
+                  icon: wall.type == SegmentType.wall
+                      ? const Icon(MdiIcons.triangleOutline)
+                      : const Icon(MdiIcons.squareRoundedOutline),
+                  label: Text(wall.type == SegmentType.wall
+                      ? 'Make sharp'
+                      : 'Make wall'),
+                ),
+              ],
             ),
           ),
           child: AnimatedSelectable(
@@ -110,7 +133,9 @@ class ResizableSegment extends StatelessWidget {
                 ? PuzzleExit(
                     Segment(const Position(0, 0), Position(width, height)))
                 : PuzzleWall(
-                    Segment(const Position(0, 0), Position(width, height))),
+                    Segment(const Position(0, 0), Position(width, height)),
+                    isSharp: isSharp,
+                  ),
           ),
         );
       },

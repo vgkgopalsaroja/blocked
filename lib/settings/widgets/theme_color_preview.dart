@@ -23,6 +23,7 @@ class ThemeColorPreview extends StatelessWidget {
               Segment.horizontal(y: 1, start: 0, end: 3),
               Segment.vertical(x: 0, start: 0, end: 1),
             ],
+            sharpWalls: const [],
           ),
         ),
       ),
