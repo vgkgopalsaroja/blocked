@@ -4,12 +4,13 @@ import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:yaml/yaml.dart';
 
-const String wall = '*';
+const String wallStr = '*';
 const String empty = '.';
 const String block = 'x';
 const String mainBlock = 'm';
 const String exit = 'e';
-const String sharpWall = '~';
+const String sharpWallStr = '~';
+const String sharpAndRoundWallStr = '+';
 
 typedef Tile = int;
 
@@ -131,7 +132,13 @@ String toMapString({
     final wallTileHeight = sharpWall.height.segmentToTileCount();
     for (var dx = 0; dx < wallTileWidth; dx++) {
       for (var dy = 0; dy < wallTileHeight; dy++) {
-        map[sharpWall.start.y * 2 + dy][sharpWall.start.x * 2 + dx] = '~';
+        final x = sharpWall.start.x * 2 + dx;
+        final y = sharpWall.start.y * 2 + dy;
+        if (map[y][x] == sharpAndRoundWallStr || map[y][x] == wallStr) {
+          map[y][x] = sharpAndRoundWallStr;
+        } else {
+          map[y][x] = sharpWallStr;
+        }
       }
     }
   }
@@ -167,10 +174,12 @@ PuzzleSpecifications parsePuzzleSpecs(String mapString) {
 List<List<Tile>> _parseTilesFromMap(Iterable<String> rawMap) {
   return rawMap.map((line) {
     return line.split('').map((char) {
-      if (char == wall) {
+      if (char == wallStr) {
         return TileType.wall;
-      } else if (char == sharpWall) {
+      } else if (char == sharpWallStr) {
         return TileType.sharpWall;
+      } else if (char == sharpAndRoundWallStr) {
+        return TileType.wall | TileType.sharpWall;
       } else if (char == empty) {
         return TileType.empty;
       } else if (char == exit) {

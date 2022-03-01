@@ -33,7 +33,7 @@ class PuzzleWall extends StatelessWidget {
               )
             : BoxDecoration(
                 color: BoardColor.of(context).wall,
-                borderRadius: BorderRadius.circular(2.0),
+                borderRadius: BorderRadius.circular(8.0),
               ),
         width: segment.width.toWallSize(),
         height: segment.height.toWallSize(),
