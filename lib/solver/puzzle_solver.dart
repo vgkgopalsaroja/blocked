@@ -9,14 +9,18 @@ Future<List<MoveDirection>?> solve(PuzzleState initialState) async {
   final visited = <int>{};
   final exits =
       _getExits(initialState.width, initialState.height, initialState.walls);
-  frontier
-      .add(_PuzzleNode(initialState, null, null, 0, h(initialState, exits)));
+  frontier.add(_PuzzleNode(initialState, null, null, 0, h(initialState, exits),
+      initialState.quickHash()));
 
   var count = 0;
   while (frontier.isNotEmpty) {
     count++;
     final current = frontier.removeFirst();
-    if (count == 100) {
+    final currentHashCode = current.stateHashCode;
+    if (visited.contains(currentHashCode)) {
+      continue;
+    }
+    if (count == 1000) {
       /// A workaround to prevent the UI from stalling.
       await Future.delayed(Duration.zero);
       count = 0;
@@ -24,14 +28,15 @@ Future<List<MoveDirection>?> solve(PuzzleState initialState) async {
     if (current.state.isCompleted) {
       return current.moves;
     }
-    visited.add(current.state.hashCode);
+    visited.add(currentHashCode);
 
     for (var moveDirection in MoveDirection.values) {
       final nextState =
           current.state.withMoveAttempt(MoveAttempt(moveDirection));
-      if (!visited.contains(nextState.hashCode)) {
+      final nextStateHash = nextState.quickHash();
+      if (!visited.contains(nextStateHash)) {
         frontier.add(_PuzzleNode(nextState, current, moveDirection,
-            current.moveCount + 1, h(nextState, exits)));
+            current.moveCount + 1, h(nextState, exits), nextStateHash));
       }
     }
   }
@@ -76,13 +81,20 @@ int getManhattanDistance(Position position1, Position position2) {
 
 class _PuzzleNode extends Comparable<_PuzzleNode> {
   _PuzzleNode(
-      this.state, this.parent, this.moveDirection, this.moveCount, this.hValue);
+    this.state,
+    this.parent,
+    this.moveDirection,
+    this.moveCount,
+    this.hValue,
+    this.stateHashCode,
+  );
 
   final PuzzleState state;
   final _PuzzleNode? parent;
   final MoveDirection? moveDirection;
   final int moveCount;
   final int hValue;
+  final int stateHashCode;
 
   List<MoveDirection> get moves =>
       (parent?.moves ?? []) + (moveDirection != null ? [moveDirection!] : []);
@@ -91,5 +103,14 @@ class _PuzzleNode extends Comparable<_PuzzleNode> {
   @override
   int compareTo(_PuzzleNode other) {
     return (moveCount - other.moveCount) + (hValue - other.hValue);
+  }
+}
+
+extension on PuzzleState {
+  int quickHash() {
+    return Object.hash(
+      controlledBlock,
+      Object.hashAllUnordered(blocks),
+    );
   }
 }

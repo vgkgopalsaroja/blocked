@@ -39,9 +39,9 @@ class PuzzleState extends Equatable {
   final int height;
   final List<PlacedBlock> blocks;
   final List<Segment> walls;
-  PlacedBlock get mainBlock => blocks.firstWhere((block) => block.isMain);
   final PlacedBlock controlledBlock;
 
+  PlacedBlock get mainBlock => blocks.firstWhere((block) => block.isMain);
   bool get isCompleted => !_canFit(mainBlock);
 
   PuzzleState withMoveAttempt(MoveAttempt move) {
