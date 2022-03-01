@@ -98,7 +98,8 @@ class LevelEditorBloc extends Bloc<LevelEditorEvent, LevelEditorState> {
   }
 
   void _onSegmentAdded(SegmentAdded event, Emitter<LevelEditorState> emit) {
-    final newSegment = EditorSegment.initial(event.segment, type: SegmentType.wall);
+    final newSegment =
+        EditorSegment.initial(event.segment, type: SegmentType.wall);
     emit(state.copyWith(
       objects: state.objects + [newSegment],
       selectedObject: state.selectedObject,
@@ -177,10 +178,6 @@ class _InvalidPuzzleState extends LevelState {
             walls: [],
             sharpWalls: [],
             blocks: [],
-            controlledBlock: PlacedBlock(0, 0, Position(0, 0),
-                isMain: false,
-                canMoveHorizontally: false,
-                canMoveVertically: false),
           ),
           latestMove: null,
           isCompleted: false,
@@ -204,9 +201,9 @@ abstract class EditorObject extends Equatable {
 }
 
 class EditorBlock extends EditorObject {
-  EditorBlock.initial(PlacedBlock block,
-      {UniqueKey? key, this.hasControl = false})
+  EditorBlock.initial(PlacedBlock block, {UniqueKey? key})
       : isMain = block.isMain,
+        hasControl = block.hasControl,
         super(
             key ?? UniqueKey(),
             Size(block.width.toBlockSize(), block.height.toBlockSize()),
@@ -225,12 +222,11 @@ class EditorBlock extends EditorObject {
   int get top => offset.dy.blockOffsetToBlockCount();
   int get left => offset.dx.blockOffsetToBlockCount();
 
-  PlacedBlock toBlock() => Block.manual(
+  PlacedBlock toBlock() => Block(
         width,
         height,
         isMain: isMain,
-        canMoveHorizontally: true,
-        canMoveVertically: true,
+        hasControl: hasControl,
       ).place(left, top);
 
   @override
@@ -258,9 +254,8 @@ class EditorSegment extends EditorObject {
     required Key key,
     required this.type,
   }) : super(key, size, offset);
-  EditorSegment.initial(Segment segment, { required this.type})
-      : 
-        super(
+  EditorSegment.initial(Segment segment, {required this.type})
+      : super(
             UniqueKey(),
             Size(segment.width.toWallSize(), segment.height.toWallSize()),
             Offset(segment.start.x.toWallOffset(),

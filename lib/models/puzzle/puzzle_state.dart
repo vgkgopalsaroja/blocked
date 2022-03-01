@@ -8,20 +8,15 @@ class PuzzleState extends Equatable {
   PuzzleState.initial(
     this.width,
     this.height, {
-    required PlacedBlock initialBlock,
-    required Iterable<PlacedBlock> otherBlocks,
+    required this.blocks,
     required this.walls,
     required this.sharpWalls,
-  })  : blocks = [initialBlock, ...otherBlocks],
-        controlledBlock = initialBlock,
-        assert(
-            [initialBlock, ...otherBlocks]
-                    .where((block) => block.isMain)
-                    .length ==
-                1,
+  })  : assert(blocks.where((block) => block.isMain).length == 1,
             'Puzzle requires exactly one main block.'),
+        assert(blocks.any((block) => block.hasControl),
+            'Puzzle requires at least one controlled block.'),
         assert(
-            [initialBlock, ...otherBlocks].every((block) =>
+            blocks.every((block) =>
                 block.top >= 0 &&
                 block.left >= 0 &&
                 block.bottom < height &&
@@ -34,7 +29,6 @@ class PuzzleState extends Equatable {
     required this.blocks,
     required this.walls,
     required this.sharpWalls,
-    required this.controlledBlock,
   });
 
   final int width;
@@ -42,9 +36,12 @@ class PuzzleState extends Equatable {
   final List<PlacedBlock> blocks;
   final List<Segment> walls;
   final List<Segment> sharpWalls;
-  final PlacedBlock controlledBlock;
 
   PlacedBlock get mainBlock => blocks.firstWhere((block) => block.isMain);
+
+  // TODO: Allow for multiple controlled blocks
+  PlacedBlock get controlledBlock =>
+      blocks.firstWhere((block) => block.hasControl);
   bool get isCompleted => !_canFit(mainBlock);
 
   PuzzleState withMoveAttempt(MoveAttempt move) {
@@ -61,12 +58,14 @@ class PuzzleState extends Equatable {
       if (blocksAhead.isEmpty) {
         // Cut the block
         final cutBlocks = cutBlockInDirection(movedBlock, move.direction);
+        final newControlledBlock = cutBlocks[0].copyWith(hasControl: true);
         return PuzzleState(
           width,
           height,
-          controlledBlock: cutBlocks[0],
           blocks: blocks
-              .map((block) => block == movedBlock ? cutBlocks[0] : block)
+              .map((block) => block == movedBlock
+                  ? newControlledBlock
+                  : block.copyWith(hasControl: false))
               .toList()
             ..addAll(cutBlocks.skip(1)),
           walls: walls,
@@ -93,14 +92,49 @@ class PuzzleState extends Equatable {
     return _withMovedBlock(movedBlock, move.direction);
   }
 
+  PuzzleState? getIntermediateStateWithMoveAttempt(MoveAttempt move) {
+    final movedBlock = controlledBlock;
+    if (hasWallInDirection(movedBlock, move.direction)) {
+      return null;
+    }
+
+    final blocksAhead = getBlocksAhead(movedBlock, move.direction);
+
+    if (willBeCutInDirection(movedBlock, move.direction)) {
+      if (blocksAhead.isEmpty) {
+        // Cut the block
+        final cutBlocks = cutBlockInDirection(movedBlock, move.direction)
+            .map((b) =>
+                b.shifted(move.direction.opposite).copyWith(hasControl: true))
+            .toList();
+        return PuzzleState(
+          width,
+          height,
+          blocks: blocks
+              .map((block) => block == movedBlock ? cutBlocks[0] : block)
+              .toList()
+            ..addAll(cutBlocks.skip(1)),
+          walls: walls,
+          sharpWalls: sharpWalls,
+        );
+      }
+    }
+    return null;
+  }
+
   PuzzleState _withControlledBlock(PlacedBlock newControlledBlock) {
+    final newBlockWithControl = newControlledBlock.copyWith(hasControl: true);
+    final newBlocks = blocks
+        .map((block) => block == newControlledBlock
+            ? newBlockWithControl
+            : block.copyWith(hasControl: false))
+        .toList();
     return PuzzleState(
       width,
       height,
-      blocks: blocks,
+      blocks: newBlocks,
       walls: walls,
       sharpWalls: sharpWalls,
-      controlledBlock: newControlledBlock,
     );
   }
 
@@ -115,8 +149,6 @@ class PuzzleState extends Equatable {
       }).toList(),
       walls: walls,
       sharpWalls: sharpWalls,
-      controlledBlock:
-          controlledBlock == movedBlock ? newBlock : controlledBlock,
     );
   }
 
@@ -206,6 +238,7 @@ class PuzzleState extends Equatable {
           width,
           height,
           isMain: i == 0 && block.isMain,
+          hasControl: false,
         ).place(block.position.shifted(direction).x, start));
       }
     } else {
@@ -225,6 +258,7 @@ class PuzzleState extends Equatable {
           width,
           height,
           isMain: i == 0 && block.isMain,
+          hasControl: false,
         ).place(start, block.position.shifted(direction).y));
       }
     }
@@ -298,6 +332,21 @@ extension on Position {
         return Position(x - 1, y);
       case MoveDirection.right:
         return Position(x + 1, y);
+    }
+  }
+}
+
+extension on PlacedBlock {
+  PlacedBlock shifted(MoveDirection direction) {
+    switch (direction) {
+      case MoveDirection.up:
+        return translate(0, -1);
+      case MoveDirection.down:
+        return translate(0, 1);
+      case MoveDirection.left:
+        return translate(-1, 0);
+      case MoveDirection.right:
+        return translate(1, 0);
     }
   }
 }

@@ -3,9 +3,7 @@ part of 'level_editor_bloc.dart';
 class LevelEditorState {
   LevelEditorState.fromPuzzleSpecifications(PuzzleSpecifications specs)
       : this.initial([
-          if (specs.initialBlock != null)
-            EditorBlock.initial(specs.initialBlock!, hasControl: true),
-          ...specs.otherBlocks.map((block) => EditorBlock.initial(block)),
+          ...specs.blocks.map((block) => EditorBlock.initial(block)),
           ..._withoutOuterWalls(specs.width, specs.height, specs.walls).map(
               (wall) => EditorSegment.initial(wall, type: SegmentType.wall)),
           ...specs.sharpWalls.map(
@@ -112,7 +110,6 @@ class LevelEditorState {
       walls: walls,
       sharpWalls: sharpWalls,
       blocks: blocks,
-      initialBlock: blocks.where((block) => block.isMain).firstOrNull,
     );
   }
 
@@ -318,7 +315,7 @@ class LevelEditorState {
     final dy = -floor.top;
 
     final generatedBlocks =
-        getGeneratedBlocks().where((block) => blockFits(block));
+        getGeneratedBlocks().where((block) => blockFits(block)).toList();
     final generatedInitialBlock = initialBlock?.toBlock().translate(dx, dy);
 
     if (hasBlockIntersection(floor.width, floor.height, generatedBlocks)) {
@@ -337,15 +334,11 @@ class LevelEditorState {
     final generatedSharpWalls =
         getGeneratedSharpWalls().where((wall) => segmentFits(wall)).toList();
 
-    final otherGeneratedBlocks =
-        generatedBlocks.where((block) => block != generatedInitialBlock);
-
     final state = LevelState.initial(
       PuzzleState.initial(
         floor.width,
         floor.height,
-        initialBlock: generatedInitialBlock,
-        otherBlocks: otherGeneratedBlocks,
+        blocks: generatedBlocks,
         walls: generatedWalls,
         sharpWalls: generatedSharpWalls,
       ),

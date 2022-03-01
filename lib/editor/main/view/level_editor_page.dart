@@ -231,8 +231,7 @@ class LevelEditorPage extends StatelessWidget {
           start,
           end,
           isMain: false,
-          canMoveHorizontally: true,
-          canMoveVertically: true,
+          hasControl: false,
         )));
       },
       offsetTransformer: (offset) {
@@ -274,10 +273,12 @@ class LevelEditorPage extends StatelessWidget {
       threshold: kBlockSize / 2,
       hintBuilder: (start, end) {
         if (start != null && end != null) {
-          final block = PlacedBlock.from(start, end,
-              isMain: false,
-              canMoveHorizontally: true,
-              canMoveVertically: true);
+          final block = PlacedBlock.from(
+            start,
+            end,
+            isMain: false,
+            hasControl: false,
+          );
 
           return AnimatedPositioned(
             curve: Curves.easeOutCubic,

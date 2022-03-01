@@ -81,8 +81,8 @@ class _BackgroundPuzzleControllerState extends State<BackgroundPuzzleController>
             PuzzleState.initial(
               3,
               3,
-              initialBlock: const Block.main(1, 1).place(0, 0),
-              otherBlocks: [
+              blocks: [
+                const Block(1, 1, isMain: true, hasControl: true).place(0, 0),
                 const Block(1, 1).place(1, 0),
                 const Block(1, 1).place(2, 2),
               ],

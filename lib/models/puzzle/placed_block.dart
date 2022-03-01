@@ -5,27 +5,22 @@ class PlacedBlock extends Block with EquatableMixin {
     Position start,
     Position end, {
     required bool isMain,
-    required bool canMoveHorizontally,
-    required bool canMoveVertically,
+    required bool hasControl,
   })  : position = Position(min(start.x, end.x), min(start.y, end.y)),
-        super.manual((end.x - start.x).abs() + 1, (end.y - start.y).abs() + 1,
-            isMain: isMain,
-            canMoveHorizontally: canMoveHorizontally,
-            canMoveVertically: canMoveVertically);
+        super((end.x - start.x).abs() + 1, (end.y - start.y).abs() + 1,
+            isMain: isMain, hasControl: hasControl);
 
   const PlacedBlock(
     int width,
     int height,
     this.position, {
     required bool isMain,
-    required bool canMoveHorizontally,
-    required bool canMoveVertically,
-  }) : super.manual(
+    required bool hasControl,
+  }) : super(
           width,
           height,
           isMain: isMain,
-          canMoveHorizontally: canMoveHorizontally,
-          canMoveVertically: canMoveVertically,
+          hasControl: hasControl,
         );
 
   final Position position;
@@ -40,28 +35,37 @@ class PlacedBlock extends Block with EquatableMixin {
         height,
         position + Position(dx, dy),
         isMain: isMain,
-        canMoveHorizontally: canMoveHorizontally,
-        canMoveVertically: canMoveVertically,
+        hasControl: hasControl,
+      );
+
+  PlacedBlock copyWith({
+    int? width,
+    int? height,
+    Position? position,
+    bool? isMain,
+    bool? hasControl,
+  }) =>
+      PlacedBlock(
+        width ?? this.width,
+        height ?? this.height,
+        position ?? this.position,
+        isMain: isMain ?? this.isMain,
+        hasControl: hasControl ?? this.hasControl,
       );
 
   @override
-  List<Object?> get props =>
-      [width, height, position, isMain, canMoveHorizontally, canMoveVertically];
+  List<Object?> get props => [width, height, position, isMain, hasControl];
 }
 
 extension PlaceBlock on Block {
   PlacedBlock withPosition(Position position) =>
       PlacedBlock(width, height, position,
-          isMain: isMain,
-          canMoveHorizontally: canMoveHorizontally,
-          canMoveVertically: canMoveVertically);
-
+          isMain: isMain, hasControl: hasControl);
   PlacedBlock place(int x, int y) => PlacedBlock(
         width,
         height,
         Position(x, y),
         isMain: isMain,
-        canMoveHorizontally: canMoveHorizontally,
-        canMoveVertically: canMoveVertically,
+        hasControl: hasControl,
       );
 }

@@ -22,34 +22,48 @@ class LevelState {
   List<Segment> get sharpWalls => puzzle.sharpWalls;
   PlacedBlock get controlledBlock => puzzle.controlledBlock;
 
-  LevelState withMoveAttempt(MoveAttempt move) {
+  List<LevelState> withMoveAttempt(MoveAttempt move) {
     final movedBlock = puzzle.controlledBlock;
     final newPuzzle = puzzle.withMoveAttempt(move);
 
     final isMoveBlocked = puzzle == newPuzzle;
     final isMoveBlockedByWall =
         puzzle.hasWallInDirection(movedBlock, move.direction);
-    final cannotBeCut =
-        puzzle.willBeCutInDirection(movedBlock, move.direction) &&
-            puzzle.getBlocksAhead(movedBlock, move.direction).isNotEmpty;
+    final wouldBeCut = puzzle.willBeCutInDirection(movedBlock, move.direction);
+    final cannotBeCut = wouldBeCut &&
+        puzzle.getBlocksAhead(movedBlock, move.direction).isNotEmpty;
     final isMoveFailedControlShift = isMoveBlocked && !isMoveBlockedByWall;
+    final wasCut = puzzle.blocks.length != newPuzzle.blocks.length;
     final isMoveBlockedByControlShift =
-        newPuzzle.controlledBlock != puzzle.controlledBlock;
+        newPuzzle.controlledBlock != puzzle.controlledBlock && !wasCut;
 
     if (isMoveBlockedByWall || cannotBeCut) {
-      return this;
+      return [this];
     } else if (isMoveBlockedByControlShift || isMoveFailedControlShift) {
-      return LevelState(
-        newPuzzle,
-        isCompleted: newPuzzle.isCompleted,
-        latestMove: move.blocked(movedBlock),
-      );
+      return [
+        LevelState(
+          newPuzzle,
+          isCompleted: newPuzzle.isCompleted,
+          latestMove: move.blocked(movedBlock),
+        )
+      ];
     } else {
-      return LevelState(
-        newPuzzle,
-        isCompleted: newPuzzle.isCompleted,
-        latestMove: move.moved(movedBlock),
-      );
+      final intermediateState =
+          puzzle.getIntermediateStateWithMoveAttempt(move);
+      return [
+        if (intermediateState != null)
+          LevelState(
+            intermediateState,
+            isCompleted: intermediateState.isCompleted,
+            latestMove: move.moved(
+                movedBlock), // moved specified to prevent blocked animation
+          ),
+        LevelState(
+          newPuzzle,
+          isCompleted: newPuzzle.isCompleted,
+          latestMove: move.moved(movedBlock),
+        )
+      ];
     }
   }
 
