@@ -6,8 +6,10 @@ class LevelEditorState {
           if (specs.initialBlock != null)
             EditorBlock.initial(specs.initialBlock!, hasControl: true),
           ...specs.otherBlocks.map((block) => EditorBlock.initial(block)),
-          ..._withoutOuterWalls(specs.width, specs.height, specs.walls)
-              .map((wall) => EditorSegment.initial(wall)),
+          ..._withoutOuterWalls(specs.width, specs.height, specs.walls).map(
+              (wall) => EditorSegment.initial(wall, type: SegmentType.wall)),
+          ...specs.sharpWalls.map(
+              (wall) => EditorSegment.initial(wall, type: SegmentType.sharp)),
           EditorFloor.initial(specs.width, specs.height),
         ]);
   const LevelEditorState.initial(this.objects)

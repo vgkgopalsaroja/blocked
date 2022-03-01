@@ -98,7 +98,7 @@ class LevelEditorBloc extends Bloc<LevelEditorEvent, LevelEditorState> {
   }
 
   void _onSegmentAdded(SegmentAdded event, Emitter<LevelEditorState> emit) {
-    final newSegment = EditorSegment.initial(event.segment);
+    final newSegment = EditorSegment.initial(event.segment, type: SegmentType.wall);
     emit(state.copyWith(
       objects: state.objects + [newSegment],
       selectedObject: state.selectedObject,
@@ -258,8 +258,8 @@ class EditorSegment extends EditorObject {
     required Key key,
     required this.type,
   }) : super(key, size, offset);
-  EditorSegment.initial(Segment segment)
-      : type = SegmentType.wall,
+  EditorSegment.initial(Segment segment, { required this.type})
+      : 
         super(
             UniqueKey(),
             Size(segment.width.toWallSize(), segment.height.toWallSize()),
