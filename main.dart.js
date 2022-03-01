@@ -40031,7 +40031,7 @@ if(!o.c.l(0,new A.o(s,q))||!o.b.l(0,new A.D(r,p)))J.bb(A.aM(this.b,!1,t.a),new A
 $S:84}
 A.a7m.prototype={
 $2(a,b){var s=this,r=null,q=B.d.a2(b.a-8,80),p=B.d.a2(b.b-8,80),o=s.b,n=A.ar4(!1,B.nJ,B.m,r,r,r,r,r,new A.a7j(a),A.YB(r,r,r,r,r,r,r,r,r,r,r,A.ad(a).ch.cy,r,r,r,r,r,r)),m=s.a,l=m.c.d===B.dC,k=l?B.DT:B.E8
-n=A.ki(A.b([n,B.lD,A.ON(k,A.hL(l?"Make sharp":"Make wall",r),new A.a7k(m,a))],t.p),B.aG,B.a6,B.aM)
+n=A.ki(A.b([n,B.lD,A.ON(k,A.hL(l?"Make sharp":"Make round",r),new A.a7k(m,a))],t.p),B.aG,B.a6,B.aM)
 return A.asz(new A.wu(o,s.c?new A.Kv(new A.aR(B.dy,new A.ab(q,p)),r):new A.mU(s.d,new A.aR(B.dy,new A.ab(q,p)),B.K,B.r,r),r),B.mk,new A.bs(B.ni,n,r),B.dT,o)},
 $S:169}
 A.a7j.prototype={
