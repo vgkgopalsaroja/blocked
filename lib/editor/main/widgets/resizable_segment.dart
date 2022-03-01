@@ -122,7 +122,7 @@ class ResizableSegment extends StatelessWidget {
                       : const Icon(MdiIcons.squareRoundedOutline),
                   label: Text(wall.type == SegmentType.wall
                       ? 'Make sharp'
-                      : 'Make wall'),
+                      : 'Make round'),
                 ),
               ],
             ),
