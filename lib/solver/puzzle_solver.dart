@@ -20,7 +20,7 @@ Future<List<MoveDirection>?> solve(PuzzleState initialState) async {
     if (visited.contains(currentHashCode)) {
       continue;
     }
-    if (count == 1000) {
+    if (count == 100) {
       /// A workaround to prevent the UI from stalling.
       await Future.delayed(Duration.zero);
       count = 0;
