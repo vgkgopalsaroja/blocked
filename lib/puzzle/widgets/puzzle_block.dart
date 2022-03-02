@@ -5,6 +5,7 @@ import 'package:blocked/puzzle/puzzle.dart';
 import 'package:flutter/material.dart';
 
 const _defaultDuration = Duration(milliseconds: 225); // kSlideDuration * 1.5
+const _mainCircleAnimationDuration = Duration(milliseconds: 250);
 
 class PuzzleBlock extends StatelessWidget {
   const PuzzleBlock(
@@ -57,20 +58,32 @@ class PuzzleBlock extends StatelessWidget {
               duration: duration,
               alignment: Alignment.center,
               child: AnimatedOpacity(
-                opacity: block.isMain ? 1 : 0,
-                duration: duration,
-                curve: curve,
+                opacity: (block.isMain ? 1 : 0),
+                duration: _mainCircleAnimationDuration,
                 child: AnimatedSwitcher(
                   duration: duration,
                   switchInCurve: curve,
                   switchOutCurve: curve.flipped,
-                  child: Icon(
-                    Icons.circle_outlined,
+                  child: AnimatedContainer(
                     key: ValueKey(block.hasControl),
-                    color: block.hasControl
-                        ? boardColors.controlledBlockOutline
-                        : boardColors.blockOutline,
-                    size: min(block.width, block.height) * kBlockSize / 2,
+                    duration: _mainCircleAnimationDuration,
+                    curve: Curves.easeOutQuad,
+                    width: (block.isMain ? 1 : 0) *
+                        min(block.width, block.height) *
+                        kBlockSize /
+                        2,
+                    height: (block.isMain ? 1 : 0) *
+                        min(block.width, block.height) *
+                        kBlockSize /
+                        2,
+                    child: FittedBox(
+                      child: Icon(
+                        Icons.circle_outlined,
+                        color: block.hasControl
+                            ? boardColors.controlledBlockOutline
+                            : boardColors.blockOutline,
+                      ),
+                    ),
                   ),
                 ),
               ),

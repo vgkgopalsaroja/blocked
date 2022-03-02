@@ -279,7 +279,6 @@ PuzzleSpecifications _parsePuzzleFromTiles(List<List<Tile>> map) {
 
 LevelState _parseLevelFromTiles(List<List<Tile>> map) {
   final spec = _parsePuzzleFromTiles(map);
-
   return LevelState.initial(
     PuzzleState.initial(
       spec.width,
