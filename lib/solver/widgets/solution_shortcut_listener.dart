@@ -4,15 +4,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SolutionShortcutListener extends StatelessWidget {
-  const SolutionShortcutListener({Key? key, required this.child})
-      : super(key: key);
+  SolutionShortcutListener({Key? key, required this.child}) : super(key: key);
 
   final Widget child;
+  final FocusNode _focusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
+    _focusNode.requestFocus();
     return FocusableActionDetector(
       child: child,
+      focusNode: _focusNode,
       shortcuts: {
         LogicalKeySet(LogicalKeyboardKey.arrowRight):
             const _SolutionPlayerIntent(NextSolutionStepSelected()),
