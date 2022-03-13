@@ -100,15 +100,24 @@ class BlockedApp extends StatelessWidget {
                   dark: createThemeWithBrightness(state.color, Brightness.dark),
                 );
               },
-              child: MaterialApp.router(
-                title: 'blocked',
-                theme: theme,
-                darkTheme: darkTheme,
-                routeInformationParser: AppRouteParser(),
-                routerDelegate: AppRouterDelegate(
-                  chapters: chapters,
-                  navigatorKey: navigatorKey,
-                  navigatorCubit: navigatorCubit,
+              child: OutlinedButtonTheme(
+                data: OutlinedButtonThemeData(
+                  style: theme.outlinedButtonTheme.style?.merge(
+                    OutlinedButton.styleFrom(
+                      backgroundColor: theme.colorScheme.surface,
+                    ),
+                  ),
+                ),
+                child: MaterialApp.router(
+                  title: 'blocked',
+                  theme: theme,
+                  darkTheme: darkTheme,
+                  routeInformationParser: AppRouteParser(),
+                  routerDelegate: AppRouterDelegate(
+                    chapters: chapters,
+                    navigatorKey: navigatorKey,
+                    navigatorCubit: navigatorCubit,
+                  ),
                 ),
               ),
             ),

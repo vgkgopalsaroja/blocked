@@ -34,6 +34,13 @@ class InitialEditorBlockSet extends LevelEditorEvent {
   final EditorBlock block;
 }
 
+class EditorSegmentTypeSet extends LevelEditorEvent {
+  const EditorSegmentTypeSet(this.segment, this.type);
+
+  final EditorSegment segment;
+  final SegmentType type;
+}
+
 class BlockAdded extends LevelEditorEvent {
   const BlockAdded(this.block);
 

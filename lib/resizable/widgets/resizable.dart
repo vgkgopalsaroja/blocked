@@ -119,7 +119,7 @@ class Resizable extends StatelessWidget {
                   Positioned.fill(
                     child: Padding(
                       padding: const EdgeInsets.all(kHandleSize),
-                      child: builder(context, state.size),
+                      child: Center(child: builder(context, state.size)),
                     ),
                   ),
                   if (enabled) ..._buildDragHandles(context),

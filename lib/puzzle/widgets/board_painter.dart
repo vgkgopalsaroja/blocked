@@ -34,6 +34,8 @@ class BoardPainter extends CustomPainter {
           wallPaint);
     }
 
+    /// TODO: Draw sharp walls
+
     for (var block in board.blocks) {
       final blockPaint = Paint()
         ..color = block == controlledBlock

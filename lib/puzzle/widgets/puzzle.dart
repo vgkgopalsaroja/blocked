@@ -24,8 +24,6 @@ class _PuzzleState extends State<Puzzle> with SingleTickerProviderStateMixin {
     final board = context.select((LevelBloc bloc) => bloc.state);
     final latestMove =
         context.select((LevelBloc bloc) => bloc.state.latestMove);
-    final controlledBlock =
-        context.select((LevelBloc bloc) => bloc.state.controlledBlock);
     final isCompleted =
         context.select((LevelBloc bloc) => bloc.state.isCompleted);
 
@@ -59,7 +57,7 @@ class _PuzzleState extends State<Puzzle> with SingleTickerProviderStateMixin {
                       opacity: board.isCompleted && block.isMain ? 0 : 1,
                       duration: kSlideDuration,
                       child: SlideTransition(
-                        position: (block == latestMove?.block
+                        position: (block.position == latestMove?.block.position
                                 ? controller
                                 : const AlwaysStoppedAnimation(0.0))
                             .drive(CurveTween(curve: Curves.easeInOutCubic))
@@ -73,10 +71,7 @@ class _PuzzleState extends State<Puzzle> with SingleTickerProviderStateMixin {
                                                 false
                                             ? block.height
                                             : block.width)))),
-                        child: PuzzleBlock(
-                          block,
-                          isControlled: block == controlledBlock,
-                        ),
+                        child: PuzzleBlock(block),
                       ),
                     ),
                   ),
@@ -84,7 +79,19 @@ class _PuzzleState extends State<Puzzle> with SingleTickerProviderStateMixin {
                   Positioned(
                     left: wall.start.x.toWallOffset(),
                     top: wall.start.y.toWallOffset(),
-                    child: PuzzleWall(wall),
+                    child: PuzzleWall(
+                      wall,
+                      isSharp: false,
+                    ),
+                  ),
+                for (var wall in board.sharpWalls)
+                  Positioned(
+                    left: wall.start.x.toWallOffset(),
+                    top: wall.start.y.toWallOffset(),
+                    child: PuzzleWall(
+                      wall,
+                      isSharp: true,
+                    ),
                   ),
                 Positioned.fill(
                   child: AnimatedOpacity(

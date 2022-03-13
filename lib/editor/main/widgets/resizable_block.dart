@@ -113,16 +113,9 @@ class ResizableBlock extends StatelessWidget {
           ),
           child: AnimatedSelectable(
             isSelected: isSelected,
-            child: PuzzleBlock(
-              Block.manual(
-                blockSize.width.round(),
-                blockSize.height.round(),
-                isMain: block.isMain,
-                canMoveHorizontally: true,
-                canMoveVertically: true,
-              ),
-              isControlled: block.hasControl,
-            ),
+            child: PuzzleBlock(Block(
+                blockSize.width.round(), blockSize.height.round(),
+                isMain: block.isMain, hasControl: block.hasControl)),
           ),
         );
       },

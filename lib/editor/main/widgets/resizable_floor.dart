@@ -77,7 +77,10 @@ class ResizableFloor extends StatelessWidget {
               Positioned(
                 left: wall.start.x.toWallOffset(),
                 top: wall.start.y.toWallOffset(),
-                child: PuzzleWall(wall),
+                child: PuzzleWall(
+                  wall,
+                  isSharp: false,
+                ),
               ),
             },
           ],

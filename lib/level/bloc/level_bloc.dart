@@ -1,5 +1,6 @@
 import 'package:blocked/level/level.dart';
 import 'package:blocked/models/models.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'level_event.dart';
@@ -14,9 +15,13 @@ class LevelBloc extends Bloc<LevelEvent, LevelState> {
 
   final LevelState initialState;
 
-  void _onMove(MoveAttempt event, Emitter<LevelState> emit) {
+  void _onMove(MoveAttempt event, Emitter<LevelState> emit) async {
     if (!state.isCompleted) {
-      emit(state.withMoveAttempt(event));
+      final newStates = state.withMoveAttempt(event);
+      for (var state in newStates) {
+        emit(state);
+        await WidgetsBinding.instance?.endOfFrame;
+      }
     }
   }
 

@@ -1,6 +1,8 @@
 import 'package:blocked/level/level.dart';
 import 'package:blocked/models/models.dart';
 import 'package:blocked/puzzle/puzzle.dart';
+import 'package:blocked/solver/bloc/solution_player_bloc.dart';
+import 'package:blocked/solver/solver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,7 +12,8 @@ class SolutionPage extends StatefulWidget {
       : super(key: key) {
     final solutionStates = [initialState];
     for (final move in solution) {
-      final nextState = solutionStates.last.withMoveAttempt(MoveAttempt(move));
+      final nextState =
+          solutionStates.last.withMoveAttempt(MoveAttempt(move)).last;
       solutionStates.add(nextState);
     }
     this.solutionStates = solutionStates;
@@ -24,7 +27,13 @@ class SolutionPage extends StatefulWidget {
 }
 
 class _SolutionPageState extends State<SolutionPage> {
-  int selectedIndex = 0;
+  late ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,63 +41,138 @@ class _SolutionPageState extends State<SolutionPage> {
       appBar: AppBar(),
       body: BlocProvider(
         create: (context) => LevelBloc(widget.solutionStates.first),
-        child: Column(
-          children: [
-            const Center(child: FittedBox(child: Puzzle())),
-            Expanded(
-              child: Material(
-                borderRadius: BorderRadius.circular(16),
-                clipBehavior: Clip.antiAlias,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 16.0),
-                  child: Column(
-                    children: [
-                      Text(
-                        'Solution',
-                        style: Theme.of(context).textTheme.headlineSmall,
+        child: BlocProvider(
+          create: (context) => SolutionPlayerBloc(widget.solutionStates.length),
+          child: BlocConsumer<SolutionPlayerBloc, SolutionPlayerState>(
+            listener: (context, state) {
+              context
+                  .read<LevelBloc>()
+                  .add(LevelStateSet(widget.solutionStates[state.index]));
+            },
+            builder: (context, state) => SolutionShortcutListener(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 32.0),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: 0,
+                        maxHeight: MediaQuery.of(context).size.height * 0.3,
                       ),
-                      Expanded(
-                        child: ListView.builder(
-                          itemBuilder: (context, index) {
-                            final isInitialState = index == 0;
-                            final isEndState =
-                                index == widget.solutionStates.length - 1;
-                            final state = widget.solutionStates[index];
-                            final move = isInitialState
-                                ? null
-                                : widget.solution[index - 1];
-                            return ListTile(
-                              selected: selectedIndex == index,
-                              leading: !isInitialState
-                                  ? isEndState
-                                      ? const Icon(Icons.flag)
-                                      : Icon(_directionToIcon(move!))
-                                  : const Icon(Icons.start),
-                              title: Text(
-                                isInitialState ? 'Start' : 'Move ${move!.name}',
-                              ),
-                              onTap: () {
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          FittedBox(
+                            child: Puzzle(),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      OutlinedButton.icon(
+                        icon: const Icon(Icons.refresh),
+                        label: const Text('Reset'),
+                        onPressed: state.index > 0
+                            ? () {
                                 context
-                                    .read<LevelBloc>()
-                                    .add(LevelStateSet(state));
-                                setState(() {
-                                  selectedIndex = index;
-                                });
-                              },
-                              // subtitle: Text(
-                              //   '${state.moveAttempts.length} moves',
-                              // ),
-                            );
-                          },
-                          itemCount: widget.solutionStates.length,
-                        ),
+                                    .read<SolutionPlayerBloc>()
+                                    .add(const SolutionStepSelected(0));
+                              }
+                            : null,
+                      ),
+                      const SizedBox(width: 16),
+                      OutlinedButton.icon(
+                        icon: Icon(Icons.adaptive.arrow_back),
+                        label: const Text('Back'),
+                        onPressed: state.index > 0
+                            ? () {
+                                context
+                                    .read<SolutionPlayerBloc>()
+                                    .add(const PreviousSolutionStepSelected());
+                              }
+                            : null,
+                      ),
+                      const SizedBox(width: 16),
+                      OutlinedButton.icon(
+                        icon: Icon(Icons.adaptive.arrow_forward),
+                        label: const Text('Next'),
+                        onPressed:
+                            state.index < widget.solutionStates.length - 1
+                                ? () {
+                                    context
+                                        .read<SolutionPlayerBloc>()
+                                        .add(const NextSolutionStepSelected());
+                                  }
+                                : null,
                       ),
                     ],
                   ),
-                ),
+                  const SizedBox(height: 16),
+                  Flexible(
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 512),
+                        child: Material(
+                          borderRadius: BorderRadius.circular(16),
+                          clipBehavior: Clip.antiAlias,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 16.0),
+                            child: Column(
+                              children: [
+                                Text(
+                                  'Solution',
+                                  style:
+                                      Theme.of(context).textTheme.headlineSmall,
+                                ),
+                                Expanded(
+                                  child: ListView.builder(
+                                    controller: _scrollController,
+                                    itemBuilder: (context, index) {
+                                      final isInitialState = index == 0;
+                                      final isEndState = index ==
+                                          widget.solutionStates.length - 1;
+                                      final move = isInitialState
+                                          ? null
+                                          : widget.solution[index - 1];
+                                      return ListTile(
+                                        selected: state.index == index,
+                                        selectedTileColor: Theme.of(context)
+                                            .colorScheme
+                                            .surfaceVariant,
+                                        leading: !isInitialState
+                                            ? isEndState
+                                                ? const Icon(Icons.flag)
+                                                : Icon(_directionToIcon(move!))
+                                            : const Icon(Icons.start),
+                                        title: Text(
+                                          isInitialState
+                                              ? 'Start'
+                                              : 'Move ${move!.name}',
+                                        ),
+                                        onTap: () {
+                                          context
+                                              .read<SolutionPlayerBloc>()
+                                              .add(SolutionStepSelected(index));
+                                        },
+                                      );
+                                    },
+                                    itemCount: widget.solutionStates.length,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );

@@ -15,32 +15,32 @@ class LevelShortcutListener extends StatelessWidget {
   final Widget child;
 
   static const puzzleShortcuts = <ShortcutActivator, Intent>{
-    SingleActivator(LogicalKeyboardKey.keyR): PuzzleIntent(LevelReset()),
+    SingleActivator(LogicalKeyboardKey.keyR): _LevelIntent(LevelReset()),
     SingleActivator(LogicalKeyboardKey.arrowLeft):
-        PuzzleIntent(MoveAttempt(MoveDirection.left)),
+        _LevelIntent(MoveAttempt(MoveDirection.left)),
     SingleActivator(LogicalKeyboardKey.arrowRight):
-        PuzzleIntent(MoveAttempt(MoveDirection.right)),
+        _LevelIntent(MoveAttempt(MoveDirection.right)),
     SingleActivator(LogicalKeyboardKey.arrowUp):
-        PuzzleIntent(MoveAttempt(MoveDirection.up)),
+        _LevelIntent(MoveAttempt(MoveDirection.up)),
     SingleActivator(LogicalKeyboardKey.arrowDown):
-        PuzzleIntent(MoveAttempt(MoveDirection.down)),
+        _LevelIntent(MoveAttempt(MoveDirection.down)),
     SingleActivator(LogicalKeyboardKey.keyW):
-        PuzzleIntent(MoveAttempt(MoveDirection.up)),
+        _LevelIntent(MoveAttempt(MoveDirection.up)),
     SingleActivator(LogicalKeyboardKey.keyA):
-        PuzzleIntent(MoveAttempt(MoveDirection.left)),
+        _LevelIntent(MoveAttempt(MoveDirection.left)),
     SingleActivator(LogicalKeyboardKey.keyS):
-        PuzzleIntent(MoveAttempt(MoveDirection.down)),
+        _LevelIntent(MoveAttempt(MoveDirection.down)),
     SingleActivator(LogicalKeyboardKey.keyD):
-        PuzzleIntent(MoveAttempt(MoveDirection.right)),
+        _LevelIntent(MoveAttempt(MoveDirection.right)),
   };
 
   static final levelShortcuts = {
     const SingleActivator(LogicalKeyboardKey.enter):
-        LevelNavigationIntent((levelNavigation) {
+        _LevelNavigationIntent((levelNavigation) {
       levelNavigation.onNext();
     }),
     const SingleActivator(LogicalKeyboardKey.escape):
-        LevelNavigationIntent((levelNavigation) {
+        _LevelNavigationIntent((levelNavigation) {
       levelNavigation.onExit();
     }),
   };
@@ -76,10 +76,10 @@ class LevelShortcutListener extends StatelessWidget {
         autofocus: true,
         shortcuts: shortcuts,
         actions: {
-          PuzzleIntent: CallbackAction<PuzzleIntent>(onInvoke: (intent) {
-            return levelBloc.add(intent.puzzleEvent);
+          _LevelIntent: CallbackAction<_LevelIntent>(onInvoke: (intent) {
+            return levelBloc.add(intent.levelEvent);
           }),
-          LevelNavigationIntent: CallbackAction<LevelNavigationIntent>(
+          _LevelNavigationIntent: CallbackAction<_LevelNavigationIntent>(
             onInvoke: (intent) {
               return intent
                   .levelNavigationCallback(context.read<LevelNavigation>());
@@ -92,14 +92,14 @@ class LevelShortcutListener extends StatelessWidget {
   }
 }
 
-class PuzzleIntent extends Intent {
-  const PuzzleIntent(this.puzzleEvent);
+class _LevelIntent extends Intent {
+  const _LevelIntent(this.levelEvent);
 
-  final LevelEvent puzzleEvent;
+  final LevelEvent levelEvent;
 }
 
-class LevelNavigationIntent extends Intent {
-  const LevelNavigationIntent(this.levelNavigationCallback);
+class _LevelNavigationIntent extends Intent {
+  const _LevelNavigationIntent(this.levelNavigationCallback);
 
   final void Function(LevelNavigation) levelNavigationCallback;
 }
