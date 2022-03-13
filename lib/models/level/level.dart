@@ -1,4 +1,4 @@
-import 'package:blocked/puzzle/puzzle.dart';
+import 'package:blocked/level/level.dart';
 
 export 'level_chapter.dart';
 export 'level_data.dart';

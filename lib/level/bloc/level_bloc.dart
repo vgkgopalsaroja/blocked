@@ -9,6 +9,7 @@ class LevelBloc extends Bloc<LevelEvent, LevelState> {
   LevelBloc(this.initialState) : super(initialState) {
     on<MoveAttempt>(_onMove);
     on<LevelReset>(_onReset);
+    on<LevelStateSet>(_onLevelStateSet);
   }
 
   final LevelState initialState;
@@ -21,5 +22,9 @@ class LevelBloc extends Bloc<LevelEvent, LevelState> {
 
   void _onReset(LevelReset event, Emitter<LevelState> emit) {
     emit(initialState);
+  }
+
+  void _onLevelStateSet(LevelStateSet event, Emitter<LevelState> emit) {
+    emit(event.state);
   }
 }

@@ -4,6 +4,12 @@ abstract class LevelEvent {
   const LevelEvent();
 }
 
+class LevelStateSet extends LevelEvent {
+  const LevelStateSet(this.state);
+
+  final LevelState state;
+}
+
 class LevelReset extends LevelEvent {
   const LevelReset();
 }

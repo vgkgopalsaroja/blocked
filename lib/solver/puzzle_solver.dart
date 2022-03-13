@@ -1,7 +1,7 @@
 import 'dart:math';
 
+import 'package:blocked/level/level.dart';
 import 'package:blocked/models/models.dart';
-import 'package:blocked/puzzle/puzzle.dart';
 import 'package:collection/collection.dart';
 
 Future<List<MoveDirection>?> solve(PuzzleState initialState) async {

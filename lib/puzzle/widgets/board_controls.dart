@@ -1,6 +1,6 @@
 import 'package:async/async.dart';
 import 'package:blocked/editor/editor.dart';
-import 'package:blocked/models/puzzle/puzzle.dart';
+import 'package:blocked/level/level.dart';
 import 'package:blocked/puzzle/puzzle.dart';
 import 'package:blocked/routing/routing.dart';
 import 'package:blocked/solver/solver.dart';
@@ -85,35 +85,30 @@ class _BoardControlsState extends State<BoardControls> {
             if (moves == null) {
               return;
             }
-            IconData directionToIcon(MoveDirection direction) {
-              switch (direction) {
-                case MoveDirection.up:
-                  return Icons.arrow_upward;
-                case MoveDirection.down:
-                  return Icons.arrow_downward;
-                case MoveDirection.left:
-                  return Icons.arrow_back;
-                case MoveDirection.right:
-                  return Icons.arrow_forward;
-              }
-            }
 
-            final controller = Scaffold.of(context).showBottomSheet(
-              (context) => ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) => Icon(
-                  directionToIcon(moves[index]),
-                ),
-                itemCount: moves.length,
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => SolutionPage(
+                initialState: context.read<LevelBloc>().initialState,
+                solution: moves,
               ),
-              constraints: const BoxConstraints(
-                maxHeight: 48,
-              ),
-            );
+            ));
 
-            controller.closed.then((_) {
-              context.read<PuzzleSolverBloc>().add(SolutionHidden());
-            });
+            // final controller = Scaffold.of(context).showBottomSheet(
+            //   (context) => ListView.builder(
+            //     scrollDirection: Axis.horizontal,
+            //     itemBuilder: (context, index) => Icon(
+            //       directionToIcon(moves[index]),
+            //     ),
+            //     itemCount: moves.length,
+            //   ),
+            //   constraints: const BoxConstraints(
+            //     maxHeight: 48,
+            //   ),
+            // );
+
+            // controller.closed.then((_) {
+            //   context.read<PuzzleSolverBloc>().add(SolutionHidden());
+            // });
           },
         ),
       ],

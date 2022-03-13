@@ -1,6 +1,7 @@
+import 'package:blocked/level/level.dart';
 import 'package:blocked/level_selection/level_selection.dart';
 import 'package:blocked/models/models.dart';
-import 'package:blocked/progress/util/progress_saver.dart';
+import 'package:blocked/progress/progress.dart';
 import 'package:blocked/puzzle/puzzle.dart';
 import 'package:blocked/routing/routing.dart';
 import 'package:flutter/material.dart';

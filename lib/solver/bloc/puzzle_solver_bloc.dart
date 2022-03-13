@@ -1,4 +1,5 @@
 import 'package:async/async.dart';
+import 'package:blocked/level/level.dart';
 import 'package:blocked/models/models.dart';
 import 'package:blocked/puzzle/puzzle.dart';
 import 'package:blocked/solver/solver.dart';
