@@ -58,14 +58,12 @@ class EditorHelpContent extends StatelessWidget {
                         ],
                         isSelected: false,
                       ),
-                      Positioned(
-                        child: ResizableSegment(
-                          EditorSegment.initial(
-                              Segment.vertical(x: 2, start: 0, end: 1),
-                              type: SegmentType.wall),
-                          isSelected: true,
-                          isExit: true,
-                        ),
+                      ResizableSegment(
+                        EditorSegment.initial(
+                            Segment.vertical(x: 2, start: 0, end: 1),
+                            type: SegmentType.wall),
+                        isSelected: true,
+                        isExit: true,
                       ),
                     ],
                   ),
@@ -85,12 +83,13 @@ class EditorHelpContent extends StatelessWidget {
                 width: 4.toBoardSize(),
                 height: 3.toBoardSize(),
                 child: Portal(
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: ResizableBlock(
-                      EditorBlock.initial(const Block(1, 1).place(0, 0)),
-                      isSelected: true,
-                    ),
+                  child: Stack(
+                    children: [
+                      ResizableBlock(
+                        EditorBlock.initial(const Block(1, 1).place(0, 0)),
+                        isSelected: true,
+                      ),
+                    ],
                   ),
                 ),
               ),
