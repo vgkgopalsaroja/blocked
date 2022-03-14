@@ -1,3 +1,4 @@
+import 'package:blocked/editor/editor.dart';
 import 'package:blocked/routing/routing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,7 +32,11 @@ class NavigatorCubit extends Cubit<AppRoutePath> {
     latestLevelName = levelName;
   }
 
-  void navigateToEditor(String mapString) {
+  void navigateToEditor() {
+    navigateToEditorWithMapString(kDefaultMapString);
+  }
+
+  void navigateToEditorWithMapString(String mapString) {
     emit(EditorRoutePath.editor(mapString));
   }
 

@@ -72,7 +72,7 @@ class LevelEditorBloc extends Bloc<LevelEditorEvent, LevelEditorState> {
   void _onSavePressed(SavePressed event, Emitter<LevelEditorState> emit) {
     final mapString = state.getMapString();
     if (mapString != null) {
-      navigatorCubit.navigateToEditor(mapString);
+      navigatorCubit.navigateToEditorWithMapString(mapString);
       emit(state.copyWith(
         snackbarMessage: const SnackbarMessage.info('Puzzle saved to url'),
       ));

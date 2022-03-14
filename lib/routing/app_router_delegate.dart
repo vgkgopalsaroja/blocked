@@ -145,7 +145,11 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
       if (configuration.isInPreview) {
         navigatorCubit.navigateToGeneratedLevel(configuration.mapString);
       } else {
-        navigatorCubit.navigateToEditor(configuration.mapString);
+        if (configuration.mapString.isEmpty) {
+          navigatorCubit.navigateToEditor();
+        } else {
+          navigatorCubit.navigateToEditorWithMapString(configuration.mapString);
+        }
       }
     } else if (configuration is LevelRoutePath) {
       if (configuration.levelName != null) {

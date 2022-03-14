@@ -62,7 +62,7 @@ class HomePage extends StatelessWidget {
                           icon: const Icon(MdiIcons.vectorSquareEdit),
                           label: const Text('Editor'),
                           onPressed: () {
-                            context.read<NavigatorCubit>().navigateToEditor('');
+                            context.read<NavigatorCubit>().navigateToEditor();
                           },
                         ),
                         const SizedBox(height: 8),

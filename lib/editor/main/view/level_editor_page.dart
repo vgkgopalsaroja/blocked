@@ -13,13 +13,21 @@ import 'package:flutter_portal/flutter_portal.dart';
 PuzzleSpecifications? tryParsePuzzleSpecs(String mapString) {
   try {
     return parsePuzzleSpecs(mapString);
-  } on Object {
+    // ignore: avoid_catches_without_on_clauses
+  } catch (_) {
     return null;
   }
 }
 
 const kMobileWidth = 700;
 const kEditorTileCount = 20;
+final kDefaultMapString = specsToMapString(
+    PuzzleSpecifications(width: 1, height: 1, blocks: [], walls: [
+  Segment.horizontal(y: 0, start: 0, end: 1),
+  Segment.horizontal(y: 1, start: 0, end: 1),
+  Segment.vertical(x: 0, start: 0, end: 1),
+  Segment.vertical(x: 1, start: 0, end: 1),
+], sharpWalls: []));
 
 class LevelEditorPage extends StatelessWidget {
   const LevelEditorPage({Key? key}) : super(key: key);
@@ -32,6 +40,9 @@ class LevelEditorPage extends StatelessWidget {
           final navigatorCubit = context.read<NavigatorCubit>();
           final specs = tryParsePuzzleSpecs(
               (navigatorCubit.state as EditorRoutePath).mapString);
+          if (specs == null) {
+            context.read<NavigatorCubit>().navigateToEditor();
+          }
           return LevelEditorBloc(navigatorCubit, specs);
         },
         child: Builder(
