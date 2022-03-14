@@ -7,18 +7,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ResizableFloor extends StatelessWidget {
-  const ResizableFloor(this.floor, this.exits, {Key? key}) : super(key: key);
+  const ResizableFloor(this.floor, this.exits, {Key? key, this.isSelected})
+      : useContainer = false,
+        super(key: key);
+  const ResizableFloor.container(this.floor, this.exits,
+      {Key? key, this.isSelected})
+      : useContainer = true,
+        super(key: key);
 
   final EditorFloor floor;
   final List<Segment> exits;
+  final bool useContainer;
+  final bool? isSelected;
 
   @override
   Widget build(BuildContext context) {
-    final exits = context.select((LevelEditorBloc bloc) =>
-        bloc.state.exits.map((e) => e.toSegment()).toList());
     return Resizable(
-      enabled: context
-          .select((LevelEditorBloc bloc) => bloc.state.selectedObject == null),
+      enabled: isSelected ??
+          context.select(
+              (LevelEditorBloc bloc) => bloc.state.selectedObject == null),
       initialSize: Size(floor.width.toBoardSize(), floor.height.toBoardSize()),
       minHeight: 1.toBoardSize(),
       minWidth: 1.toBoardSize(),
@@ -69,10 +76,13 @@ class ResizableFloor extends StatelessWidget {
 
         return Stack(
           children: [
-            PuzzleFloor.material(
-              width: boardWidth,
-              height: boardHeight,
-            ),
+            if (useContainer)
+              PuzzleFloor.container(width: boardWidth, height: boardHeight)
+            else
+              PuzzleFloor.material(
+                width: boardWidth,
+                height: boardHeight,
+              ),
             for (var wall in subtractedWalls) ...{
               Positioned(
                 left: wall.start.x.toWallOffset(),

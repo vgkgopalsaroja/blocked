@@ -8,19 +8,24 @@ import 'package:flutter_portal/flutter_portal.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class ResizableSegment extends StatelessWidget {
-  const ResizableSegment(this.wall, {Key? key}) : super(key: key);
+  const ResizableSegment(this.wall, {Key? key, this.isExit, this.isSelected})
+      : super(key: key);
 
   final EditorSegment wall;
+  final bool? isExit;
+  final bool? isSelected;
 
   @override
   Widget build(BuildContext context) {
-    final isSelected = context.select(
-      (LevelEditorBloc bloc) => bloc.state.selectedObject == wall,
-    );
+    final isSelected = this.isSelected ??
+        context.select<LevelEditorBloc, bool>(
+          (LevelEditorBloc bloc) => bloc.state.selectedObject == wall,
+        );
 
-    final isExit = context.select(
-      (LevelEditorBloc bloc) => bloc.state.isExit(wall),
-    );
+    final isExit = this.isExit ??
+        context.select<LevelEditorBloc, bool>(
+          (LevelEditorBloc bloc) => bloc.state.isExit(wall),
+        );
 
     final isSharp = wall.type == SegmentType.sharp;
 
@@ -96,6 +101,7 @@ class ResizableSegment extends StatelessWidget {
           portal: Padding(
             padding: const EdgeInsets.only(left: kHandleSize),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ElevatedButton(
                   onPressed: () {

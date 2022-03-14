@@ -8,15 +8,18 @@ import 'package:flutter_portal/flutter_portal.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class ResizableBlock extends StatelessWidget {
-  const ResizableBlock(this.block, {Key? key}) : super(key: key);
+  const ResizableBlock(this.block, {Key? key, this.isSelected})
+      : super(key: key);
 
   final EditorBlock block;
+  final bool? isSelected;
 
   @override
   Widget build(BuildContext context) {
-    final isSelected = context.select(
-      (LevelEditorBloc bloc) => bloc.state.selectedObject == block,
-    );
+    final isSelected = this.isSelected ??
+        context.select<LevelEditorBloc, bool>(
+          (LevelEditorBloc bloc) => bloc.state.selectedObject == block,
+        );
     final isMainBlock = context.select(
       (LevelEditorBloc bloc) => bloc.state.mainBlock == block,
     );

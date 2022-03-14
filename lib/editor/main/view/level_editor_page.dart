@@ -50,6 +50,31 @@ class LevelEditorPage extends StatelessWidget {
                   backgroundColor: Theme.of(context).canvasColor,
                   actions: [
                     AdaptiveTextButton(
+                      icon: const Icon(Icons.help),
+                      label: const Text('Help'),
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text('Help'),
+                                content: BlocProvider.value(
+                                  value: levelEditorBloc,
+                                  child: const EditorHelpContent(),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    child: const Text('Close'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            });
+                      },
+                    ),
+                    AdaptiveTextButton(
                       icon: isGridVisible
                           ? const Icon(Icons.grid_on_rounded)
                           : const Icon(Icons.grid_off_rounded),
