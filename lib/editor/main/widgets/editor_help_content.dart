@@ -95,6 +95,7 @@ class EditorHelpContent extends StatelessWidget {
               ),
             ),
           ),
+          const SizedBox(height: 32),
           Text('Level requirements',
               style: Theme.of(context).textTheme.titleLarge),
           const Text('Every level requires at least:'),
