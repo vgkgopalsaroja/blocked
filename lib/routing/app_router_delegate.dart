@@ -65,9 +65,7 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
                     const MaterialPage(child: LevelEditorPage()),
                     if (path.isInPreview)
                       MaterialPage(
-                        name: path.location,
                         key: ValueKey(path.location),
-                        arguments: path.location,
                         child: GeneratedLevelPage(
                             Uri.decodeComponent(path.mapString)),
                       ),
@@ -77,15 +75,17 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
                       path.levelName != null &&
                       levelList != null) ...{
                     MaterialPage(
-                      name: path.location,
                       key: ValueKey(path.location),
                       child: ScaffoldMessenger(
                         child: Scaffold(
                           body: LevelPage(
-                            levelList.getLevelWithId(path.levelName!)!.toLevel(),
+                            levelList
+                                .getLevelWithId(path.levelName!)!
+                                .toLevel(),
                             boardControls: const BoardControls(),
-                            key: Key(
-                                levelList.getLevelWithId(path.levelName!)!.name),
+                            key: Key(levelList
+                                .getLevelWithId(path.levelName!)!
+                                .name),
                             onExit: () => navigatorCubit
                                 .navigateToLevelSelection(path.chapterName!),
                             onNext: () {
@@ -97,11 +97,13 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
                                     path.chapterName!, nextLevelName);
                               } else {
                                 final nextChapter = chapters
-                                    .skipWhile((c) => c.name != path.chapterName!)
+                                    .skipWhile(
+                                        (c) => c.name != path.chapterName!)
                                     .skip(1)
                                     .firstOrNull;
                                 if (nextChapter != null) {
-                                  navigatorCubit.navigateToLevel(nextChapter.name,
+                                  navigatorCubit.navigateToLevel(
+                                      nextChapter.name,
                                       nextChapter.levels.first.name);
                                 } else {
                                   navigatorCubit.navigateToLevelSelection(
@@ -173,3 +175,24 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
   @override
   GlobalKey<NavigatorState>? get navigatorKey => _navigatorKey;
 }
+
+// class FadePage extends Page {
+//   const FadePage({required this.child, LocalKey? key}) : super(key: key);
+
+//   final Widget child;
+
+//   @override
+//   Route createRoute(BuildContext context) {
+//     return ZoomPageTransitionsBuilder()
+//     return PageRouteBuilder(
+//       settings: this,
+//       pageBuilder: (BuildContext context, Animation<double> animation,
+//           Animation<double> secondaryAnimation) {
+//         return FadeTransition(
+//           opacity: animation,
+//           child: child,
+//         );
+//       },
+//     );
+//   }
+// }

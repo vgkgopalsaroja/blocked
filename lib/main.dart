@@ -24,43 +24,51 @@ ThemeData createThemeWithBrightness(Color primary, Brightness brightness) {
   final colorScheme =
       ColorScheme.fromSeed(seedColor: primary, brightness: brightness);
 
-  if (brightness == Brightness.light) {
-    return FlexThemeData.light(
-      colors: FlexSchemeColor.from(
-        primary: colorScheme.primary,
-        secondary: colorScheme.tertiary,
-      ),
-      useSubThemes: true,
-      blendLevel: 16,
-      fontFamily: GoogleFonts.dmSans().fontFamily,
-      subThemesData: const FlexSubThemesData(
-        buttonPadding: EdgeInsets.all(16),
-        textButtonRadius: 8,
-        outlinedButtonRadius: 8,
-        elevatedButtonRadius: 8,
-      ),
-      appBarStyle: FlexAppBarStyle.surface,
-      surfaceMode: FlexSurfaceMode.highBackgroundLowScaffold,
-    );
-  } else {
-    return FlexThemeData.dark(
-      colors: FlexSchemeColor.from(
-        primary: colorScheme.primary,
-        secondary: colorScheme.tertiary,
-      ),
-      useSubThemes: true,
-      blendLevel: 16,
-      fontFamily: GoogleFonts.dmSans().fontFamily,
-      subThemesData: const FlexSubThemesData(
-        buttonPadding: EdgeInsets.all(16),
-        textButtonRadius: 8,
-        outlinedButtonRadius: 8,
-        elevatedButtonRadius: 8,
-      ),
-      appBarStyle: FlexAppBarStyle.surface,
-      surfaceMode: FlexSurfaceMode.highBackgroundLowScaffold,
-    );
-  }
+  final themeData = brightness == Brightness.light
+      ? FlexThemeData.light(
+          colors: FlexSchemeColor.from(
+            primary: colorScheme.primary,
+            secondary: colorScheme.tertiary,
+          ),
+          useSubThemes: true,
+          blendLevel: 16,
+          fontFamily: GoogleFonts.dmSans().fontFamily,
+          subThemesData: const FlexSubThemesData(
+            buttonPadding: EdgeInsets.all(16),
+            textButtonRadius: 8,
+            outlinedButtonRadius: 8,
+            elevatedButtonRadius: 8,
+          ),
+          appBarStyle: FlexAppBarStyle.surface,
+          surfaceMode: FlexSurfaceMode.highBackgroundLowScaffold,
+        )
+      : FlexThemeData.dark(
+          colors: FlexSchemeColor.from(
+            primary: colorScheme.primary,
+            secondary: colorScheme.tertiary,
+          ),
+          useSubThemes: true,
+          blendLevel: 16,
+          fontFamily: GoogleFonts.dmSans().fontFamily,
+          subThemesData: const FlexSubThemesData(
+            buttonPadding: EdgeInsets.all(16),
+            textButtonRadius: 8,
+            outlinedButtonRadius: 8,
+            elevatedButtonRadius: 8,
+          ),
+          appBarStyle: FlexAppBarStyle.surface,
+          surfaceMode: FlexSurfaceMode.highBackgroundLowScaffold,
+        );
+
+  return themeData.copyWith(
+    pageTransitionsTheme: PageTransitionsTheme(
+      builders: <TargetPlatform, PageTransitionsBuilder>{
+        TargetPlatform.android: ZoomPageTransitionsBuilder(),
+        TargetPlatform.iOS: ZoomPageTransitionsBuilder(),
+        TargetPlatform.windows: CupertinoPageTransitionsBuilder(),
+      },
+    ),
+  );
 }
 
 class BlockedApp extends StatelessWidget {

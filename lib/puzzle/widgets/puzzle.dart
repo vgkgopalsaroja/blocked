@@ -14,12 +14,12 @@ class Puzzle extends StatefulWidget {
 }
 
 class _PuzzleState extends State<Puzzle> with SingleTickerProviderStateMixin {
-  late AnimationController controller;
+  late AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
-    controller = AnimationController(
+    _controller = AnimationController(
       vsync: this,
       duration: kSlideDuration * 0.5,
     );
@@ -27,7 +27,7 @@ class _PuzzleState extends State<Puzzle> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
-    controller.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -47,8 +47,8 @@ class _PuzzleState extends State<Puzzle> with SingleTickerProviderStateMixin {
           listener: (context, state) async {
             final latestMove = state.latestMove;
             if (latestMove != null && !latestMove.didMove) {
-              await controller.forward(from: 0);
-              await controller.reverse();
+              await _controller.forward(from: 0);
+              await _controller.reverse();
             }
           },
           child: PuzzleFloor.container(
@@ -70,7 +70,7 @@ class _PuzzleState extends State<Puzzle> with SingleTickerProviderStateMixin {
                       duration: kSlideDuration,
                       child: SlideTransition(
                         position: (block.position == latestMove?.block.position
-                                ? controller
+                                ? _controller
                                 : const AlwaysStoppedAnimation(0.0))
                             .drive(CurveTween(curve: Curves.easeInOutCubic))
                             .drive(Tween(

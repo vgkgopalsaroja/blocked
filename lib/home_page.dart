@@ -28,8 +28,7 @@ class HomePage extends StatelessWidget {
                         Hero(
                           tag: 'app_title',
                           child: Text('blocked',
-                              style:
-                                  Theme.of(context).textTheme.displayMedium),
+                              style: Theme.of(context).textTheme.displayMedium),
                         ),
                         const SizedBox(height: 32),
                         StreamBuilder<bool>(
@@ -40,8 +39,7 @@ class HomePage extends StatelessWidget {
                               icon: const Icon(MdiIcons.play),
                               label: Text(hasProgress ? 'Continue' : 'Start'),
                               onPressed: () async {
-                                final level =
-                                    await getFirstUncompletedLevel();
+                                final level = await getFirstUncompletedLevel();
                                 context
                                     .read<NavigatorCubit>()
                                     .navigateToLevel(level[0], level[1]);
@@ -64,9 +62,7 @@ class HomePage extends StatelessWidget {
                           icon: const Icon(MdiIcons.vectorSquareEdit),
                           label: const Text('Editor'),
                           onPressed: () {
-                            context
-                                .read<NavigatorCubit>()
-                                .navigateToEditor('');
+                            context.read<NavigatorCubit>().navigateToEditor('');
                           },
                         ),
                         const SizedBox(height: 8),
@@ -74,9 +70,7 @@ class HomePage extends StatelessWidget {
                           icon: const Icon(Icons.settings),
                           label: const Text('Settings'),
                           onPressed: () {
-                            context
-                                .read<NavigatorCubit>()
-                                .navigateToSettings();
+                            context.read<NavigatorCubit>().navigateToSettings();
                           },
                         ),
                       ],
