@@ -42,29 +42,33 @@ class EditorHelpContent extends StatelessWidget {
           Text('Adding exits', style: Theme.of(context).textTheme.titleLarge),
           const Text(
               'Place a wall along the perimeter of the level to create an exit.'),
-          IgnorePointer(
-            child: SizedBox(
-              height: 3.toBoardSize(),
-              child: Portal(
-                child: Stack(
-                  children: [
-                    ResizableFloor.container(
-                      EditorFloor.initial(2, 2),
-                      [
-                        Segment.vertical(x: 2, start: 0, end: 1),
-                      ],
-                      isSelected: false,
-                    ),
-                    Positioned(
-                      child: ResizableSegment(
-                        EditorSegment.initial(
-                            Segment.vertical(x: 2, start: 0, end: 1),
-                            type: SegmentType.wall),
-                        isSelected: true,
-                        isExit: true,
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: IgnorePointer(
+              child: SizedBox(
+                width: 5.toBoardSize(),
+                height: 3.toBoardSize(),
+                child: Portal(
+                  child: Stack(
+                    children: [
+                      ResizableFloor.container(
+                        EditorFloor.initial(2, 2),
+                        [
+                          Segment.vertical(x: 2, start: 0, end: 1),
+                        ],
+                        isSelected: false,
                       ),
-                    ),
-                  ],
+                      Positioned(
+                        child: ResizableSegment(
+                          EditorSegment.initial(
+                              Segment.vertical(x: 2, start: 0, end: 1),
+                              type: SegmentType.wall),
+                          isSelected: true,
+                          isExit: true,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -74,15 +78,19 @@ class EditorHelpContent extends StatelessWidget {
               style: Theme.of(context).textTheme.titleLarge),
           const Text(
               'Select an object to view its drag handles, delete it and more.'),
-          IgnorePointer(
-            child: SizedBox(
-              height: 3.toBoardSize(),
-              child: Portal(
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: ResizableBlock(
-                    EditorBlock.initial(const Block(1, 1).place(0, 0)),
-                    isSelected: true,
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: IgnorePointer(
+              child: SizedBox(
+                width: 4.toBoardSize(),
+                height: 3.toBoardSize(),
+                child: Portal(
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: ResizableBlock(
+                      EditorBlock.initial(const Block(1, 1).place(0, 0)),
+                      isSelected: true,
+                    ),
                   ),
                 ),
               ),
