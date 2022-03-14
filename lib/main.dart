@@ -60,15 +60,7 @@ ThemeData createThemeWithBrightness(Color primary, Brightness brightness) {
           surfaceMode: FlexSurfaceMode.highBackgroundLowScaffold,
         );
 
-  return themeData.copyWith(
-    pageTransitionsTheme: PageTransitionsTheme(
-      builders: <TargetPlatform, PageTransitionsBuilder>{
-        TargetPlatform.android: ZoomPageTransitionsBuilder(),
-        TargetPlatform.iOS: ZoomPageTransitionsBuilder(),
-        TargetPlatform.windows: CupertinoPageTransitionsBuilder(),
-      },
-    ),
-  );
+  return themeData;
 }
 
 class BlockedApp extends StatelessWidget {

@@ -25,6 +25,14 @@ class PuzzleSolverBloc extends Bloc<PuzzleSolverEvent, PuzzleSolverState> {
     final viewedState = await requestedState
         .copyWithSolutionViewed(viewed: true)
         .copyWithSolutionFor(levelBloc.initialState.puzzle);
+
+    final isInitialState =
+        levelBloc.state.puzzle == levelBloc.initialState.puzzle;
+
+    if (!isInitialState) {
+      levelBloc.add(const LevelReset());
+      await Future.delayed(kSlideDuration);
+    }
     emit(viewedState);
   }
 

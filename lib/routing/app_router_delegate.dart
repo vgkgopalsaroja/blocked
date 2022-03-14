@@ -134,8 +134,6 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
 
   @override
   Future<void> setInitialRoutePath(AppRoutePath configuration) {
-    // navigatorCubit = NavigatorCubit(configuration);
-    // navigatorCubit.
     setNewRoutePath(configuration);
     isLoaded = true;
     return SynchronousFuture(null);
@@ -175,24 +173,3 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
   @override
   GlobalKey<NavigatorState>? get navigatorKey => _navigatorKey;
 }
-
-// class FadePage extends Page {
-//   const FadePage({required this.child, LocalKey? key}) : super(key: key);
-
-//   final Widget child;
-
-//   @override
-//   Route createRoute(BuildContext context) {
-//     return ZoomPageTransitionsBuilder()
-//     return PageRouteBuilder(
-//       settings: this,
-//       pageBuilder: (BuildContext context, Animation<double> animation,
-//           Animation<double> secondaryAnimation) {
-//         return FadeTransition(
-//           opacity: animation,
-//           child: child,
-//         );
-//       },
-//     );
-//   }
-// }

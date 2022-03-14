@@ -5,6 +5,7 @@ import 'package:blocked/solver/bloc/solution_player_bloc.dart';
 import 'package:blocked/solver/solver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class SolutionPage extends StatefulWidget {
   SolutionPage(
@@ -38,7 +39,10 @@ class _SolutionPageState extends State<SolutionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+      ),
       body: BlocProvider(
         create: (context) => LevelBloc(widget.solutionStates.first),
         child: BlocProvider(
@@ -63,7 +67,7 @@ class _SolutionPageState extends State<SolutionPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const [
                           FittedBox(
-                            child: Puzzle(),
+                            child: Hero(tag: 'puzzle', child: Puzzle()),
                           ),
                         ],
                       ),
@@ -132,8 +136,6 @@ class _SolutionPageState extends State<SolutionPage> {
                                     controller: _scrollController,
                                     itemBuilder: (context, index) {
                                       final isInitialState = index == 0;
-                                      final isEndState = index ==
-                                          widget.solutionStates.length - 1;
                                       final move = isInitialState
                                           ? null
                                           : widget.solution[index - 1];
@@ -142,11 +144,9 @@ class _SolutionPageState extends State<SolutionPage> {
                                         selectedTileColor: Theme.of(context)
                                             .colorScheme
                                             .surfaceVariant,
-                                        leading: !isInitialState
-                                            ? isEndState
-                                                ? const Icon(Icons.flag)
-                                                : Icon(_directionToIcon(move!))
-                                            : const Icon(Icons.start),
+                                        leading: isInitialState
+                                            ? const Icon(MdiIcons.flag)
+                                            : Icon(_directionToIcon(move!)),
                                         title: Text(
                                           isInitialState
                                               ? 'Start'

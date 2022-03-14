@@ -83,38 +83,19 @@ class _BoardControlsState extends State<BoardControls> {
         BlocListener<PuzzleSolverBloc, PuzzleSolverState>(
           listenWhen: (previous, current) =>
               !previous.isSolutionVisible && current.isSolutionVisible,
-          listener: (context, state) {
+          listener: (context, state) async {
             final moves = state.solution;
             if (moves == null) {
               return;
             }
 
-            Navigator.of(context)
-                .push(MaterialPageRoute(
-                  builder: (_) => SolutionPage(
-                    initialState: context.read<LevelBloc>().initialState,
-                    solution: moves,
-                  ),
-                ))
-                .then((_) => {
-                      context.read<PuzzleSolverBloc>().add(SolutionHidden()),
-                    });
-
-            // final controller = Scaffold.of(context).showBottomSheet(
-            //   (context) => ListView.builder(
-            //     scrollDirection: Axis.horizontal,
-            //     itemBuilder: (context, index) => Icon(
-            //       directionToIcon(moves[index]),
-            //     ),
-            //     itemCount: moves.length,
-            //   ),
-            //   constraints: const BoxConstraints(
-            //     maxHeight: 48,
-            //   ),
-            // );
-
-            // controller.closed.then((_) {
-            // });
+            await Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => SolutionPage(
+                initialState: context.read<LevelBloc>().initialState,
+                solution: moves,
+              ),
+            ));
+            context.read<PuzzleSolverBloc>().add(SolutionHidden());
           },
         ),
       ],
@@ -191,7 +172,7 @@ class _BoardControlsState extends State<BoardControls> {
                           ),
                         );
                       },
-                      icon: const Icon(Icons.share),
+                      icon: Icon(Icons.adaptive.share),
                       label: const Text('Copy link'),
                     ),
                   ),
